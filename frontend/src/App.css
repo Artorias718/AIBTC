@@ -1,0 +1,88 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #140D36;
+  color: #1f2937;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Green Color Scheme */
+:root {
+  --primary-green: #22c55e;
+  --dark-green: #16a34a;
+  --light-green: #86efac;
+  --bg-green: #f0fdf4;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --shadow: rgba(34, 197, 94, 0.1);
+}
+
+/* Button Styles */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #3ABBA7;
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: #258677;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid #258677;
+}
+
+.btn-secondary:hover {
+  background-color: #258677;
+  color: var(--white);
+}
+
+/* Container */
+.container {
+  max-width: 1500px;
+  margin:  auto;
+  padding:  20px;
+}
+
+/* Full width container for navbar */
+.navbar .container {
+  max-width: none;
+  padding: 0;
+  width: 90%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}

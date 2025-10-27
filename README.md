@@ -1,0 +1,3 @@
+lanciare frontend
+
+npm start

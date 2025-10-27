@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+
+contract CERStaking is Ownable {
+    IERC20 public cerToken;
+
+    struct Stake {
+        uint256 amount;
+        uint256 since; // timestamp dell’inizio dello staking
+        uint256 lastClaim; // timestamp dell’ultimo claim
+    }
+
+    mapping(address => Stake) public stakes;
+    uint256 public rewardRatePerSecond = 3170979198; // 10% annuo su 1e18
+
+    constructor(address _cerToken) Ownable(msg.sender) {
+        cerToken = IERC20(_cerToken);
+    }
+
+    // --- Stake ---
+
+    function stake(uint256 amount) external {
+        require(amount > 0, "Importo nullo");
+        cerToken.transferFrom(msg.sender, address(this), amount);
+
+        Stake storage s = stakes[msg.sender];
+        s.amount += amount;
+        s.since = block.timestamp;
+
+        // se è il primo stake, inizializza lastClaim
+        if (s.lastClaim == 0) {
+            s.lastClaim = block.timestamp;
+        }
+    }
+
+    // --- Calcolo reward accumulato dall’ultimo claim ---
+    function calculateReward(address staker) public view returns (uint256) {
+        Stake memory s = stakes[staker];
+        if (s.amount == 0) return 0;
+
+        uint256 from = s.lastClaim > 0 ? s.lastClaim : s.since;
+        uint256 duration = block.timestamp - from;
+        uint256 reward = (s.amount * rewardRatePerSecond * duration) / 1e18;
+        return reward;
+    }
+
+    // --- Claim solo reward senza ritirare lo stake ---
+    function claim() external {
+        Stake storage s = stakes[msg.sender];
+        require(s.amount > 0, "Nessuno stake");
+
+        uint256 reward = calculateReward(msg.sender);
+        require(reward > 0, "Nessun reward disponibile");
+
+        // aggiorna timestamp ultimo claim
+        s.lastClaim = block.timestamp;
+
+        // invia CER al richiedente
+        require(cerToken.transfer(msg.sender, reward), "Trasferimento fallito");
+    }
+
+    // --- Ritiro completo stake + reward ---
+    function withdraw() external {
+        Stake memory s = stakes[msg.sender];
+        require(s.amount > 0, "Nessuno stake");
+
+        uint256 reward = calculateReward(msg.sender);
+        uint256 total = s.amount + reward;
+
+        delete stakes[msg.sender];
+
+        require(cerToken.transfer(msg.sender, total), "Trasferimento fallito");
+    }
+
+    // --- Solo owner: imposta reward rate ---
+    function setRewardRate(uint256 newRate) external onlyOwner {
+        rewardRatePerSecond = newRate;
+    }
+}

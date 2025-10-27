@@ -1,0 +1,321 @@
+.homepage {
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.hero.hero-inverted .hero-content {
+  flex-direction: row-reverse; /* testo a destra, video a sinistra */
+}
+
+
+.hero {
+  background: #140D36;
+  padding: 4rem 0;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  margin-top: 50px;      /* spazio extra sopra la hero */
+
+}
+
+.hero2 {
+  background: #140D36;
+  padding: 0rem 0;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  margin-top: -150px;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr;
+  gap: 10rem;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.highlight {
+  color: #3ABBA7;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.hero-image {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.hero-image img {
+  width: 100%;       /* si adatta alla colonna */
+  max-width: 600px;  /* prima era 500px, ora più grande */
+  border-radius: 12px;
+}
+
+.hero-video {
+  display: flex;
+  align-items: center;
+
+}
+
+.image-placeholder {
+  background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: center;
+  color: var(--white);
+  box-shadow: 0 20px 40px var(--shadow);
+}
+
+.dao-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.image-placeholder p {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Features Section */
+.features {
+  padding: 5rem 0;
+  background-color: #140D36;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: white;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--light-green);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px var(--shadow);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.feature-card p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Stats Section */
+.stats {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+  color: var(--white);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item {
+  padding: 1rem;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* CTA Section */
+.cta {
+  padding: 5rem 0;
+  background-color: var(--bg-green);
+}
+
+.cta-content {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.cta-content p {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 0;
+    min-height: 60vh;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .features {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    padding: 3rem 0;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cta {
+    padding: 3rem 0;
+  }
+
+  .cta-content h2 {
+    font-size: 2rem;
+  }
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  perspective: 800px; /* necessario per effetto 3D */
+}
+
+.coin-3d {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: spin3d 2s linear infinite;
+}
+
+.coin-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* nasconde il retro quando non visibile */
+}
+
+/* .coin-front img,
+.coin-back img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Ruota il retro di 180 gradi sull’asse Y */
+.coin-back {
+  transform: rotateY(180deg);
+}
+
+@keyframes spin3d {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+} */
+
+.coin-3d {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: spin3d 2s linear infinite;
+}
+
+/* Bordo della moneta */
+.coin-edge {
+  position: absolute;
+  width: 120px;
+  height: 1000px; /* spessore */
+  background: linear-gradient(to bottom, #daa520, #b8860b); /* colore bordo dorato */
+  top: 50%; /* centrato verticalmente */
+  left: 0;
+  transform: translateY(-50%) rotateX(90deg);
+  transform-origin: center;
+  border-radius: 50%;
+}

@@ -1,0 +1,135 @@
+.navbar {
+  /*background-color: #062E61;*/
+  background-color: #140D36;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 1.2rem 0; /* aggiunge 8px sopra e sotto */
+
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 2rem;
+  width: 100%;
+  max-width: none;
+
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 0.5rem; /* distanza tra logo e eventuale testo */
+}
+
+.logo-img {
+  height: 77px; /* regola a piacere */
+  width: auto;
+}
+
+.logo-icon {
+  font-size: 2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 3.5rem;
+  flex: 1;
+  justify-content: center;
+  margin: 0 2rem;
+  
+}
+
+.nav-link {
+  color:white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: #3ABBA7;
+}
+
+.nav-link.active {
+  color: white;
+  background-color: #3ABBA7;
+}
+
+.wallet-section {
+  display:flex;
+  align-items: center;
+  margin: 0 ;
+  padding: 0 ;
+}
+
+.wallet-connected {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #3ABBA7;
+
+}
+
+.wallet-address {
+  background-color: #288577;
+  color:white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .nav-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+    flex: none;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .wallet-connected {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .connect-wallet {
+    display: flex;
+    align-items: center;
+    gap: 4.5rem;              /* spazio tra icona e testo */
+    margin-top: 0.75rem;      /* sposta leggermente in basso */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .wallet-btn-icon {
+    font-size: 1.2rem;        /* dimensione icona */
+  }
+
+  .wallet-btn-icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem; /* distanza manuale dal testo */
+  }
+}
