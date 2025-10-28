@@ -1,41 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import './ICOPage.css';
-import { ethers } from 'ethers';
-
+import React, { useState, useEffect } from "react";
+import "./ICOPage.css";
+import { ethers } from "ethers";
 
 const ICOPage = () => {
   const [selectedTier, setSelectedTier] = useState(null);
   const [tokensSold, setTokensSold] = useState(125000); // Example: 125,000 tokens sold
-  const [totalTokens, setTotalTokens] = useState('');
+  const [totalTokens, setTotalTokens] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const [account, setAccount] = useState('');
-  const [transactionStatus, setTransactionStatus] = useState('');
-  const [dollarAmount, setDollarAmount] = useState('');
+  const [account, setAccount] = useState("");
+  const [transactionStatus, setTransactionStatus] = useState("");
+  const [dollarAmount, setDollarAmount] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
-  const integerPart = totalTokens.split(".")[0];       // prende solo la parte intera
+  const integerPart = totalTokens.split(".")[0]; // prende solo la parte intera
   const formattedWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  const progressPercentage = totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
+  const progressPercentage =
+    totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
 
   const tiers = [
     {
       id: 1,
-      name: "Early Bird",
+      name: "Shrimp",
       price: 1.0,
       minPurchase: 20,
       maxPurchase: 1000,
-      description: "Perfect for early supporters. Get started with our most accessible tier.",
+      description:
+        "Perfect for early supporters. Get started with our most accessible tier.",
       color: "#22c55e",
-      icon: "🐦"
+      icon: "🦐",
     },
     {
       id: 2,
-      name: "Community",
+      name: "Tuna",
       price: 0.8,
       minPurchase: 1000,
       maxPurchase: 5000,
-      description: "For active community members. Enjoy exclusive benefits and support.",
+      description:
+        "For active community members. Enjoy exclusive benefits and support.",
       color: "#16a34a",
-      icon: "👥"
+      icon: "🐟",
     },
     {
       id: 3,
@@ -43,93 +45,99 @@ const ICOPage = () => {
       price: 0.6,
       minPurchase: 5000,
       maxPurchase: 50000,
-      description: "For large investors. Get premium support and priority access.",
+      description:
+        "For large investors. Get premium support and priority access.",
       color: "#15803d",
-      icon: "🐋"
-    }
+      icon: "🐋",
+    },
   ];
 
   useEffect(() => {
     // Check if wallet is connected
     if (window.ethereum) {
-      window.ethereum.request({ method: 'eth_accounts' })
-        .then((accounts) => {
-          if (accounts.length > 0) {
-            setIsConnected(true);
-            setAccount(accounts[0]);
-          }
-        });
+      window.ethereum.request({ method: "eth_accounts" }).then((accounts) => {
+        if (accounts.length > 0) {
+          setIsConnected(true);
+          setAccount(accounts[0]);
+        }
+      });
     }
   }, []);
 
-  
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts',
+          method: "eth_requestAccounts",
         });
         setIsConnected(true);
         setAccount(accounts[0]);
       } catch (error) {
-        console.error('Error connecting wallet:', error);
-        setTransactionStatus('Error connecting wallet');
+        console.error("Error connecting wallet:", error);
+        setTransactionStatus("Error connecting wallet");
       }
     } else {
-      setTransactionStatus('MetaMask is not installed. Please install MetaMask to continue.');
+      setTransactionStatus(
+        "MetaMask is not installed. Please install MetaMask to continue."
+      );
     }
   };
 
   const sendUSTTransaction = async () => {
     if (!isConnected) {
-      setTransactionStatus('Please connect your wallet first');
+      setTransactionStatus("Please connect your wallet first");
       return;
     }
 
     if (!selectedTier || !dollarAmount) {
-      setTransactionStatus('Please enter a valid amount first');
+      setTransactionStatus("Please enter a valid amount first");
       return;
     }
 
-    setTransactionStatus('Preparing transaction...');
+    setTransactionStatus("Preparing transaction...");
     setIsTransactionLoading(true);
 
     try {
       // USDT contract address on Ethereum mainnet
-      const USDT_CONTRACT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      
+      const USDT_CONTRACT_ADDRESS =
+        "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+
       // USDT contract ABI (minimal for transfer function)
       const USDT_ABI = [
         {
-          "constant": false,
-          "inputs": [
+          constant: false,
+          inputs: [
             {
-              "name": "_to",
-              "type": "address"
+              name: "_to",
+              type: "address",
             },
             {
-              "name": "_value",
-              "type": "uint256"
-            }
+              name: "_value",
+              type: "uint256",
+            },
           ],
-          "name": "transfer",
-          "outputs": [
+          name: "transfer",
+          outputs: [
             {
-              "name": "",
-              "type": "bool"
-            }
+              name: "",
+              type: "bool",
+            },
           ],
-          "type": "function"
-        }
+          type: "function",
+        },
       ];
 
       // Get the provider and signer
-      const ethers = require('ethers');
+      const ethers = require("ethers");
       const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = web3Provider.getSigner();
 
       // Create contract instance
-      const usdtContract = new ethers.Contract(USDT_CONTRACT_ADDRESS, USDT_ABI, signer);
+      const usdtContract = new ethers.Contract(
+        USDT_CONTRACT_ADDRESS,
+        USDT_ABI,
+        signer
+      );
 
       // Convert dollar amount to USDT (USDT has 6 decimals)
       const amountInUSDT = ethers.utils.parseUnits(dollarAmount, 6);
@@ -137,44 +145,50 @@ const ICOPage = () => {
       // Resolve ENS name to address or use fallback
       let finalRecipientAddress;
       try {
-        finalRecipientAddress = await web3Provider.resolveName('cerdao.eth');
+        finalRecipientAddress = await web3Provider.resolveName("cerdao.eth");
         if (!finalRecipientAddress) {
           // Fallback to direct address if ENS resolution fails
-          finalRecipientAddress = '0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C';
-          setTransactionStatus('ENS resolution failed, using fallback address...');
+          finalRecipientAddress = "0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C";
+          setTransactionStatus(
+            "ENS resolution failed, using fallback address..."
+          );
         }
       } catch (error) {
-        console.warn('ENS resolution failed:', error);
+        console.warn("ENS resolution failed:", error);
         // Use fallback address
-        finalRecipientAddress = '0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C';
-        setTransactionStatus('Using fallback address for cerdao.eth...');
+        finalRecipientAddress = "0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C";
+        setTransactionStatus("Using fallback address for cerdao.eth...");
       }
 
-      setTransactionStatus('Sending transaction...');
+      setTransactionStatus("Sending transaction...");
 
       // Send the transaction
-      const tx = await usdtContract.transfer(finalRecipientAddress, amountInUSDT);
-      
-      setTransactionStatus(`Transaction sent! Hash: ${tx.hash}. Waiting for confirmation...`);
+      const tx = await usdtContract.transfer(
+        finalRecipientAddress,
+        amountInUSDT
+      );
+
+      setTransactionStatus(
+        `Transaction sent! Hash: ${tx.hash}. Waiting for confirmation...`
+      );
 
       // Wait for transaction confirmation
       const receipt = await tx.wait();
-      
+
       if (receipt.status === 1) {
         setTransactionStatus(`Transaction successful! Hash: ${tx.hash}`);
       } else {
-        setTransactionStatus('Transaction failed. Please try again.');
+        setTransactionStatus("Transaction failed. Please try again.");
       }
-
     } catch (error) {
-      console.error('Transaction error:', error);
-      
+      console.error("Transaction error:", error);
+
       if (error.code === 4001) {
-        setTransactionStatus('Transaction rejected by user');
-      } else if (error.message.includes('insufficient funds')) {
-        setTransactionStatus('Insufficient USDT balance');
-      } else if (error.message.includes('User denied')) {
-        setTransactionStatus('Transaction denied by user');
+        setTransactionStatus("Transaction rejected by user");
+      } else if (error.message.includes("insufficient funds")) {
+        setTransactionStatus("Insufficient USDT balance");
+      } else if (error.message.includes("User denied")) {
+        setTransactionStatus("Transaction denied by user");
       } else {
         setTransactionStatus(`Transaction failed: ${error.message}`);
       }
@@ -198,7 +212,7 @@ const ICOPage = () => {
 
     // Find the appropriate tier based on amount
     let appropriateTier = null;
-    
+
     // Check tiers in reverse order (highest to lowest) to get the best price
     for (let i = tiers.length - 1; i >= 0; i--) {
       const tier = tiers[i];
@@ -223,26 +237,28 @@ const ICOPage = () => {
   };
 
   const formatAddress = (address) => {
-    if (!address) return '';
+    if (!address) return "";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
   const fetchTotalSupply = async () => {
     try {
-      const provider = new ethers.providers.JsonRpcProvider('https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j'); // fallback RPC
-      const tokenAddress = '0x2025D15e50eF751A5ea12cDa0C3F93CB2845e6f9';
-      const ERC20_ABI = [
-        "function totalSupply() view returns (uint256)"
-      ];
-  
-      const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
+      ); // fallback RPC
+      const tokenAddress = "0x2025D15e50eF751A5ea12cDa0C3F93CB2845e6f9";
+      const ERC20_ABI = ["function totalSupply() view returns (uint256)"];
+
+      const tokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20_ABI,
+        provider
+      );
       const supply = await tokenContract.totalSupply();
-  
+
       // I token ERC20 solitamente hanno 18 decimali
       const formattedSupply = ethers.utils.formatUnits(supply, 6); // stringa, precisione piena
       setTotalTokens(formattedSupply);
-
-      
     } catch (error) {
       console.error("Errore nel leggere total supply:", error);
       //setTotalTokens(200000); // fallback se c'è un errore
@@ -250,7 +266,6 @@ const ICOPage = () => {
   };
 
   fetchTotalSupply();
-
 
   return (
     <div className="ico-page">
@@ -260,7 +275,6 @@ const ICOPage = () => {
           <h1>Initial Coin Offering (ICO)</h1>
           <p>Join our token sale and become part of the decentralized future</p>
         </div>
-
         {/* Progress Section */}
         <div className="progress-section">
           <div className="progress-card">
@@ -271,28 +285,32 @@ const ICOPage = () => {
                 <div className="stat-label">Tokens Sold</div>
               </div>
               <div className="stat">
-                <div className="stat-number">{formattedWithCommas.toLocaleString()}</div>
+                <div className="stat-number">
+                  {formattedWithCommas.toLocaleString()}
+                </div>
                 <div className="stat-label">Total Supply</div>
               </div>
               <div className="stat">
-                <div className="stat-number">{progressPercentage.toFixed(1)}%</div>
+                <div className="stat-number">
+                  {progressPercentage.toFixed(1)}%
+                </div>
                 <div className="stat-label">Progress</div>
               </div>
             </div>
             <div className="progress-bar-container">
               <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
+                <div
+                  className="progress-fill"
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
               <div className="progress-text">
-                {tokensSold.toLocaleString()} / {totalTokens.toLocaleString()} tokens
+                {tokensSold.toLocaleString()} / {totalTokens.toLocaleString()}{" "}
+                tokens
               </div>
             </div>
           </div>
         </div>
-
         {/* Wallet Connection */}
         <div className="wallet-section">
           {isConnected ? (
@@ -301,25 +319,32 @@ const ICOPage = () => {
                 <span className="wallet-icon">🔗</span>
                 <span className="wallet-address">{formatAddress(account)}</span>
               </div>
-              <button onClick={() => setIsConnected(false)} className="btn btn-secondary">
+              <button
+                onClick={() => setIsConnected(false)}
+                className="btn btn-secondary"
+              >
                 Disconnect
               </button>
             </div>
           ) : (
-            <button onClick={connectWallet} className="btn btn-primary btn-large">
+            <button
+              onClick={connectWallet}
+              className="btn btn-primary btn-large"
+            >
               Connect Wallet to Participate
             </button>
           )}
         </div>
-
         {/* Tiers Section */}
         <div className="tiers-section">
           <h2>Choose Your Investment Tier</h2>
           <div className="tiers-grid">
             {tiers.map((tier) => (
-              <div 
-                key={tier.id} 
-                className={`tier-card ${selectedTier?.id === tier.id ? 'selected' : ''}`}
+              <div
+                key={tier.id}
+                className={`tier-card ${
+                  selectedTier?.id === tier.id ? "selected" : ""
+                }`}
                 onClick={() => setSelectedTier(tier)}
               >
                 <div className="tier-header">
@@ -350,17 +375,16 @@ const ICOPage = () => {
             ))}
           </div>
         </div>
-
         {/* Purchase Section */}
         <div className="purchase-section">
           <div className="purchase-card">
             <h3>Purchase Tokens</h3>
-            
+
             {/* Amount Input */}
             <div className="amount-input-section">
               <label htmlFor="dollarAmount">Enter Amount (USD):</label>
               <div className="input-group">
-                <span className="input-prefix">$</span>
+                <span className="input-prefix"></span>
                 <input
                   type="number"
                   id="dollarAmount"
@@ -391,65 +415,82 @@ const ICOPage = () => {
                   </div>
                   <div className="detail-row total">
                     <span>Tokens You'll Receive:</span>
-                    <span className="token-amount">{calculateTokens(parseFloat(dollarAmount || 0)).toLocaleString()}</span>
+                    <span className="token-amount">
+                      {calculateTokens(
+                        parseFloat(dollarAmount || 0)
+                      ).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </>
             )}
 
-              <div className="transaction-section">
-                  <div className="transaction-info">
-                    <h4>Send USDT to:</h4>
-                    <div className="recipient-address">
-                      <span className="address">cerdao.eth</span>
-                      <button 
-                        className="copy-btn"
-                        onClick={() => navigator.clipboard.writeText('cerdao.eth')}
-                      >
-                        📋
-                      </button>
-                    </div>
-                  </div>
-                
-                <button 
-                  onClick={sendUSTTransaction}
-                  className={`btn btn-primary btn-large purchase-btn ${isTransactionLoading ? 'loading' : ''}`}
-                  disabled={!isConnected || !selectedTier || !dollarAmount || isTransactionLoading}
-                >
-                  {isTransactionLoading ? 'Processing...' :
-                   !isConnected ? 'Connect Wallet First' : 
-                   !selectedTier ? 'Enter Valid Amount' : 
-                   'Send USDT Transaction'}
-                </button>
-                
-                {transactionStatus && (
-                  <div className={`transaction-status ${transactionStatus.includes('success') ? 'success' : 'error'}`}>
-                    {transactionStatus}
-                  </div>
-                )}
+            <div className="transaction-section">
+              <div className="transaction-info">
+                <h4>Send USDT to:</h4>
+                <div className="recipient-address">
+                  <span className="address">cerdao.eth</span>
+                  <button
+                    className="copy-btn"
+                    onClick={() => navigator.clipboard.writeText("cerdao.eth")}
+                  >
+                    📋
+                  </button>
+                </div>
               </div>
+
+              <button
+                onClick={sendUSTTransaction}
+                className={`btn btn-primary btn-large purchase-btn ${
+                  isTransactionLoading ? "loading" : ""
+                }`}
+                disabled={
+                  !isConnected ||
+                  !selectedTier ||
+                  !dollarAmount ||
+                  isTransactionLoading
+                }
+              >
+                {isTransactionLoading
+                  ? "Processing..."
+                  : !isConnected
+                  ? "Connect Wallet First"
+                  : !selectedTier
+                  ? "Enter Valid Amount"
+                  : "Send USDT Transaction"}
+              </button>
+
+              {transactionStatus && (
+                <div
+                  className={`transaction-status ${
+                    transactionStatus.includes("success") ? "success" : "error"
+                  }`}
+                >
+                  {transactionStatus}
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Info Section */}
         <div className="info-section">
-          <h2>Important Information</h2>
           <div className="info-grid">
             <div className="info-card">
               <div className="info-icon">⚠️</div>
               <h3>Risk Warning</h3>
-              <p>Cryptocurrency investments are highly volatile and risky. Only invest what you can afford to lose.</p>
+              <p>
+                Cryptocurrency investments are highly volatile and risky. Only
+                invest what you can afford to lose.
+              </p>
             </div>
             <div className="info-card">
               <div className="info-icon">🔒</div>
               <h3>Security</h3>
-              <p>All transactions are secured by blockchain technology. Your funds are safe and transparent.</p>
-            </div>
-            <div className="info-card">
-              <div className="info-icon">📋</div>
-              <h3>Terms</h3>
-              <p>By participating in this ICO, you agree to our terms and conditions. Please read them carefully.</p>
+              <p>
+                All transactions are secured by blockchain technology. Your
+                funds are safe and transparent.
+              </p>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 .staking-page {
   min-height: 100vh;
-  background-color: var(--bg-green);
+  background-color: #140D36;
   padding: 2rem 0;
 }
 
@@ -12,23 +12,23 @@
 .staking-header h1 {
   font-size: 3rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: #3ABBA7;
   margin-bottom: 1rem;
 }
 
 .staking-header p {
   font-size: 1.2rem;
-  color: var(--text-light);
+  color: white;
   max-width: 600px;
   margin: 0 auto;
 }
 
 .staking-card {
-  background-color: var(--white);
+  background-color: #1F1261;
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid var(--light-green);
+  border: 1px solid #3ABBA7;
   max-width: 500px;
   margin: 0 auto 3rem;
   text-align: center;
@@ -42,8 +42,8 @@
   padding: 1rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
+  background-color: #3ABBA7;
 }
-
 
 .amount-input-section {
   margin: 2rem 0;
@@ -52,7 +52,7 @@
 .amount-input-section label {
   display: block;
   font-weight: 600;
-  color: var(--text-dark);
+  color: white;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
@@ -65,18 +65,19 @@
 .amount-input {
   width: 100%;
   padding: 1rem;
-  border: 2px solid var(--light-green);
+  border: 2px solid #3ABBA7;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  background-color: var(--white);
+  background-color: #3ABBA7;
+  color: white;
 }
 
 .amount-input:focus {
   outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  border-color: #3ABBA7;
+  box-shadow: 0 0 0 3px rgba(58, 187, 167, 0.3);
 }
 
 .stake-btn {
@@ -86,7 +87,7 @@
 }
 
 .stake-btn.loading {
-  background-color: var(--dark-green);
+  background-color: #1d5e54;
 }
 
 .stake-btn.loading::after {
@@ -98,7 +99,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid transparent;
-  border-top: 2px solid var(--white);
+  border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -137,7 +138,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: var(--text-dark);
+  color: white;
 }
 
 .info-grid {
@@ -147,28 +148,29 @@
 }
 
 .info-card {
-  background-color: var(--white);
+  background-color: #1F1261;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 15px var(--shadow);
-  border: 1px solid var(--light-green);
+  border: 1px solid #3ABBA7;
 }
 
 .info-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: #3ABBA7;
 }
 
 .info-card h3 {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-dark);
+  color: white;
 }
 
 .info-card p {
-  color: var(--text-light);
+  color: white;
   line-height: 1.6;
 }
 

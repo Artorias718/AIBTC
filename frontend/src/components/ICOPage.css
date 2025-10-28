@@ -1,6 +1,6 @@
 .ico-page {
   min-height: 100vh;
-  background-color: var(--bg-green);
+  background-color:  #140D36;
   padding: 2rem 0;
 }
 
@@ -12,7 +12,7 @@
 .ico-header h1 {
   font-size: 3rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: #3ABBA7;
   margin-bottom: 1rem;
 }
 
@@ -29,11 +29,11 @@
 }
 
 .progress-card {
-  background-color: var(--white);
+  background-color: #1f1261;
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid var(--light-green);
+  border: 1px solid #3ABBA7;
 }
 
 .progress-card h2 {
@@ -41,7 +41,7 @@
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: var(--text-dark);
+  color: #3ABBA7;
 }
 
 .progress-stats {
@@ -58,7 +58,7 @@
 .stat-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--primary-green);
+  color: #3ABBA7;
   margin-bottom: 0.5rem;
 }
 
@@ -74,7 +74,7 @@
 .progress-bar {
   width: 100%;
   height: 20px;
-  background-color: var(--light-green);
+  background-color: #3ABBA7;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -82,7 +82,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+  background: #1d5e54;
   border-radius: 10px;
   transition: width 0.5s ease;
   position: relative;
@@ -107,7 +107,7 @@
 .progress-text {
   text-align: center;
   font-weight: 600;
-  color: var(--text-dark);
+  color: #3ABBA7;
 }
 
 /* Wallet Section */
@@ -154,7 +154,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: var(--text-dark);
+  color: white;
 }
 
 .tiers-grid {
@@ -164,7 +164,7 @@
 }
 
 .tier-card {
-  background-color: var(--white);
+  background-color:#1F1261;
   border: 2px solid var(--light-green);
   border-radius: 16px;
   padding: 2rem;
@@ -181,7 +181,7 @@
 
 .tier-card.selected {
   border-color: var(--primary-green);
-  background: linear-gradient(135deg, var(--white), var(--bg-green));
+  background: #371cc0;
   box-shadow: 0 8px 30px var(--shadow);
 }
 
@@ -208,7 +208,7 @@
 .tier-header h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: white;
   margin-bottom: 0.5rem;
 }
 
@@ -221,11 +221,11 @@
 .price-amount {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--primary-green);
+  color:#3ABBA7;
 }
 
 .price-label {
-  color: var(--text-light);
+  color: #3ABBA7;
   font-size: 1rem;
   margin-left: 0.5rem;
 }
@@ -235,22 +235,22 @@
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background-color: var(--bg-green);
+  background-color: #3ABBA7;
   border-radius: 8px;
 }
 
 .limit {
   font-size: 0.9rem;
-  color: var(--text-light);
+  color: white;
 }
 
 .limit span {
   font-weight: 600;
-  color: var(--text-dark);
+  color: white;
 }
 
 .tier-description {
-  color: var(--text-light);
+  color: white;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -261,7 +261,7 @@
 }
 
 .selected-indicator {
-  background-color: var(--primary-green);
+  background-color: #3ABBA7;
   color: var(--white);
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -269,7 +269,7 @@
 }
 
 .select-indicator {
-  color: var(--text-light);
+  color: white;
   font-weight: 600;
 }
 
@@ -279,11 +279,11 @@
 }
 
 .purchase-card {
-  background-color: var(--white);
+  background-color: #1F1261;
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid var(--light-green);
+  border: 1px solid #3ABBA7;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -292,7 +292,7 @@
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--text-dark);
+  color: white;
   text-align: center;
 }
 
@@ -304,7 +304,7 @@
 .amount-input-section label {
   display: block;
   font-weight: 600;
-  color: var(--text-dark);
+  color: white;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
@@ -319,24 +319,24 @@
   position: absolute;
   left: 1rem;
   font-weight: 600;
-  color: var(--text-light);
+  color: white;
   z-index: 1;
 }
 
 .amount-input {
   width: 100%;
   padding: 1rem 1rem 1rem 2.5rem;
-  border: 2px solid var(--light-green);
+  border: 2px solid #3ABBA7;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  background-color: var(--white);
+  background-color: #3ABBA7;
 }
 
 .amount-input:focus {
   outline: none;
-  border-color: var(--primary-green);
+  border-color: #3ABBA7;
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
@@ -361,6 +361,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
+  color: white;
   border-bottom: 1px solid var(--light-green);
 }
 
@@ -370,18 +371,18 @@
 
 .tier-name {
   font-weight: 600;
-  color: var(--primary-green);
+  color: #3ABBA7;
 }
 
 .token-amount {
   font-weight: 700;
-  color: var(--primary-green);
+  color: #3ABBA7;
   font-size: 1.2rem;
 }
 
 
 .purchase-example {
-  background-color: var(--bg-green);
+  background-color: #3ABBA7;
   padding: 1.5rem;
   border-radius: 12px;
   margin-bottom: 2rem;
@@ -391,7 +392,7 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-dark);
+  color: white;
   text-align: center;
 }
 
@@ -403,7 +404,7 @@
 }
 
 .calc-row.total {
-  border-top: 2px solid var(--primary-green);
+  border-top: 2px solid white;
   margin-top: 0.5rem;
   padding-top: 1rem;
   font-weight: 700;
@@ -423,7 +424,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--text-dark);
+  color: white;
 }
 
 .recipient-address {
@@ -514,6 +515,7 @@
 /* Info Section */
 .info-section {
   margin-bottom: 2rem;
+  
 }
 
 .info-section h2 {
@@ -521,7 +523,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: var(--text-dark);
+  color: white;
 }
 
 .info-grid {
@@ -531,7 +533,7 @@
 }
 
 .info-card {
-  background-color: var(--white);
+  background-color: #1F1261;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
@@ -548,11 +550,11 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-dark);
+  color:white;
 }
 
 .info-card p {
-  color: var(--text-light);
+  color: white;
   line-height: 1.6;
 }
 
