@@ -19,7 +19,6 @@
   width: 100%;
 }
 
-/* Header */
 .coming-header h1 {
   font-size: 3rem;
   font-weight: 800;
@@ -34,7 +33,6 @@
   margin: 0 auto 2rem auto;
 }
 
-/* Countdown */
 .coming-countdown {
   display: flex;
   justify-content: center;
@@ -63,7 +61,6 @@
   opacity: 0.9;
 }
 
-/* Buttons */
 .coming-actions {
   display: flex;
   justify-content: center;
@@ -100,7 +97,6 @@
   color: var(--white);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .coming-header h1 {
     font-size: 2.2rem;

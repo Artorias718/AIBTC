@@ -2,9 +2,9 @@
   min-height: 100vh;
 }
 
-/* Hero Section */
+
 .hero.hero-inverted .hero-content {
-  flex-direction: row-reverse; /* testo a destra, video a sinistra */
+  flex-direction: row-reverse; 
 }
 
 
@@ -14,7 +14,7 @@
   min-height: 80vh;
   display: flex;
   align-items: center;
-  margin-top: 50px;      /* spazio extra sopra la hero */
+  margin-top: 50px;      
 
 }
 
@@ -72,8 +72,8 @@
 }
 
 .hero-image img {
-  width: 100%;       /* si adatta alla colonna */
-  max-width: 600px;  /* prima era 500px, ora più grande */
+  width: 100%;       
+  max-width: 600px;  
   border-radius: 12px;
 }
 
@@ -102,7 +102,7 @@
   font-weight: 600;
 }
 
-/* Features Section */
+
 .features {
   padding: 5rem 0;
   background-color: #140D36;
@@ -154,7 +154,7 @@
   line-height: 1.6;
 }
 
-/* Stats Section */
+
 .stats {
   padding: 4rem 0;
   background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
@@ -183,7 +183,7 @@
   opacity: 0.9;
 }
 
-/* CTA Section */
+
 .cta {
   padding: 5rem 0;
   background-color: var(--bg-green);
@@ -209,7 +209,7 @@
   line-height: 1.6;
 }
 
-/* Mobile Responsive */
+
 @media (max-width: 768px) {
   .hero {
     padding: 2rem 0;
@@ -264,7 +264,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  perspective: 800px; /* necessario per effetto 3D */
+  perspective: 800px; 
 }
 
 .coin-3d {
@@ -279,17 +279,9 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden; /* nasconde il retro quando non visibile */
+  backface-visibility: hidden; 
 }
 
-/* .coin-front img,
-.coin-back img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-/* Ruota il retro di 180 gradi sull’asse Y */
 .coin-back {
   transform: rotateY(180deg);
 }
@@ -297,7 +289,7 @@
 @keyframes spin3d {
   0% { transform: rotateY(0deg); }
   100% { transform: rotateY(360deg); }
-} */
+} 
 
 .coin-3d {
   width: 120px;
@@ -307,13 +299,13 @@
   animation: spin3d 2s linear infinite;
 }
 
-/* Bordo della moneta */
+
 .coin-edge {
   position: absolute;
   width: 120px;
-  height: 1000px; /* spessore */
-  background: linear-gradient(to bottom, #daa520, #b8860b); /* colore bordo dorato */
-  top: 50%; /* centrato verticalmente */
+  height: 1000px; 
+  background: linear-gradient(to bottom, #daa520, #b8860b); 
+  top: 50%; 
   left: 0;
   transform: translateY(-50%) rotateX(90deg);
   transform-origin: center;

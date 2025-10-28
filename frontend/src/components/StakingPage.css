@@ -128,7 +128,7 @@
   border: 1px solid #fecaca;
 }
 
-/* Info Section */
+
 .info-section {
   margin-top: 2rem;
 }
@@ -174,7 +174,6 @@
   line-height: 1.6;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .staking-header h1 {
     font-size: 2rem;

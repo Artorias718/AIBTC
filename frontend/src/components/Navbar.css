@@ -1,10 +1,9 @@
 .navbar {
-  /*background-color: #062E61;*/
   background-color: #140D36;
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 1.2rem 0; /* aggiunge 8px sopra e sotto */
+  padding: 1.2rem 0;
 
 }
 
@@ -22,11 +21,11 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  gap: 0.5rem; /* distanza tra logo e eventuale testo */
+  gap: 0.5rem; 
 }
 
 .logo-img {
-  height: 77px; /* regola a piacere */
+  height: 77px; 
   width: auto;
 }
 
@@ -92,7 +91,7 @@
   font-size: 0.9rem;
 }
 
-/* Mobile Responsive */
+
 @media (max-width: 768px) {
   .nav-content {
     flex-direction: column;
@@ -115,8 +114,8 @@
   .connect-wallet {
     display: flex;
     align-items: center;
-    gap: 4.5rem;              /* spazio tra icona e testo */
-    margin-top: 0.75rem;      /* sposta leggermente in basso */
+    gap: 4.5rem;              
+    margin-top: 0.75rem;      
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     border-radius: 6px;
@@ -125,11 +124,11 @@
   }
   
   .wallet-btn-icon {
-    font-size: 1.2rem;        /* dimensione icona */
+    font-size: 1.2rem;       
   }
 
   .wallet-btn-icon {
     font-size: 1.2rem;
-    margin-right: 0.5rem; /* distanza manuale dal testo */
+    margin-right: 0.5rem;
   }
 }

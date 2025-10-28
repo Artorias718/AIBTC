@@ -23,7 +23,6 @@
   margin: 0 auto;
 }
 
-/* Progress Section */
 .progress-section {
   margin-bottom: 3rem;
 }
@@ -110,7 +109,6 @@
   color: #3ABBA7;
 }
 
-/* Wallet Section */
 .wallet-section {
   margin-bottom: 3rem;
   display: flex;
@@ -144,7 +142,6 @@
   color: var(--primary-green);
 }
 
-/* Tiers Section */
 .tiers-section {
   margin-bottom: 3rem;
 }
@@ -273,7 +270,6 @@
   font-weight: 600;
 }
 
-/* Purchase Section */
 .purchase-section {
   margin-bottom: 3rem;
 }
@@ -296,7 +292,6 @@
   text-align: center;
 }
 
-/* Amount Input Section */
 .amount-input-section {
   margin-bottom: 2rem;
 }
@@ -512,7 +507,6 @@
   border: 1px solid #fecaca;
 }
 
-/* Info Section */
 .info-section {
   margin-bottom: 2rem;
   
@@ -558,7 +552,6 @@
   line-height: 1.6;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .ico-header h1 {
     font-size: 2rem;

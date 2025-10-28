@@ -23,7 +23,6 @@
   margin: 0 auto;
 }
 
-/* Stats Cards */
 .dao-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -61,7 +60,6 @@
   font-size: 0.9rem;
 }
 
-/* Tabs */
 .dao-tabs {
   display: flex;
   gap: 0.5rem;
@@ -94,7 +92,6 @@
   color: var(--primary-green);
 }
 
-/* Tab Content */
 .tab-content {
   background-color: var(--white);
   border-radius: 12px;
@@ -117,7 +114,6 @@
   color: var(--text-dark);
 }
 
-/* Proposals */
 .proposals-list {
   display: flex;
   flex-direction: column;
@@ -236,7 +232,6 @@
   gap: 1rem;
 }
 
-/* Members */
 .members-list {
   display: flex;
   flex-direction: column;
@@ -310,7 +305,6 @@
   width: 300px;
 }
 
-/* Treasury */
 .treasury-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -380,7 +374,6 @@
   font-size: 1.1rem;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .dao-header h1 {
     font-size: 2rem;
