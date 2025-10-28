@@ -16,6 +16,11 @@ const ICOPage = () => {
   const progressPercentage =
     totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
 
+  const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852";
+  const staking = "0x70d3F5026Fc740C70D92B3386c7A95b794cE3C66"; //in raltà non è staking ma ICO.sol
+
+  const ICO_ABI = ["function deposit(uint256 amount) external"];
+
   const tiers = [
     {
       id: 1,
@@ -99,30 +104,31 @@ const ICOPage = () => {
 
     try {
       // USDT contract address on Ethereum mainnet
-      const USDT_CONTRACT_ADDRESS =
-        "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+      // const USDT_CONTRACT_ADDRESS =
+      //   "0xdAC17F958D2ee523a2206206994597C13D831ec7";
 
+      const USDT_CONTRACT_ADDRESS =
+        "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
       // USDT contract ABI (minimal for transfer function)
       const USDT_ABI = [
         {
           constant: false,
           inputs: [
-            {
-              name: "_to",
-              type: "address",
-            },
-            {
-              name: "_value",
-              type: "uint256",
-            },
+            { name: "_to", type: "address" },
+            { name: "_value", type: "uint256" },
           ],
           name: "transfer",
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-            },
+          outputs: [{ name: "", type: "bool" }],
+          type: "function",
+        },
+        {
+          constant: false,
+          inputs: [
+            { name: "_spender", type: "address" },
+            { name: "_value", type: "uint256" },
           ],
+          name: "approve",
+          outputs: [{ name: "", type: "bool" }],
           type: "function",
         },
       ];
@@ -143,34 +149,48 @@ const ICOPage = () => {
       const amountInUSDT = ethers.utils.parseUnits(dollarAmount, 6);
 
       // Resolve ENS name to address or use fallback
-      let finalRecipientAddress;
-      try {
-        finalRecipientAddress = await web3Provider.resolveName("cerdao.eth");
-        if (!finalRecipientAddress) {
-          // Fallback to direct address if ENS resolution fails
-          finalRecipientAddress = "0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C";
-          setTransactionStatus(
-            "ENS resolution failed, using fallback address..."
-          );
-        }
-      } catch (error) {
-        console.warn("ENS resolution failed:", error);
-        // Use fallback address
-        finalRecipientAddress = "0x79Bc6C8bE5C9e7cA7ca6D9d7c161b757F1f9D51C";
-        setTransactionStatus("Using fallback address for cerdao.eth...");
-      }
+      // let finalRecipientAddress;
+      // try {
+      //   finalRecipientAddress = await web3Provider.resolveName("cerdao.eth");
+      //   if (!finalRecipientAddress) {
+      //     // Fallback to direct address if ENS resolution fails
+      //     finalRecipientAddress = staking;
+      //     setTransactionStatus(
+      //       "ENS resolution failed, using fallback address..."
+      //     );
+      //   }
+      // } catch (error) {
+      //   console.warn("ENS resolution failed:", error);
+      //   // Use fallback address
+      //   finalRecipientAddress = staking;
+      //   setTransactionStatus("Using fallback address for cerdao.eth...");
+      // }
 
-      setTransactionStatus("Sending transaction...");
+      setTransactionStatus("Approving USDT...");
 
-      // Send the transaction
-      const tx = await usdtContract.transfer(
-        finalRecipientAddress,
-        amountInUSDT
-      );
+      // 1️⃣ ********************** DEPOSIT
+      const approveTx = await usdtContract.approve(staking, amountInUSDT);
+      await approveTx.wait();
+      setTransactionStatus("Approval confirmed! Now calling deposit...");
+      // // Send the transaction
+      // const tx = await usdtContract.transfer(
+      //   finalRecipientAddress,
+      //   amountInUSDT
+      // );
+      //
 
+      // setTransactionStatus(
+      //   `Transaction sent! Hash: ${tx.hash}. Waiting for confirmation...`
+      // );
+
+      // 2 ********************** DEPOSIT
+      const icoContract = new ethers.Contract(staking, ICO_ABI, signer);
+      const tx = await icoContract.deposit(amountInUSDT);
       setTransactionStatus(
-        `Transaction sent! Hash: ${tx.hash}. Waiting for confirmation...`
+        `Deposit sent! Hash: ${tx.hash}. Waiting for confirmation...`
       );
+      await tx.wait();
+      setTransactionStatus(`Deposit confirmed!`);
 
       // Wait for transaction confirmation
       const receipt = await tx.wait();
@@ -246,7 +266,6 @@ const ICOPage = () => {
       const provider = new ethers.providers.JsonRpcProvider(
         "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
       ); // fallback RPC
-      const tokenAddress = "0x2025D15e50eF751A5ea12cDa0C3F93CB2845e6f9";
       const ERC20_ABI = ["function totalSupply() view returns (uint256)"];
 
       const tokenContract = new ethers.Contract(
@@ -257,7 +276,7 @@ const ICOPage = () => {
       const supply = await tokenContract.totalSupply();
 
       // I token ERC20 solitamente hanno 18 decimali
-      const formattedSupply = ethers.utils.formatUnits(supply, 6); // stringa, precisione piena
+      const formattedSupply = ethers.utils.formatUnits(supply, 18); // stringa, precisione piena
       setTotalTokens(formattedSupply);
     } catch (error) {
       console.error("Errore nel leggere total supply:", error);

@@ -26,7 +26,7 @@ USDT_ADDRESS = Web3.to_checksum_address(config["USDT_ADDRESS"])
 
 # --- 2. Recupera indirizzi da registry ---
 try:
-    CER_INFO = registry["CERToken"]
+    CER_INFO = registry["Token"]
     CERICO_INFO = registry["CERICO"]
     CER_STAKING_INFO = registry["CERStaking"]
 
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     # send_cer_to_contract(100_000 * 10**18)  # CER con 18 decimali
 
     # manda USDC al contratto ICO per comprare CER
-    # approve_and_deposit_usdt(1 * 10**6)  # USDT con 6 decimali
+    approve_and_deposit_usdt(1 * 10**6)  # USDT con 6 decimali
 
     # prelievo di emergenza di USDT dal contratto ICO
     # withdraw_usdt_from_contract(3 * 10**6)

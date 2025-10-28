@@ -26,14 +26,14 @@ account = w3.eth.account.from_key(private_key)
 from_address = account.address
 
 # --- 3. Leggi il contratto CERToken ---
-with open("../contracts/CERToken.sol", "r") as f:
+with open("../contracts/Token.sol", "r") as f:
     contract_source_code = f.read()
 
 # --- 4. Compilazione standard ---
 compiled_sol = compile_standard(
     {
         "language": "Solidity",
-        "sources": {"CERToken.sol": {"content": contract_source_code}},
+        "sources": {"Token.sol": {"content": contract_source_code}},
         "settings": {
             "outputSelection": {
                 "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
@@ -46,16 +46,16 @@ compiled_sol = compile_standard(
 )
 
 # --- 5. Prendi ABI e bytecode ---
-contract_data = compiled_sol["contracts"]["CERToken.sol"]["CERToken"]
+contract_data = compiled_sol["contracts"]["Token.sol"]["Token"]
 abi = contract_data["abi"]
 bytecode = contract_data["evm"]["bytecode"]["object"]
 
 # --- 6. Prepara il contratto per il deploy ---
-CERToken = w3.eth.contract(abi=abi, bytecode=bytecode)
+Token = w3.eth.contract(abi=abi, bytecode=bytecode)
 
 # --- 7. Costruisci la transazione ---
 nonce = w3.eth.get_transaction_count(from_address)
-transaction = CERToken.constructor().build_transaction(
+transaction = Token.constructor().build_transaction(
     {
         "from": from_address,
         "nonce": nonce,
@@ -79,7 +79,7 @@ print("Contratto deployato all'indirizzo:", tx_receipt.contractAddress)
 
 # --- REGISTRA CONTRATTO ---
 utils.register_contract(
-    name="CERToken",
+    name="Token",
     address=token_address,
     tx_hash=tx_hash.hex(),
     abi=abi,

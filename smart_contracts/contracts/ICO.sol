@@ -6,7 +6,7 @@ import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title CERICO - Scambia USDT per CER (1:1)
-contract CERICO is Ownable {
+contract ICO is Ownable {
     IERC20 public usdt;
     IERC20 public cerToken;
 

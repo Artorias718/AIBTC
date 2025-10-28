@@ -18,7 +18,7 @@ provider_url = config["PROVIDER"]
 USDT_ADDRESS = Web3.to_checksum_address(config["USDT_ADDRESS"])
 
 try:
-    CER_ADDRESS = Web3.to_checksum_address(registry["CERToken"]["address"])
+    CER_ADDRESS = Web3.to_checksum_address(registry["Token"]["address"])
 except KeyError as e:
     raise SystemExit(f"❌ ERRORE: Contratto mancante in registry.json: {e}")
 # --- 2. Installa il compilatore corretto ---
@@ -35,14 +35,14 @@ account = w3.eth.account.from_key(private_key)
 from_address = account.address
 
 # --- 4. Leggi il contratto CERICO ---
-with open("../contracts/CERICO.sol", "r") as f:
+with open("../contracts/ICO.sol", "r") as f:
     contract_source_code = f.read()
 
 # --- 5. Compilazione standard ---
 compiled_sol = compile_standard(
     {
         "language": "Solidity",
-        "sources": {"CERICO.sol": {"content": contract_source_code}},
+        "sources": {"ICO.sol": {"content": contract_source_code}},
         "settings": {
             "outputSelection": {
                 "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
@@ -55,7 +55,7 @@ compiled_sol = compile_standard(
 )
 
 # --- 6. Prendi ABI e bytecode ---
-contract_data = compiled_sol["contracts"]["CERICO.sol"]["CERICO"]
+contract_data = compiled_sol["contracts"]["ICO.sol"]["ICO"]
 abi = contract_data["abi"]
 bytecode = contract_data["evm"]["bytecode"]["object"]
 

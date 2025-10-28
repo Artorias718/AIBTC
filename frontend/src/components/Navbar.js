@@ -80,7 +80,7 @@ const Navbar = () => {
               Staking
             </Link>
             <a
-              href="https://app.gitbook.com/o/ZMxR54BFUUKUH7fR1Nkz/s/1hI5iATIp0RfJLUPetEm/"
+              href="/whitepaper.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="nav-link"

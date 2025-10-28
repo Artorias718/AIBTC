@@ -1,7 +1,7 @@
 {
-    "CERToken": {
-        "address": "0x131Cb19E6686A453DB51E3F7197Ef34dA0b14e3b",
-        "tx_hash": "0x002f0c98b97dcaf1c9295bd26704c02ba1a6e866af971a00d04269e251e4b0ae",
+    "Token": {
+        "address": "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852",
+        "tx_hash": "0x1b416ae1da46958d324238df199af700ebb51375e5ae216c7d22d321541fc71d",
         "abi": [
             {
                 "inputs": [],
@@ -406,8 +406,8 @@
         ]
     },
     "CERICO": {
-        "address": "0xE9C11e708564d6C707C4283255C286073828aa34",
-        "tx_hash": "0x7938ec7b358c12670f2cb2c577e1331d823bf67fb8f179b2a87a52ca56623978",
+        "address": "0x70d3F5026Fc740C70D92B3386c7A95b794cE3C66",
+        "tx_hash": "0x1e88aeb248a93e84678c798d39515dfdfba4ceebef44e7ece6a0da3238af3665",
         "abi": [
             {
                 "inputs": [

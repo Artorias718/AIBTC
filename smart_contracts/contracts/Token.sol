@@ -7,8 +7,8 @@ import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title CER Token - ERC20 con burn personalizzato
-contract CERToken is ERC20, Ownable {
-    constructor() ERC20("CER Token", "CER") Ownable(msg.sender) {
+contract Token is ERC20, Ownable {
+    constructor() ERC20("AIBTC", "AI Bitcoin") Ownable(msg.sender) {
         // Minta 1 milione di token iniziali all'address del deployer
         _mint(msg.sender, 1_000_000 * 10 ** decimals());
     }
