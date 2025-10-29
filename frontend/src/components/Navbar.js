@@ -80,7 +80,7 @@ const Navbar = () => {
               Staking
             </Link>
             <a
-              href="/whitepaper.pdf"
+              href="https://docs.aibtc.finance"
               target="_blank"
               rel="noopener noreferrer"
               className="nav-link"

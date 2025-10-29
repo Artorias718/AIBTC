@@ -88,6 +88,40 @@ const ICOPage = () => {
     }
   };
 
+  const addTokenToMetaMask = async () => {
+    const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852"; // tuo token
+    const tokenSymbol = "AI Bitcoin"; // simbolo del token
+    const tokenDecimals = 18; // decimali
+    const tokenImage = "https://aibtc.finance/aibtc.png"; // URL logo (opzionale)
+
+    try {
+      if (window.ethereum) {
+        const wasAdded = await window.ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: tokenAddress,
+              symbol: tokenSymbol,
+              decimals: tokenDecimals,
+              image: tokenImage,
+            },
+          },
+        });
+
+        if (wasAdded) {
+          alert("✅ Token aggiunto a MetaMask!");
+        } else {
+          alert("❌ L'utente ha annullato l'aggiunta del token.");
+        }
+      } else {
+        alert("⚠️ MetaMask non rilevato. Installa MetaMask per continuare.");
+      }
+    } catch (error) {
+      console.error("Errore durante l'aggiunta del token:", error);
+    }
+  };
+
   const sendUSTTransaction = async () => {
     if (!isConnected) {
       setTransactionStatus("Please connect your wallet first");
@@ -354,6 +388,34 @@ const ICOPage = () => {
             </button>
           )}
         </div>
+        {/* Add Token Button */}
+        <div
+          className="add-token-section"
+          style={{ textAlign: "center", margin: "30px 0" }}
+        >
+          <button
+            onClick={addTokenToMetaMask}
+            className="btn btn-secondary"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "16px",
+              padding: "10px 18px",
+              cursor: "pointer",
+              borderRadius: "10px",
+            }}
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
+              alt="MetaMask"
+              width="24"
+              height="24"
+            />
+            Add token to MetaMask
+          </button>
+        </div>
+
         {/* Tiers Section */}
         <div className="tiers-section">
           <h2>Choose Your Investment Tier</h2>
