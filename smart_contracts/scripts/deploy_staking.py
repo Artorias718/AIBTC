@@ -15,13 +15,13 @@ provider_url = config["PROVIDER"]
 # --- 1. Carica registry (se vuoi leggere token CER già deployato) ---
 registry = utils.load_registry()
 try:
-    CER_INFO = registry["CERToken"]
+    CER_INFO = registry["Token"]
     CER_ADDRESS = Web3.to_checksum_address(CER_INFO["address"])
 except KeyError:
     raise SystemExit("❌ ERRORE: CERToken non presente nel registry.json")
 
 # --- 2. Installa il compilatore corretto ---
-install_solc("0.8.20")
+install_solc("0.8.22")
 
 # --- 3. Connessione provider ---
 w3 = Web3(Web3.HTTPProvider(provider_url))
@@ -34,25 +34,25 @@ print(f"💰 Saldo (ETH): {w3.from_wei(balance, 'ether')} ETH")
 from_address = w3.eth.account.from_key(private_key).address
 
 # --- 4. Leggi sorgente contratto CERStaking ---
-with open("../contracts/CERStaking.sol", "r", encoding="utf-8") as f:
+with open("../contracts/Staking.sol", "r", encoding="utf-8") as f:
     contract_source_code = f.read()
 
 # --- 5. Compilazione standard ---
 compiled_sol = compile_standard(
     {
         "language": "Solidity",
-        "sources": {"CERStaking.sol": {"content": contract_source_code}},
+        "sources": {"Staking.sol": {"content": contract_source_code}},
         "settings": {
             "outputSelection": {"*": {"*": ["abi", "evm.bytecode", "evm.sourceMap"]}}
         },
     },
-    solc_version="0.8.20",
+    solc_version="0.8.22",
     base_path=str(project_root),
     allow_paths=[str(project_root / "node_modules")],
 )
 
 # --- 6. Estrai ABI e bytecode ---
-contract_data = compiled_sol["contracts"]["CERStaking.sol"]["CERStaking"]
+contract_data = compiled_sol["contracts"]["Staking.sol"]["Staking"]
 abi = contract_data["abi"]
 bytecode = contract_data["evm"]["bytecode"]["object"]
 

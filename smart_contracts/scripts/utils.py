@@ -154,3 +154,18 @@ def load_config(path: str = CONFIG_FILE) -> dict:
             sys.exit(1)
 
     return config
+
+
+def apr_to_reward_rate_per_second(apr):
+    """
+    Converte un APR (in percentuale, es. 10 per 10%) nel rewardRatePerSecond
+    compatibile con lo smart contract.
+
+    Lo smart contract usa la formula:
+    reward = amount * rewardRatePerSecond * seconds / 1e18
+    """
+    seconds_per_year = 365 * 24 * 3600  # 31_536_000
+    # rewardRatePerSecond = (APR * amount) / seconds_per_year
+    # dividiamo per 100 perché APR è in percentuale
+    reward_rate = (apr / 100) * 1e18 / seconds_per_year
+    return int(reward_rate)

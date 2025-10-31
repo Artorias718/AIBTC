@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.22;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
-contract CERStaking is Ownable {
+contract Staking is Ownable {
     IERC20 public cerToken;
 
     struct Stake {
         uint256 amount;
         uint256 since; // timestamp dell’inizio dello staking
         uint256 lastClaim; // timestamp dell’ultimo claim
+        string telegramTag; // campo opzionale
     }
+
+    address[] public stakers;
 
     mapping(address => Stake) public stakes;
     uint256 public rewardRatePerSecond = 3170979198; // 10% annuo su 1e18
@@ -22,7 +25,7 @@ contract CERStaking is Ownable {
 
     // --- Stake ---
 
-    function stake(uint256 amount) external {
+    function stake(uint256 amount, string calldata _telegramTag) external {
         require(amount > 0, "Importo nullo");
         cerToken.transferFrom(msg.sender, address(this), amount);
 
@@ -30,10 +33,15 @@ contract CERStaking is Ownable {
         s.amount += amount;
         s.since = block.timestamp;
 
+        // salva il tag solo se non è vuoto
+        if (bytes(_telegramTag).length > 0) {
+            s.telegramTag = _telegramTag;
+        }
         // se è il primo stake, inizializza lastClaim
         if (s.lastClaim == 0) {
             s.lastClaim = block.timestamp;
         }
+        stakers.push(msg.sender);
     }
 
     // --- Calcolo reward accumulato dall’ultimo claim ---
@@ -78,5 +86,9 @@ contract CERStaking is Ownable {
     // --- Solo owner: imposta reward rate ---
     function setRewardRate(uint256 newRate) external onlyOwner {
         rewardRatePerSecond = newRate;
+    }
+
+    function getStakers() external view returns (address[] memory) {
+        return stakers;
     }
 }

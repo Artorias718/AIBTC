@@ -567,8 +567,8 @@
         ]
     },
     "CERStaking": {
-        "address": "0xea6698Aa0811EDC4c6BE7880F044b8D6d2E7B13a",
-        "tx_hash": "0xf9d3f90f9ae72965d7c33bd5450e1a13ec51cf64075292008b0953848aed3cef",
+        "address": "0x3e4E80b498B4ccF9bd058e58DcFe78d38Da65799",
+        "tx_hash": "0xe88490fbd0c4acb7457a2863ec79b4e183c275c3c9ac2593c42f8734a986164c",
         "abi": [
             {
                 "inputs": [
@@ -663,6 +663,19 @@
             },
             {
                 "inputs": [],
+                "name": "getStakers",
+                "outputs": [
+                    {
+                        "internalType": "address[]",
+                        "name": "",
+                        "type": "address[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
                 "name": "owner",
                 "outputs": [
                     {
@@ -713,11 +726,35 @@
                         "internalType": "uint256",
                         "name": "amount",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_telegramTag",
+                        "type": "string"
                     }
                 ],
                 "name": "stake",
                 "outputs": [],
                 "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "stakers",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -744,6 +781,11 @@
                         "internalType": "uint256",
                         "name": "lastClaim",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "telegramTag",
+                        "type": "string"
                     }
                 ],
                 "stateMutability": "view",
@@ -766,6 +808,46 @@
                 "inputs": [],
                 "name": "withdraw",
                 "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ]
+    },
+    "CERStakingProxy": {
+        "address": "0xB614E2ab4A7d278cC182301158Bb1F093ABE85dF",
+        "tx_hash": "0x85b7837ef55231c5ccd4e669f24df6204f77383f4d3b4fd784e1b8662269ddba",
+        "abi": [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "logic",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "admin",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "cerToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "rewardRate",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "deployProxy",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
