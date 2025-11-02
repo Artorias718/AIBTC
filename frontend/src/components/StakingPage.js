@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./StakingPage.css";
 import { ethers } from "ethers";
+import StakingStatus from "./StakingStatus";
 
 const StakingPage = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -8,6 +9,20 @@ const StakingPage = () => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [transactionStatus, setTransactionStatus] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+
+  const STAKING_CONTRACT_ADDRESS = "0x3e4E80b498B4ccF9bd058e58DcFe78d38Da65799";
+  const TOKEN_ADDRESS = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852";
+
+  const STAKING_ABI = [
+    "function stake(uint256 amount, string calldata _telegramTag) external",
+  ];
+
+  const TOKEN_ABI = [
+    "function approve(address spender, uint256 amount) public returns (bool)",
+    "function allowance(address owner, address spender) public view returns (uint256)",
+    "function balanceOf(address owner) public view returns (uint256)",
+  ];
 
   useEffect(() => {
     if (window.ethereum) {
@@ -15,10 +30,17 @@ const StakingPage = () => {
         if (accounts.length > 0) {
           setIsConnected(true);
           setAccount(accounts[0]);
+          checkAllowance(accounts[0]);
         }
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (account && stakeAmount) {
+      checkAllowance(account);
+    }
+  }, [stakeAmount]);
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -28,6 +50,7 @@ const StakingPage = () => {
         });
         setIsConnected(true);
         setAccount(accounts[0]);
+        checkAllowance(accounts[0]);
       } catch (error) {
         console.error("Error connecting wallet:", error);
         setTransactionStatus("Error connecting wallet");
@@ -36,6 +59,30 @@ const StakingPage = () => {
       setTransactionStatus(
         "MetaMask is not installed. Please install MetaMask."
       );
+    }
+  };
+
+  const checkAllowance = async (address) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const tokenContract = new ethers.Contract(
+        TOKEN_ADDRESS,
+        TOKEN_ABI,
+        provider
+      );
+      const allowance = await tokenContract.allowance(
+        address,
+        STAKING_CONTRACT_ADDRESS
+      );
+
+      if (stakeAmount) {
+        const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
+        setIsApproved(allowance.gte(amountInWei));
+      } else {
+        setIsApproved(allowance.gt(0));
+      }
+    } catch (error) {
+      console.error("Error checking allowance:", error);
     }
   };
 
@@ -54,9 +101,6 @@ const StakingPage = () => {
     setIsTransactionLoading(true);
 
     try {
-      const STAKING_CONTRACT_ADDRESS = "0xYourStakingContractAddress";
-      const STAKING_ABI = ["function stake(uint256 amount) public"];
-
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const stakingContract = new ethers.Contract(
@@ -68,7 +112,7 @@ const StakingPage = () => {
       // Convert amount to wei (assuming token has 18 decimals)
       const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
 
-      const tx = await stakingContract.stake(amountInWei);
+      const tx = await stakingContract.stake(amountInWei, "");
       setTransactionStatus(`Transaction sent! Hash: ${tx.hash}`);
       await tx.wait();
       setTransactionStatus(`Transaction confirmed! Hash: ${tx.hash}`);
@@ -78,6 +122,40 @@ const StakingPage = () => {
         setTransactionStatus("Transaction rejected by user");
       } else {
         setTransactionStatus(`Transaction failed: ${error.message}`);
+      }
+    } finally {
+      setIsTransactionLoading(false);
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) <= 0) {
+      setTransactionStatus("Enter a valid amount");
+      return;
+    }
+
+    try {
+      setTransactionStatus("Approving...");
+      setIsTransactionLoading(true);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const cerContract = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, signer);
+      const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
+
+      const tx = await cerContract.approve(
+        STAKING_CONTRACT_ADDRESS,
+        amountInWei
+      );
+      await tx.wait();
+
+      setTransactionStatus("Approval confirmed ✅");
+      setIsApproved(true);
+    } catch (error) {
+      console.error(error);
+      if (error.code === 4001) {
+        setTransactionStatus("Approval rejected by user");
+      } else {
+        setTransactionStatus("Approval failed");
       }
     } finally {
       setIsTransactionLoading(false);
@@ -137,13 +215,17 @@ const StakingPage = () => {
           </div>
 
           <button
-            onClick={handleStake}
-            className={`btn btn-primary btn-large stake-btn ${
+            onClick={isApproved ? handleStake : handleApprove}
+            className={`btn btn-primary btn-large ${
               isTransactionLoading ? "loading" : ""
             }`}
-            disabled={!isConnected || !stakeAmount || isTransactionLoading}
+            disabled={isTransactionLoading}
           >
-            {isTransactionLoading ? "Processing..." : "Stake Tokens"}
+            {isTransactionLoading
+              ? "Processing..."
+              : isApproved
+              ? "Stake Tokens"
+              : "Approve Token"}
           </button>
 
           {transactionStatus && (
@@ -156,8 +238,13 @@ const StakingPage = () => {
             </div>
           )}
         </div>
+        <StakingStatus
+          account={account}
+          isConnected={isConnected}
+          stakingAddress={STAKING_CONTRACT_ADDRESS}
+        />
 
-        <div className="info-section">
+        {/* <div className="info-section">
           <h2>Important Information</h2>
           <div className="info-grid">
             <div className="info-card">
@@ -177,7 +264,7 @@ const StakingPage = () => {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

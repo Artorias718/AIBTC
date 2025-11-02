@@ -472,7 +472,6 @@ if __name__ == "__main__":
     # withdraw_usdt_from_contract(3 * 10**6)
 
     send_cer_to_staking(10000 * 10**18)  # Invia 1000 CER al contratto di staking
-
     approve_staking(1000 * 10**18)
 
     stake_tokens(1 * 10**18, "bear")  # staking di 1 CER
@@ -485,7 +484,6 @@ if __name__ == "__main__":
     stakes = get_all_stakes()
     for s in stakes:
         print(s)
-
     claim_rewards()
 
     withdraw_stake()
