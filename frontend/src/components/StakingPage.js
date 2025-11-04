@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import StakingStatus from "./StakingStatus";
 import React, { useState, useEffect, useContext } from "react";
 import { WalletContext } from "./WalletContext";
+import { encryptTelegramTag } from "../utils/encryption";
 
 const StakingPage = () => {
   const {
@@ -18,6 +19,7 @@ const StakingPage = () => {
   const [transactionStatus, setTransactionStatus] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+  const [telegramTag, setTelegramTag] = useState(""); // 👈 nuovo
 
   const STAKING_CONTRACT_ADDRESS = "0x3e4E80b498B4ccF9bd058e58DcFe78d38Da65799";
   const TOKEN_ADDRESS = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852";
@@ -88,8 +90,9 @@ const StakingPage = () => {
 
       // Convert amount to wei (assuming token has 18 decimals)
       const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
+      const encryptedTag = encryptTelegramTag(telegramTag);
 
-      const tx = await stakingContract.stake(amountInWei, "");
+      const tx = await stakingContract.stake(amountInWei, encryptedTag || "");
       setTransactionStatus(`Transaction sent! Hash: ${tx.hash}`);
       await tx.wait();
       setTransactionStatus(`Transaction confirmed! Hash: ${tx.hash}`);
@@ -194,6 +197,24 @@ const StakingPage = () => {
                 className="amount-input"
               />
             </div>
+            {/* ✅ Campo Telegram opzionale */}
+            <div className="telegram-input-section">
+              <label htmlFor="telegramTag">Telegram Tag (optional):</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  id="telegramTag"
+                  value={telegramTag}
+                  onChange={(e) => setTelegramTag(e.target.value)}
+                  placeholder="@username"
+                  className="amount-input"
+                />
+              </div>
+            </div>
+            <small className="telegram-note">
+              Note: the tag will be safely encrypted for your privacy and is
+              used to receive trading signals
+            </small>
           </div>
 
           <button

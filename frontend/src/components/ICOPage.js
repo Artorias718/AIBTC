@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useContext } from "react";
+
 import "./ICOPage.css";
 import { ethers } from "ethers";
 import { WalletContext } from "./WalletContext";
@@ -386,46 +387,6 @@ const ICOPage = () => {
           </button>
         </div>
 
-        {/* Tiers Section */}
-        <div className="tiers-section">
-          <h2>Choose Your Investment Tier</h2>
-          <div className="tiers-grid">
-            {tiers.map((tier) => (
-              <div
-                key={tier.id}
-                className={`tier-card ${
-                  selectedTier?.id === tier.id ? "selected" : ""
-                }`}
-                onClick={() => setSelectedTier(tier)}
-              >
-                <div className="tier-header">
-                  <div className="tier-icon">{tier.icon}</div>
-                  <h3>{tier.name}</h3>
-                </div>
-                <div className="tier-price">
-                  <span className="price-amount">${tier.price}</span>
-                  <span className="price-label">per token</span>
-                </div>
-                <div className="tier-limits">
-                  <div className="limit">
-                    <span>Min:</span> ${tier.minPurchase.toLocaleString()}
-                  </div>
-                  <div className="limit">
-                    <span>Max:</span> ${tier.maxPurchase.toLocaleString()}
-                  </div>
-                </div>
-                <p className="tier-description">{tier.description}</p>
-                <div className="tier-selector">
-                  {selectedTier?.id === tier.id ? (
-                    <div className="selected-indicator">✓ Selected</div>
-                  ) : (
-                    <div className="select-indicator">Select Tier</div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
         {/* Purchase Section */}
         <div className="purchase-section">
           <div className="purchase-card">
@@ -477,7 +438,7 @@ const ICOPage = () => {
             )}
 
             <div className="transaction-section">
-              <div className="transaction-info">
+              {/* <div className="transaction-info">
                 <h4>Send USDT to:</h4>
                 <div className="recipient-address">
                   <span className="address">cerdao.eth</span>
@@ -488,7 +449,7 @@ const ICOPage = () => {
                     📋
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <button
                 onClick={sendUSTTransaction}
@@ -523,7 +484,46 @@ const ICOPage = () => {
             </div>
           </div>
         </div>
-
+        {/* Tiers Section */}
+        <div className="tiers-section">
+          <h2>Choose Your Investment Tier</h2>
+          <div className="tiers-grid">
+            {tiers.map((tier) => (
+              <div
+                key={tier.id}
+                className={`tier-card ${
+                  selectedTier?.id === tier.id ? "selected" : ""
+                }`}
+                onClick={() => setSelectedTier(tier)}
+              >
+                <div className="tier-header">
+                  <div className="tier-icon">{tier.icon}</div>
+                  <h3>{tier.name}</h3>
+                </div>
+                <div className="tier-price">
+                  <span className="price-amount">${tier.price}</span>
+                  <span className="price-label">per token</span>
+                </div>
+                <div className="tier-limits">
+                  <div className="limit">
+                    <span>Min:</span> ${tier.minPurchase.toLocaleString()}
+                  </div>
+                  <div className="limit">
+                    <span>Max:</span> ${tier.maxPurchase.toLocaleString()}
+                  </div>
+                </div>
+                <p className="tier-description">{tier.description}</p>
+                <div className="tier-selector">
+                  {selectedTier?.id === tier.id ? (
+                    <div className="selected-indicator">✓ Selected</div>
+                  ) : (
+                    <div className="select-indicator">Select Tier</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         {/* Info Section */}
         <div className="info-section">
           <div className="info-grid">

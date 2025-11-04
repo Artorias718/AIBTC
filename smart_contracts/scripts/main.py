@@ -466,39 +466,39 @@ if __name__ == "__main__":
     # send_cer_to_contract(100_000 * 10**18)  # CER con 18 decimali
 
     # manda USDC al contratto ICO per comprare CER
-    # approve_and_deposit_usdt(1 * 10**6)  # USDT con 6 decimali
+    approve_and_deposit_usdt(6 * 10**6)  # USDT con 6 decimali
 
     # prelievo di emergenza di USDT dal contratto ICO
     # withdraw_usdt_from_contract(3 * 10**6)
 
-    send_cer_to_staking(10000 * 10**18)  # Invia 1000 CER al contratto di staking
-    approve_staking(1000 * 10**18)
+    # send_cer_to_staking(10000 * 10**18)  # Invia 1000 CER al contratto di staking
+    # approve_staking(1000 * 10**18)
 
-    stake_tokens(1 * 10**18, "bear")  # staking di 1 CER
+    # stake_tokens(1 * 10**18, "bear")  # staking di 1 CER
 
     # rr = utils.apr_to_reward_rate_per_second(280)
     # set_reward_rate(rr)
 
     # send_cer_to_staking(10000 * 10**18)  # Invia 1000 CER al contratto di staking
 
-    stakes = get_all_stakes()
-    for s in stakes:
-        print(s)
-    claim_rewards()
+    # stakes = get_all_stakes()
+    # for s in stakes:
+    #     print(s)
+    # claim_rewards()
 
-    withdraw_stake()
+    # withdraw_stake()
 
-    # 1. Quanto c'è nel contratto
-    balance = cer_contract.functions.balanceOf(CERSTAKING_ADDRESS).call()
-    print("Saldo CER contratto:", balance / 1e18)
+    # # 1. Quanto c'è nel contratto
+    # balance = cer_contract.functions.balanceOf(CERSTAKING_ADDRESS).call()
+    # print("Saldo CER contratto:", balance / 1e18)
 
-    # 3. Reward calcolato
-    reward = cer_staking.functions.calculateReward(from_address).call()
-    print("Reward maturato:", reward / 1e18)
+    # # 3. Reward calcolato
+    # reward = cer_staking.functions.calculateReward(from_address).call()
+    # print("Reward maturato:", reward / 1e18)
 
-    stakes = get_all_stakes()
-    for s in stakes:
-        print(s)
+    # stakes = get_all_stakes()
+    # for s in stakes:
+    #     print(s)
 
     # ****************** PROXY
     # send_cer_to_staking_proxy(10000 * 10**18)  # Invia 1000 CER al contratto di staking

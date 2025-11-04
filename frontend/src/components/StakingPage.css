@@ -257,7 +257,12 @@
   object-fit: contain; 
 }
 
-
+.telegram-note {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
 
 
 @media (max-width: 768px) {
