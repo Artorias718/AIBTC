@@ -53,7 +53,7 @@ const Homepage = () => {
               </p>
               <div className="hero-buttons">
                 <a href="/dao" className="btn btn-primary btn-large">
-                  Explore DAO
+                  Explore Staking
                 </a>
                 <a href="/ico" className="btn btn-secondary btn-large">
                   Join ICO
@@ -80,10 +80,7 @@ const Homepage = () => {
               </p>
               <div className="hero-buttons">
                 <a href="/dao" className="btn btn-primary btn-large">
-                  Explore AIBTC
-                </a>
-                <a href="/ico" className="btn btn-secondary btn-large">
-                  Join ICO
+                  Explore Staking
                 </a>
               </div>
             </div>

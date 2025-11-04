@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from "react";
 import "./StakingPage.css";
 import { ethers } from "ethers";
 import StakingStatus from "./StakingStatus";
+import React, { useState, useEffect, useContext } from "react";
+import { WalletContext } from "./WalletContext";
 
 const StakingPage = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [account, setAccount] = useState("");
+  const {
+    isConnected,
+    account,
+    connectWallet,
+    disconnectWallet,
+    provider,
+    signer,
+  } = useContext(WalletContext);
+
   const [stakeAmount, setStakeAmount] = useState("");
   const [transactionStatus, setTransactionStatus] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
@@ -25,50 +33,19 @@ const StakingPage = () => {
   ];
 
   useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.request({ method: "eth_accounts" }).then((accounts) => {
-        if (accounts.length > 0) {
-          setIsConnected(true);
-          setAccount(accounts[0]);
-          checkAllowance(accounts[0]);
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
     if (account && stakeAmount) {
       checkAllowance(account);
     }
   }, [stakeAmount]);
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setIsConnected(true);
-        setAccount(accounts[0]);
-        checkAllowance(accounts[0]);
-      } catch (error) {
-        console.error("Error connecting wallet:", error);
-        setTransactionStatus("Error connecting wallet");
-      }
-    } else {
-      setTransactionStatus(
-        "MetaMask is not installed. Please install MetaMask."
-      );
-    }
-  };
-
   const checkAllowance = async (address) => {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const activeProvider = provider;
+      const activeSigner = signer;
       const tokenContract = new ethers.Contract(
         TOKEN_ADDRESS,
         TOKEN_ABI,
-        provider
+        activeProvider
       );
       const allowance = await tokenContract.allowance(
         address,
@@ -101,12 +78,12 @@ const StakingPage = () => {
     setIsTransactionLoading(true);
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      const activeProvider = provider;
+      const activeSigner = signer;
       const stakingContract = new ethers.Contract(
         STAKING_CONTRACT_ADDRESS,
         STAKING_ABI,
-        signer
+        activeSigner
       );
 
       // Convert amount to wei (assuming token has 18 decimals)
@@ -137,10 +114,18 @@ const StakingPage = () => {
     try {
       setTransactionStatus("Approving...");
       setIsTransactionLoading(true);
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const cerContract = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, signer);
+      const activeProvider = provider;
+      const activeSigner = signer;
+      const cerContract = new ethers.Contract(
+        TOKEN_ADDRESS,
+        TOKEN_ABI,
+        activeSigner
+      );
       const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
+
+      console.log("DEBUG signer:", signer);
+      console.log("DEBUG provider:", provider);
+      console.log("DEBUG account:", account);
 
       const tx = await cerContract.approve(
         STAKING_CONTRACT_ADDRESS,
@@ -182,10 +167,7 @@ const StakingPage = () => {
                 <span className="wallet-icon">🔗</span>
                 <span className="wallet-address">{formatAddress(account)}</span>
               </div>
-              <button
-                onClick={() => setIsConnected(false)}
-                className="btn btn-secondary"
-              >
+              <button onClick={disconnectWallet} className="btn btn-secondary">
                 Disconnect
               </button>
             </div>

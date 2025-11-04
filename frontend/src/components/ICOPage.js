@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useContext } from "react";
 import "./ICOPage.css";
 import { ethers } from "ethers";
+import { WalletContext } from "./WalletContext";
 
 const ICOPage = () => {
   const [selectedTier, setSelectedTier] = useState(null);
   const [tokensSold, setTokensSold] = useState(125000); // Example: 125,000 tokens sold
   const [totalTokens, setTotalTokens] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
-  const [account, setAccount] = useState("");
+  const { isConnected, account, connectWallet } = useContext(WalletContext);
   const [transactionStatus, setTransactionStatus] = useState("");
   const [dollarAmount, setDollarAmount] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
@@ -56,37 +57,6 @@ const ICOPage = () => {
       icon: "🐋",
     },
   ];
-
-  useEffect(() => {
-    // Check if wallet is connected
-    if (window.ethereum) {
-      window.ethereum.request({ method: "eth_accounts" }).then((accounts) => {
-        if (accounts.length > 0) {
-          setIsConnected(true);
-          setAccount(accounts[0]);
-        }
-      });
-    }
-  }, []);
-
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setIsConnected(true);
-        setAccount(accounts[0]);
-      } catch (error) {
-        console.error("Error connecting wallet:", error);
-        setTransactionStatus("Error connecting wallet");
-      }
-    } else {
-      setTransactionStatus(
-        "MetaMask is not installed. Please install MetaMask to continue."
-      );
-    }
-  };
 
   const addTokenToMetaMask = async () => {
     const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852"; // tuo token
@@ -373,7 +343,7 @@ const ICOPage = () => {
                 <span className="wallet-address">{formatAddress(account)}</span>
               </div>
               <button
-                onClick={() => setIsConnected(false)}
+                onClick={() => window.location.reload()}
                 className="btn btn-secondary"
               >
                 Disconnect

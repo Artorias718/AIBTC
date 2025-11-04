@@ -1,50 +1,17 @@
-import React, { useState, useEffect } from "react";
+// src/components/Navbar.js
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./Navbar.css";
 import { FaWallet } from "react-icons/fa";
+import { WalletContext } from "./WalletContext";
+import "./Navbar.css";
 
 const Navbar = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [account, setAccount] = useState("");
+  const { isConnected, account, connectWallet, disconnectWallet } =
+    useContext(WalletContext);
   const location = useLocation();
 
-  useEffect(() => {
-    // Check if wallet is already connected
-    if (window.ethereum) {
-      window.ethereum.request({ method: "eth_accounts" }).then((accounts) => {
-        if (accounts.length > 0) {
-          setIsConnected(true);
-          setAccount(accounts[0]);
-        }
-      });
-    }
-  }, []);
-
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setIsConnected(true);
-        setAccount(accounts[0]);
-      } catch (error) {
-        console.error("Error connecting wallet:", error);
-      }
-    } else {
-      alert("MetaMask is not installed. Please install MetaMask to continue.");
-    }
-  };
-
-  const disconnectWallet = () => {
-    setIsConnected(false);
-    setAccount("");
-  };
-
-  const formatAddress = (address) => {
-    if (!address) return "";
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  const formatAddress = (address) =>
+    address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
 
   return (
     <nav className="navbar">

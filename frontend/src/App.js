@@ -7,18 +7,24 @@ import ICOPage from "./components/ICOPage";
 import Navbar from "./components/Navbar";
 import ComingSoonPage from "./components/ComingSoonPage";
 import StakingPage from "./components/StakingPage";
+import { WalletProvider } from "./components/WalletContext"; // ✅ importa il provider
+import NetworkGuard from "./components/NetworkGuard";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/ico" element={<ICOPage />} />
-          <Route path="/dao" element={<StakingPage />} />
-        </Routes>
-      </div>
+      <WalletProvider>
+        <div className="App">
+          <Navbar />
+          <NetworkGuard>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/ico" element={<ICOPage />} />
+              <Route path="/dao" element={<StakingPage />} />
+            </Routes>
+          </NetworkGuard>
+        </div>
+      </WalletProvider>
     </Router>
   );
 }
