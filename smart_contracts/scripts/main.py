@@ -30,6 +30,7 @@ try:
     CERICO_INFO = registry["CERICO"]
     CER_STAKING_INFO = registry["CERStaking"]
     CER_STAKING_PROXY_INFO = registry["CERStakingProxy"]
+    CER_NFT_INFO = registry["AIBTC_NFT"]
 
 
 except KeyError as e:
@@ -39,12 +40,14 @@ CER_ADDRESS = Web3.to_checksum_address(CER_INFO["address"])
 CERICO_ADDRESS = Web3.to_checksum_address(CERICO_INFO["address"])
 CERSTAKING_ADDRESS = Web3.to_checksum_address(CER_STAKING_INFO["address"])
 CERSTAKINGPROXY_ADDRESS = Web3.to_checksum_address(CER_STAKING_PROXY_INFO["address"])
+CER_NFT_ADDRESS = Web3.to_checksum_address(CER_NFT_INFO["address"])
 
 
 CER_ABI = CER_INFO["abi"]
 CERICO_ABI = CERICO_INFO["abi"]
 CERSTAKING_ABI = CER_STAKING_INFO["abi"]
 CERSTAKINGPROXY_ABI = CER_STAKING_PROXY_INFO["abi"]
+CER_NFT_ABI = CER_NFT_INFO["abi"]
 
 
 # --- 3. ABI standard ERC20 ---
@@ -62,6 +65,8 @@ cerico_contract = w3.eth.contract(address=CERICO_ADDRESS, abi=CERICO_ABI)
 cer_staking = w3.eth.contract(address=CERSTAKING_ADDRESS, abi=CERSTAKING_ABI)
 
 cer_staking_proxy = w3.eth.contract(address=CERSTAKINGPROXY_ADDRESS, abi=CERSTAKING_ABI)
+
+nft_contract = w3.eth.contract(address=CER_NFT_ADDRESS, abi=CER_NFT_ABI)
 
 
 # --- 5. Funzioni di utilità ---
@@ -460,13 +465,122 @@ def withdraw_stake_proxy():
     print(f"✅ Withdraw completato! TX: {tx_hash.hex()}")
 
 
+def mint_nfts(to_address, n=3):
+    nonce = w3.eth.get_transaction_count(from_address)
+    minted_token_ids = []
+
+    for i in range(n):
+        txn = nft_contract.functions.mint(to_address).build_transaction(
+            {
+                "from": from_address,
+                "nonce": nonce + i,
+                "gas": 300_000,
+                "gasPrice": w3.to_wei("30", "gwei"),
+            }
+        )
+        signed_txn = w3.eth.account.sign_transaction(txn, private_key)
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        print(f"🚀 Mint NFT {i+1} in corso... TX hash: {tx_hash.hex()}")
+        tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        token_id = nft_contract.functions.balanceOf(to_address).call()
+        minted_token_ids.append(token_id)
+        print(f"✅ NFT {i+1} mintato con tokenId: {token_id}")
+
+    return minted_token_ids
+
+
+def get_token_uri(token_id):
+    """
+    Restituisce il tokenURI di un dato tokenId.
+    """
+    try:
+        uri = nft_contract.functions.tokenURI(token_id).call()
+        print(f"🔍 tokenURI({token_id}): {uri}")
+        return uri
+    except Exception as e:
+        print(f"⚠️ Errore leggendo tokenURI({token_id}): {e}")
+        return None
+
+
+def public_mint_nfts(n=1):
+    """
+    Esegue n mint usando la funzione publicMint() del contratto NFT.
+    L'indirizzo del mittente è quello del private_key impostato (msg.sender).
+    Restituisce la lista dei tokenId mintati.
+    """
+    nonce = w3.eth.get_transaction_count(from_address)
+    minted_token_ids = []
+
+    for i in range(n):
+        txn = nft_contract.functions.publicMint().build_transaction(
+            {
+                "from": from_address,
+                "nonce": nonce + i,
+                "gas": 300_000,
+                "gasPrice": w3.to_wei("30", "gwei"),
+            }
+        )
+
+        signed_txn = w3.eth.account.sign_transaction(txn, private_key)
+        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        print(f"🚀 Mint NFT {i+1} in corso... TX hash: {tx_hash.hex()}")
+
+        receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+        # Estrai il tokenId dall'evento Transfer
+        transfer_event = nft_contract.events.Transfer().process_receipt(receipt)[0]
+        token_id = transfer_event["args"]["tokenId"]
+
+        minted_token_ids.append(token_id)
+        print(f"✅ NFT {i+1} mintato con tokenId: {token_id}")
+
+    return minted_token_ids
+
+
+def set_base_uri(new_base_uri):
+    """
+    Chiama la funzione setBaseURI(newBaseURI) del contratto.
+    Richiede che l'indirizzo chiamante sia l'owner del contratto.
+    Restituisce la transaction receipt.
+    """
+
+    nonce = w3.eth.get_transaction_count(from_address)
+
+    # Costruisci la transazione
+    txn = nft_contract.functions.setBaseURI(new_base_uri).build_transaction(
+        {
+            "from": from_address,
+            "nonce": nonce,
+            "gas": 200_000,
+            "gasPrice": w3.to_wei("30", "gwei"),
+        }
+    )
+
+    # Firma la transazione
+    signed_txn = w3.eth.account.sign_transaction(txn, private_key)
+
+    # Invia la transazione
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    print(f"🚀 Impostazione BaseURI in corso... TX hash: {tx_hash.hex()}")
+
+    # Attendi conferma
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+    if receipt.status == 1:
+        print(f"✅ BaseURI aggiornata a: {new_base_uri}")
+    else:
+        print("❌ Errore nella transazione!")
+
+    return receipt
+
+
 # --- 6. MAIN ---
 if __name__ == "__main__":
     # Trasferisci 100.000 CER al contratto della ICO
     # send_cer_to_contract(100_000 * 10**18)  # CER con 18 decimali
 
     # manda USDC al contratto ICO per comprare CER
-    approve_and_deposit_usdt(6 * 10**6)  # USDT con 6 decimali
+    # approve_and_deposit_usdt(6 * 10**6)  # USDT con 6 decimali
 
     # prelievo di emergenza di USDT dal contratto ICO
     # withdraw_usdt_from_contract(3 * 10**6)
@@ -512,3 +626,13 @@ if __name__ == "__main__":
     # # # 3. Reward calcolato
     # reward = cer_staking_proxy.functions.calculateReward(from_address).call()
     # print("Reward maturato:", reward / 1e18)
+
+    # minted_tokens = mint_nfts(address, n=3)
+    # print(f"🎉 Mint completato! Token IDs: {minted_tokens}")
+
+    # minted_tokens = public_mint_nfts()
+    # print(f"🎉 Mint completato! Token IDs: {minted_tokens}")
+
+    receipt = set_base_uri(
+        "https://ipfs.io/ipfs/bafkreidv2myw5mof7xwtlqt7cnbxt6hu63zush3unce7oduufdkctxr45e"
+    )

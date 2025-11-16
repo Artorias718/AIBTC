@@ -9,6 +9,7 @@ import ComingSoonPage from "./components/ComingSoonPage";
 import StakingPage from "./components/StakingPage";
 import { WalletProvider } from "./components/WalletContext"; // ✅ importa il provider
 import NetworkGuard from "./components/NetworkGuard";
+import LabPage from "./components/Lab";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="/ico" element={<ICOPage />} />
               <Route path="/dao" element={<StakingPage />} />
+              <Route path="/lab" element={<LabPage />} />
             </Routes>
           </NetworkGuard>
         </div>

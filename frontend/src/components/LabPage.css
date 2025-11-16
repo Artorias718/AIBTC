@@ -1,0 +1,151 @@
+.nft-page {
+  min-height: 100vh;
+  background-color: #140D36;
+  padding: 2rem 0;
+}
+
+.nft-hero {
+  display: flex;
+  justify-content: center; /* centra orizzontalmente */
+  align-items: center;     /* centra verticalmente se vuoi un'altezza fissa */
+  margin-bottom: 2rem;
+  height: 720px;           /* puoi adattare l'altezza */
+  background-color: #140D36; /* opzionale: sfondo */
+  border-radius: 16px;
+}
+
+.nft-hero-image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 16px;
+  object-fit: contain;     /* mantiene proporzioni senza tagliare */
+}
+
+.nft-hero-placeholder {
+  width: 500px;
+  height: 300px;
+  background-color: #1F1261;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin: 0 auto;
+}
+
+.wallet-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.wallet-connected {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nft-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.nft-card {
+  background-color: #1F1261;
+  border: 1px solid #3ABBA7;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 300px;
+  text-align: center;
+}
+
+.nft-image {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.nft-card h3 {
+  color: #3ABBA7;
+  margin-bottom: 0.5rem;
+}
+
+.nft-card p {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.transaction-status {
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.transaction-status.success {
+  background-color: #d1fae5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.transaction-status.error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.btn-large-lab {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1.1rem;
+}
+
+.btn.loading {
+  opacity: 0.7;
+}
+/* NFT TABLE */
+
+.nft-table {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  color: white;
+}
+
+.nft-table th {
+  padding: 1rem;
+  background-color: #1F1261;
+  border-bottom: 2px solid #3ABBA7;
+  color: #3ABBA7;
+  font-size: 1.2rem;
+}
+
+.nft-row td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #3ABBA7;
+}
+
+.nft-table-image {
+  width: 120px;
+  border-radius: 12px;
+}
+
+.nft-table-name {
+  font-weight: bold;
+  color: #3ABBA7;
+  font-size: 1.1rem;
+}
+
+.nft-table-description {
+  max-width: 300px;
+}
+
+.nft-table-price {
+  font-weight: bold;
+  color: #3ABBA7;
+  font-size: 1.1rem;
+}

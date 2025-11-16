@@ -46,8 +46,16 @@ const Navbar = () => {
             >
               Staking
             </Link>
+            <Link
+              to="/lab"
+              className={`nav-link ${
+                location.pathname === "/lab" ? "active" : ""
+              }`}
+            >
+              Lab
+            </Link>
             <a
-              href="https://docs.aibtc.finance"
+              href="/Whitepaper.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="nav-link"
