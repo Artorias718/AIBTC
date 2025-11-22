@@ -11,12 +11,12 @@ const Homepage = () => {
             <div className="hero-text">
               <h1 className="hero-title">
                 Welcome to the Future of
-                <span className="highlight"> Crypto Trading</span>
+                <span className="highlight"> Crypto Staking</span>
               </h1>
               <p className="hero-description">
                 Discover AIBTC, the cutting-edge token that powers AI-driven
-                Bitcoin trading. Use AIBTC to access advanced algorithms
-                designed to optimize your trading strategy and maximize returns
+                staking. Use AIBTC to access advanced algorithms designed to
+                optimize your earning strategy and maximize returns
               </p>
               <div className="hero-buttons">
                 <a href="/dao" className="btn btn-primary btn-large">
@@ -44,12 +44,12 @@ const Homepage = () => {
             <div className="hero-text">
               <h1 className="hero-title">
                 Stake Your AIBTC to
-                <span className="highlight"> Unlock AI Signals</span>
+                <span className="highlight"> Unlock rewards</span>
               </h1>
               <p className="hero-description">
-                Stake your AIBTC to access exclusive AI-generated trading
-                signals while earning rewards at the same time. Turn your tokens
-                into a powerful trading companion effortlessly
+                Stake your AIBTC to unlock steady rewards with zero effort. Let
+                your tokens grow safely while you contribute to the protocol’s
+                long-term stability.
               </p>
               <div className="hero-buttons">
                 <a href="/dao" className="btn btn-primary btn-large">
@@ -69,14 +69,13 @@ const Homepage = () => {
           <div className="hero-content">
             <div className="hero-text">
               <h1 className="hero-title">
-                Mistake-Driven
-                <span className="highlight"> Token Burns</span>
+                Long-Term Network
+                <span className="highlight"> Burn Strategy</span>
               </h1>
               <p className="hero-description">
-                When the AI makes a wrong prediction, AIBTC takes action to
-                safeguard your holdings. A portion of tokens is burned
-                automatically, reducing supply and helping maintain the value of
-                your staked and held tokens.
+                AIBTC includes an automatic token-burn mechanism designed to
+                support the health of the ecosystem. By reducing supply over
+                time, it helps preserve the value of your staked assets.
               </p>
               <div className="hero-buttons">
                 <a href="/dao" className="btn btn-primary btn-large">
