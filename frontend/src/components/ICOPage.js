@@ -18,10 +18,35 @@ const ICOPage = () => {
   const progressPercentage =
     totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
 
-  const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852";
-  const staking = "0x70d3F5026Fc740C70D92B3386c7A95b794cE3C66"; //in raltà non è staking ma ICO.sol
+  const tokenAddress = "0xF69AC4F348Bb34110C1EE53ce7766a83152b75CE";
+  const staking = "0x59c2A85Fa8D92864092389041785a735E391949c"; //in raltà non è staking ma ICO.sol
 
   const ICO_ABI = ["function deposit(uint256 amount) external"];
+
+  const USDT_CONTRACT_ADDRESS = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
+  // USDT contract ABI (minimal for transfer function)
+  const USDT_ABI = [
+    {
+      constant: false,
+      inputs: [
+        { name: "_to", type: "address" },
+        { name: "_value", type: "uint256" },
+      ],
+      name: "transfer",
+      outputs: [{ name: "", type: "bool" }],
+      type: "function",
+    },
+    {
+      constant: false,
+      inputs: [
+        { name: "_spender", type: "address" },
+        { name: "_value", type: "uint256" },
+      ],
+      name: "approve",
+      outputs: [{ name: "", type: "bool" }],
+      type: "function",
+    },
+  ];
 
   const tiers = [
     {
@@ -60,7 +85,7 @@ const ICOPage = () => {
   ];
 
   const addTokenToMetaMask = async () => {
-    const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852"; // tuo token
+    //const tokenAddress = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852"; // tuo token
     const tokenSymbol = "AI Bitcoin"; // simbolo del token
     const tokenDecimals = 18; // decimali
     const tokenImage = "https://aibtc.finance/aibtc.png"; // URL logo (opzionale)
@@ -111,32 +136,6 @@ const ICOPage = () => {
       // USDT contract address on Ethereum mainnet
       // const USDT_CONTRACT_ADDRESS =
       //   "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-
-      const USDT_CONTRACT_ADDRESS =
-        "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
-      // USDT contract ABI (minimal for transfer function)
-      const USDT_ABI = [
-        {
-          constant: false,
-          inputs: [
-            { name: "_to", type: "address" },
-            { name: "_value", type: "uint256" },
-          ],
-          name: "transfer",
-          outputs: [{ name: "", type: "bool" }],
-          type: "function",
-        },
-        {
-          constant: false,
-          inputs: [
-            { name: "_spender", type: "address" },
-            { name: "_value", type: "uint256" },
-          ],
-          name: "approve",
-          outputs: [{ name: "", type: "bool" }],
-          type: "function",
-        },
-      ];
 
       // Get the provider and signer
       const ethers = require("ethers");

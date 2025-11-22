@@ -1,6 +1,6 @@
 {
     "Token": {
-        "address": "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852",
+        "address": "0x8023106B078CdaB865A62049fD2391440Efb3bCC",
         "tx_hash": "0x1b416ae1da46958d324238df199af700ebb51375e5ae216c7d22d321541fc71d",
         "abi": [
             {
@@ -406,7 +406,7 @@
         ]
     },
     "CERICO": {
-        "address": "0x70d3F5026Fc740C70D92B3386c7A95b794cE3C66",
+        "address": "0xB5eEac74C7C1715F5C1b58892cB481dB4DEfD70A",
         "tx_hash": "0x1e88aeb248a93e84678c798d39515dfdfba4ceebef44e7ece6a0da3238af3665",
         "abi": [
             {

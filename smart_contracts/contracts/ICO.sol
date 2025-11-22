@@ -5,10 +5,14 @@ import "../node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
-/// @title CERICO - Scambia USDT per CER (1:1)
 contract ICO is Ownable {
     IERC20 public usdt;
     IERC20 public cerToken;
+    bool public saleActive = true;
+    uint256 public price_usdt = 1; 
+
+    uint256 public totalDepositedUSDT;
+    uint256 public totalDistributedCER;
 
     constructor(
         address _usdtAddress,
@@ -18,10 +22,11 @@ contract ICO is Ownable {
         cerToken = IERC20(_cerTokenAddress);
     }
 
-    /// @notice Deposita USDT e ricevi CER in cambio 1:1
-    /// @param amount Quantità di USDT da depositare
     function deposit(uint256 amount) external {
+        require(saleActive, "Vendita non attiva");
         require(amount > 0, "Importo nullo");
+
+        uint256 cerAmount = (amount * 1e12) / price_usdt;
 
         // Riceve USDT dal mittente
         require(
@@ -29,18 +34,8 @@ contract ICO is Ownable {
             "Trasferimento USDT fallito"
         );
 
-        uint256 rate;
-
-        if (amount <= 500 * 10 ** 6) {
-            rate = 100; // 1.00
-        } else if (amount <= 1000 * 10 ** 6) {
-            rate = 125; // 1.25
-        } else {
-            rate = 166; // 1.66
-        }
-
-        // Calcola CER da inviare normalizzando i decimali
-        uint256 cerAmount = (amount * 10 ** 12 * rate) / 100; // USDT 6 decimali → CER 18 decimali
+        totalDepositedUSDT += amount;
+        totalDistributedCER += cerAmount;
 
         // Invia CER all'utente
         require(
@@ -49,15 +44,26 @@ contract ICO is Ownable {
         );
     }
 
-    /// @notice Preleva USDT dal contratto (solo owner)
     function withdrawUSDT(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(usdt.transfer(msg.sender, amount), "Prelievo USDT fallito");
+        require(usdt.transfer(msg.sender, amount * 1e6), "Prelievo USDT fallito");
     }
 
-    /// @notice Preleva CER dal contratto (solo owner)
     function withdrawCER(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(cerToken.transfer(msg.sender, amount), "Prelievo CER fallito");
+        require(cerToken.transfer(msg.sender, amount * 1e18), "Prelievo CER fallito");
+    }
+
+    function setPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 0, "Prezzo non valido");
+        price_usdt = newPrice;
+    }
+
+    function startSale() external onlyOwner {
+        saleActive = true;
+    }
+
+    function stopSale() external onlyOwner {
+        saleActive = false;
     }
 }

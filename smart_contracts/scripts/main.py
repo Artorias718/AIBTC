@@ -586,7 +586,7 @@ if __name__ == "__main__":
     # withdraw_usdt_from_contract(3 * 10**6)
 
     # send_cer_to_staking(10000 * 10**18)  # Invia 1000 CER al contratto di staking
-    # approve_staking(1000 * 10**18)
+    approve_staking(1000 * 10**18)
 
     # stake_tokens(1 * 10**18, "bear")  # staking di 1 CER
 
@@ -633,6 +633,6 @@ if __name__ == "__main__":
     # minted_tokens = public_mint_nfts()
     # print(f"🎉 Mint completato! Token IDs: {minted_tokens}")
 
-    receipt = set_base_uri(
-        "https://ipfs.io/ipfs/bafkreidv2myw5mof7xwtlqt7cnbxt6hu63zush3unce7oduufdkctxr45e"
-    )
+    # receipt = set_base_uri(
+    #     "https://ipfs.io/ipfs/bafkreidv2myw5mof7xwtlqt7cnbxt6hu63zush3unce7oduufdkctxr45e"
+    # )
