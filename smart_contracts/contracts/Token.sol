@@ -14,6 +14,7 @@ contract Token is ERC20, Ownable {
     }
 
     uint256 public feeBasisPoints = 100; // 100 = 1%
+    uint256 public constant MAX_FEE_BPS = 300; // massimo 3%
     address public feeCollector;
     bool public feeEnabled = false;
 
@@ -45,6 +46,7 @@ contract Token is ERC20, Ownable {
     }
 
     function setFee(uint256 _bps) external onlyOwner {
+        require(_bps <= MAX_FEE_BPS, "Fee too high"); 
         feeBasisPoints = _bps;
     }
 

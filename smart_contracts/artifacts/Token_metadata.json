@@ -188,6 +188,19 @@
 				"type": "event"
 			},
 			{
+				"inputs": [],
+				"name": "MAX_FEE_BPS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -724,11 +737,11 @@
 			]
 		},
 		"contracts/Token.sol": {
-			"keccak256": "0xd23eae78f31878b40548468b4acb3b01ecb27954bb437f110a8fbc7ea197ee2f",
+			"keccak256": "0x2c337e12cf79920bbd64baac9012aaed06d5cae9475cf8912e1a421ed4e44fee",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://866b4b5c473fd57cd9e7b8daa272cdf43d568c8cde11f86732bd87f9e8b4c307",
-				"dweb:/ipfs/QmbnykRbMweMdPxRcDqre2ui9Tdc7bxn4xT1X6cVB6iSqz"
+				"bzz-raw://a77328ed212de854584a020e6b5c2dc8499dc908d1aa89a226ff978c4de95eda",
+				"dweb:/ipfs/Qma2LRAvHFA1vTEG7zbRPGj1i3MRkyoQSa8NfbAbqvrB2g"
 			]
 		}
 	},

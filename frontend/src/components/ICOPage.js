@@ -3,9 +3,14 @@ import "./ICOPage.css";
 import { ethers } from "ethers";
 import { WalletContext } from "./WalletContext";
 import { RiArrowDownWideFill } from "react-icons/ri";
+import { CONFIG } from "../config";
+
+const tokenAddress = CONFIG.TOKEN_ADDRESS;
+const ico = CONFIG.ICO_ADDRESS;
+const usdt = CONFIG.USDT_ADDRESS;
 
 const ICOPage = () => {
-  const [tokensSold, setTokensSold] = useState(125000);
+  const [tokensSold, setTokensSold] = useState(0);
   const [totalTokens, setTotalTokens] = useState("");
   const { isConnected, account, connectWallet } = useContext(WalletContext);
   const [transactionStatus, setTransactionStatus] = useState("");
@@ -14,10 +19,12 @@ const ICOPage = () => {
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
 
   const TOKEN_PRICE = 1; // prezzo token in USDT
-  const tokenAddress = "0xF69AC4F348Bb34110C1EE53ce7766a83152b75CE";
-  const staking = "0x59c2A85Fa8D92864092389041785a735E391949c";
-  const ICO_ABI = ["function deposit(uint256 amount) external"];
-  const USDT_CONTRACT_ADDRESS = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
+
+  const ICO_ABI = [
+    "function deposit(uint256 amount) external",
+    "function totalDistributedCER() view returns (uint256)",
+  ];
+
   const USDT_ABI = [
     {
       constant: false,
@@ -41,7 +48,8 @@ const ICOPage = () => {
     },
   ];
 
-  const integerPart = totalTokens.split(".")[0];
+  // Formattazione per progress bar
+  const integerPart = totalTokens.split(".")[0] || "0";
   const formattedWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   const progressPercentage =
     totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
@@ -52,6 +60,7 @@ const ICOPage = () => {
     setTokenAmount(amount / TOKEN_PRICE);
   }, [usdtAmount]);
 
+  // Aggiungi token a MetaMask
   const addTokenToMetaMask = async () => {
     const tokenSymbol = "AI Bitcoin";
     const tokenDecimals = 18;
@@ -82,59 +91,7 @@ const ICOPage = () => {
     }
   };
 
-  const sendUSTTransaction = async () => {
-    if (!isConnected) {
-      setTransactionStatus("Please connect your wallet first");
-      return;
-    }
-    if (!usdtAmount || parseFloat(usdtAmount) <= 0) {
-      setTransactionStatus("Enter a valid amount");
-      return;
-    }
-
-    setTransactionStatus("Preparing transaction...");
-    setIsTransactionLoading(true);
-
-    try {
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = web3Provider.getSigner();
-
-      const usdtContract = new ethers.Contract(
-        USDT_CONTRACT_ADDRESS,
-        USDT_ABI,
-        signer
-      );
-      const amountInUSDT = ethers.utils.parseUnits(usdtAmount, 6);
-
-      setTransactionStatus("Approving USDT...");
-      const approveTx = await usdtContract.approve(staking, amountInUSDT);
-      await approveTx.wait();
-
-      setTransactionStatus("Approval confirmed! Depositing...");
-      const icoContract = new ethers.Contract(staking, ICO_ABI, signer);
-      const tx = await icoContract.deposit(amountInUSDT);
-      setTransactionStatus(`Deposit sent! Hash: ${tx.hash}...`);
-      const receipt = await tx.wait();
-      setTransactionStatus(
-        receipt.status === 1
-          ? `Transaction successful! Hash: ${tx.hash}`
-          : "Transaction failed"
-      );
-    } catch (error) {
-      console.error("Transaction error:", error);
-      setTransactionStatus(
-        error.code === 4001
-          ? "Transaction rejected by user"
-          : `Transaction failed: ${error.message}`
-      );
-    } finally {
-      setIsTransactionLoading(false);
-    }
-  };
-
-  const formatAddress = (address) =>
-    address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
-
+  // Fetch total supply
   const fetchTotalSupply = async () => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
@@ -153,9 +110,85 @@ const ICOPage = () => {
     }
   };
 
+  // Fetch tokens sold dinamico dal contratto
+  const fetchTokensSold = async () => {
+    try {
+      if (!window.ethereum) return;
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
+      const sold = await icoContract.totalDistributedCER();
+      setTokensSold(parseFloat(ethers.utils.formatUnits(sold, 18)));
+    } catch (error) {
+      console.error("Errore nel leggere tokens sold:", error);
+    }
+  };
+
   useEffect(() => {
     fetchTotalSupply();
+    fetchTokensSold();
+    const interval = setInterval(fetchTokensSold, 10000); // ogni 10 sec
+    return () => clearInterval(interval);
   }, []);
+
+  // Funzione per comprare token
+  const sendUSTTransaction = async () => {
+    if (!isConnected) {
+      setTransactionStatus("Please connect your wallet first");
+      return;
+    }
+    if (!usdtAmount || parseFloat(usdtAmount) <= 0) {
+      setTransactionStatus("Enter a valid amount");
+      return;
+    }
+
+    setTransactionStatus("Preparing transaction...");
+    setIsTransactionLoading(true);
+
+    try {
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = web3Provider.getSigner();
+
+      const usdtContract = new ethers.Contract(usdt, USDT_ABI, signer);
+      const amountInUSDT = ethers.utils.parseUnits(usdtAmount, 6);
+
+      setTransactionStatus("Approving USDT...");
+      const approveTx = await usdtContract.approve(ico, amountInUSDT);
+      await approveTx.wait();
+
+      setTransactionStatus("Approval confirmed! Depositing...");
+      const icoContract = new ethers.Contract(ico, ICO_ABI, signer);
+      const tx = await icoContract.deposit(amountInUSDT);
+      setTransactionStatus(`Deposit sent!...`);
+      const receipt = await tx.wait();
+
+      setTransactionStatus(
+        receipt.status === 1 ? `Transaction successful!` : "Transaction failed"
+      );
+
+      // Aggiorna tokens sold subito dopo la transazione
+      fetchTokensSold();
+    } catch (error) {
+      console.error("Transaction error:", error);
+
+      // Estrae il messaggio utile inline
+      const shortMessage =
+        error?.error?.data?.message || // ethers error con data.message
+        error?.reason || // ethers error con reason
+        error?.message?.split("\n")[0] || // fallback: prima riga
+        "Transaction failed";
+
+      setTransactionStatus(
+        error?.code === 4001
+          ? "Transaction rejected by user"
+          : `Transaction failed: ${shortMessage}`
+      );
+    } finally {
+      setIsTransactionLoading(false);
+    }
+  };
+
+  const formatAddress = (address) =>
+    address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
 
   return (
     <div className="ico-page">
@@ -273,7 +306,7 @@ const ICOPage = () => {
             {transactionStatus && (
               <div
                 className={`transaction-status ${
-                  transactionStatus.includes("success") ? "success" : "error"
+                  transactionStatus.includes("successful") ? "success" : "error"
                 }`}
               >
                 {transactionStatus}

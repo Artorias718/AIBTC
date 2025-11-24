@@ -3,7 +3,10 @@ import { ethers } from "ethers";
 import StakingStatus from "./StakingStatus";
 import React, { useState, useEffect, useContext } from "react";
 import { WalletContext } from "./WalletContext";
-import { encryptTelegramTag } from "../utils/encryption";
+import { CONFIG } from "../config";
+
+const tokenAddress = CONFIG.TOKEN_ADDRESS;
+const staking = CONFIG.STAKING_ADDRESS;
 
 const StakingPage = () => {
   const {
@@ -19,14 +22,8 @@ const StakingPage = () => {
   const [transactionStatus, setTransactionStatus] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-  const [telegramTag, setTelegramTag] = useState(""); // 👈 nuovo
 
-  const STAKING_CONTRACT_ADDRESS = "0x3e4E80b498B4ccF9bd058e58DcFe78d38Da65799";
-  const TOKEN_ADDRESS = "0x7af07eA4914cA38047fdf27c233E1FcA7B8A4852";
-
-  const STAKING_ABI = [
-    "function stake(uint256 amount, string calldata _telegramTag) external",
-  ];
+  const STAKING_ABI = ["function stake(uint256 amount) external"];
 
   const TOKEN_ABI = [
     "function approve(address spender, uint256 amount) public returns (bool)",
@@ -38,21 +35,16 @@ const StakingPage = () => {
     if (account && stakeAmount) {
       checkAllowance(account);
     }
-  }, [stakeAmount]);
+  }, [stakeAmount, account]);
 
   const checkAllowance = async (address) => {
     try {
-      const activeProvider = provider;
-      const activeSigner = signer;
       const tokenContract = new ethers.Contract(
-        TOKEN_ADDRESS,
+        tokenAddress,
         TOKEN_ABI,
-        activeProvider
+        provider
       );
-      const allowance = await tokenContract.allowance(
-        address,
-        STAKING_CONTRACT_ADDRESS
-      );
+      const allowance = await tokenContract.allowance(address, staking);
 
       if (stakeAmount) {
         const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
@@ -61,7 +53,7 @@ const StakingPage = () => {
         setIsApproved(allowance.gt(0));
       }
     } catch (error) {
-      console.error("Error checking allowance:", error);
+      console.error("Error checking allowance:");
     }
   };
 
@@ -80,29 +72,29 @@ const StakingPage = () => {
     setIsTransactionLoading(true);
 
     try {
-      const activeProvider = provider;
-      const activeSigner = signer;
-      const stakingContract = new ethers.Contract(
-        STAKING_CONTRACT_ADDRESS,
-        STAKING_ABI,
-        activeSigner
-      );
-
-      // Convert amount to wei (assuming token has 18 decimals)
+      const stakingContract = new ethers.Contract(staking, STAKING_ABI, signer);
       const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
-      const encryptedTag = encryptTelegramTag(telegramTag);
+      const tx = await stakingContract.stake(amountInWei);
+      //setTransactionStatus(`Transaction sent! Hash: ${tx.hash}`);
+      setTransactionStatus(`Transaction sent!`);
 
-      const tx = await stakingContract.stake(amountInWei, encryptedTag || "");
-      setTransactionStatus(`Transaction sent! Hash: ${tx.hash}`);
       await tx.wait();
-      setTransactionStatus(`Transaction confirmed! Hash: ${tx.hash}`);
+      setTransactionStatus(`Transaction confirmed!`);
     } catch (error) {
-      console.error(error);
-      if (error.code === 4001) {
-        setTransactionStatus("Transaction rejected by user");
-      } else {
-        setTransactionStatus(`Transaction failed: ${error.message}`);
-      }
+      console.error("Transaction error:", error);
+
+      // Estrae il messaggio utile inline
+      const shortMessage =
+        error?.error?.data?.message || // ethers error con data.message
+        error?.reason || // ethers error con reason
+        error?.message?.split("\n")[0] || // fallback: prima riga
+        "Transaction failed";
+
+      setTransactionStatus(
+        error?.code === 4001
+          ? "Transaction rejected by user"
+          : `Transaction failed: ${shortMessage}`
+      );
     } finally {
       setIsTransactionLoading(false);
     }
@@ -117,27 +109,22 @@ const StakingPage = () => {
     try {
       setTransactionStatus("Approving...");
       setIsTransactionLoading(true);
-      const activeProvider = provider;
-      const activeSigner = signer;
-      const cerContract = new ethers.Contract(
-        TOKEN_ADDRESS,
+
+      const tokenContract = new ethers.Contract(
+        tokenAddress,
         TOKEN_ABI,
-        activeSigner
+        signer
       );
       const amountInWei = ethers.utils.parseUnits(stakeAmount, 18);
-
-      console.log("DEBUG signer:", signer);
-      console.log("DEBUG provider:", provider);
-      console.log("DEBUG account:", account);
-
-      const tx = await cerContract.approve(
-        STAKING_CONTRACT_ADDRESS,
-        amountInWei
-      );
+      const tx = await tokenContract.approve(staking, amountInWei);
       await tx.wait();
 
       setTransactionStatus("Approval confirmed ✅");
       setIsApproved(true);
+
+      // ✅ Avvio automatico dello staking
+      setTransactionStatus("Approval confirmed, starting stake...");
+      await handleStake();
     } catch (error) {
       console.error(error);
       if (error.code === 4001) {
@@ -197,24 +184,6 @@ const StakingPage = () => {
                 className="amount-input"
               />
             </div>
-            {/* ✅ Campo Telegram opzionale */}
-            <div className="telegram-input-section">
-              <label htmlFor="telegramTag">Telegram Tag (optional):</label>
-              <div className="input-group">
-                <input
-                  type="text"
-                  id="telegramTag"
-                  value={telegramTag}
-                  onChange={(e) => setTelegramTag(e.target.value)}
-                  placeholder="@username"
-                  className="amount-input"
-                />
-              </div>
-            </div>
-            <small className="telegram-note">
-              Note: the tag will be safely encrypted for your privacy and is
-              used to receive trading signals
-            </small>
           </div>
 
           <button
@@ -241,33 +210,12 @@ const StakingPage = () => {
             </div>
           )}
         </div>
+
         <StakingStatus
           account={account}
           isConnected={isConnected}
-          stakingAddress={STAKING_CONTRACT_ADDRESS}
+          stakingAddress={staking}
         />
-
-        {/* <div className="info-section">
-          <h2>Important Information</h2>
-          <div className="info-grid">
-            <div className="info-card">
-              <div className="info-icon">⚠️</div>
-              <h3>Risk Warning</h3>
-              <p>
-                Staking involves smart contract interactions and potential
-                risks. Stake only what you can afford to lose.
-              </p>
-            </div>
-            <div className="info-card">
-              <div className="info-icon">🔒</div>
-              <h3>Security</h3>
-              <p>
-                All staking transactions are secured by blockchain technology.
-                Your funds remain safe.
-              </p>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );
