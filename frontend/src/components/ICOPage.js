@@ -12,7 +12,7 @@ const usdt = CONFIG.USDT_ADDRESS;
 const ICOPage = () => {
   const [tokensSold, setTokensSold] = useState(0);
   const [totalTokens, setTotalTokens] = useState("");
-  const { isConnected, account, connectWallet } = useContext(WalletContext);
+  const { isConnected, account } = useContext(WalletContext);
   const [transactionStatus, setTransactionStatus] = useState("");
   const [usdtAmount, setUsdtAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState(0);
@@ -26,41 +26,63 @@ const ICOPage = () => {
   ];
 
   const USDT_ABI = [
-    {
-      constant: false,
-      inputs: [
-        { name: "_to", type: "address" },
-        { name: "_value", type: "uint256" },
-      ],
-      name: "transfer",
-      outputs: [{ name: "", type: "bool" }],
-      type: "function",
-    },
-    {
-      constant: false,
-      inputs: [
-        { name: "_spender", type: "address" },
-        { name: "_value", type: "uint256" },
-      ],
-      name: "approve",
-      outputs: [{ name: "", type: "bool" }],
-      type: "function",
-    },
+    "function approve(address spender, uint256 amount) external returns (bool)",
   ];
 
-  // Formattazione per progress bar
-  const integerPart = totalTokens.split(".")[0] || "0";
-  const formattedWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  const progressPercentage =
-    totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
+  // --- Helper: provider read-only o wallet ---
+  const getProvider = () => {
+    if (window.ethereum) {
+      return new ethers.providers.Web3Provider(window.ethereum);
+    }
+    return new ethers.providers.JsonRpcProvider(
+      "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
+    );
+  };
 
-  // Calcola token ricevuti
+  // --- Fetch total supply ---
+  const fetchTotalSupply = async () => {
+    try {
+      const provider = getProvider();
+      const ERC20_ABI = ["function totalSupply() view returns (uint256)"];
+      const tokenContract = new ethers.Contract(
+        tokenAddress,
+        ERC20_ABI,
+        provider
+      );
+      const supply = await tokenContract.totalSupply();
+      setTotalTokens(ethers.utils.formatUnits(supply, 18));
+    } catch (error) {
+      console.error("Errore nel leggere total supply:", error);
+    }
+  };
+
+  // --- Fetch tokens sold dinamico ---
+  const fetchTokensSold = async () => {
+    try {
+      const provider = getProvider();
+      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
+      const sold = await icoContract.totalDistributedCER();
+      setTokensSold(parseFloat(ethers.utils.formatUnits(sold, 18)));
+    } catch (error) {
+      console.error("Errore nel leggere tokens sold:", error);
+    }
+  };
+
+  // --- Aggiorna token ricevuti al cambio ---
   useEffect(() => {
     const amount = parseFloat(usdtAmount) || 0;
     setTokenAmount(amount / TOKEN_PRICE);
   }, [usdtAmount]);
 
-  // Aggiungi token a MetaMask
+  // --- Aggiorna dati globali ---
+  useEffect(() => {
+    fetchTotalSupply();
+    fetchTokensSold();
+    const interval = setInterval(fetchTokensSold, 10000); // refresh ogni 10s
+    return () => clearInterval(interval);
+  }, []);
+
+  // --- Aggiungi token a MetaMask ---
   const addTokenToMetaMask = async () => {
     const tokenSymbol = "AI Bitcoin";
     const tokenDecimals = 18;
@@ -91,46 +113,7 @@ const ICOPage = () => {
     }
   };
 
-  // Fetch total supply
-  const fetchTotalSupply = async () => {
-    try {
-      const provider = new ethers.providers.JsonRpcProvider(
-        "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
-      );
-      const ERC20_ABI = ["function totalSupply() view returns (uint256)"];
-      const tokenContract = new ethers.Contract(
-        tokenAddress,
-        ERC20_ABI,
-        provider
-      );
-      const supply = await tokenContract.totalSupply();
-      setTotalTokens(ethers.utils.formatUnits(supply, 18));
-    } catch (error) {
-      console.error("Errore nel leggere total supply:", error);
-    }
-  };
-
-  // Fetch tokens sold dinamico dal contratto
-  const fetchTokensSold = async () => {
-    try {
-      if (!window.ethereum) return;
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
-      const sold = await icoContract.totalDistributedCER();
-      setTokensSold(parseFloat(ethers.utils.formatUnits(sold, 18)));
-    } catch (error) {
-      console.error("Errore nel leggere tokens sold:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTotalSupply();
-    fetchTokensSold();
-    const interval = setInterval(fetchTokensSold, 10000); // ogni 10 sec
-    return () => clearInterval(interval);
-  }, []);
-
-  // Funzione per comprare token
+  // --- Funzione per comprare token ---
   const sendUSTTransaction = async () => {
     if (!isConnected) {
       setTransactionStatus("Please connect your wallet first");
@@ -158,11 +141,10 @@ const ICOPage = () => {
       setTransactionStatus("Approval confirmed! Depositing...");
       const icoContract = new ethers.Contract(ico, ICO_ABI, signer);
       const tx = await icoContract.deposit(amountInUSDT);
-      setTransactionStatus(`Deposit sent!...`);
       const receipt = await tx.wait();
 
       setTransactionStatus(
-        receipt.status === 1 ? `Transaction successful!` : "Transaction failed"
+        receipt.status === 1 ? "Transaction successful!" : "Transaction failed"
       );
 
       // Aggiorna tokens sold subito dopo la transazione
@@ -170,11 +152,10 @@ const ICOPage = () => {
     } catch (error) {
       console.error("Transaction error:", error);
 
-      // Estrae il messaggio utile inline
       const shortMessage =
-        error?.error?.data?.message || // ethers error con data.message
-        error?.reason || // ethers error con reason
-        error?.message?.split("\n")[0] || // fallback: prima riga
+        error?.error?.data?.message ||
+        error?.reason ||
+        error?.message?.split("\n")[0] ||
         "Transaction failed";
 
       setTransactionStatus(
@@ -187,8 +168,11 @@ const ICOPage = () => {
     }
   };
 
-  const formatAddress = (address) =>
-    address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
+  // --- Formattazione per progress bar ---
+  const integerPart = totalTokens.split(".")[0] || "0";
+  const formattedWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const progressPercentage =
+    totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
 
   return (
     <div className="ico-page">

@@ -75,6 +75,17 @@
 				"type": "error"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "SafeERC20FailedOperation",
+				"type": "error"
+			},
+			{
 				"inputs": [],
 				"name": "UUPSUnauthorizedCallContext",
 				"type": "error"
@@ -89,6 +100,19 @@
 				],
 				"name": "UUPSUnsupportedProxiableUUID",
 				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newBudget",
+						"type": "uint256"
+					}
+				],
+				"name": "AnnualBudgetUpdated",
+				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -128,11 +152,68 @@
 					{
 						"indexed": true,
 						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "reward",
+						"type": "uint256"
+					}
+				],
+				"name": "RewardClaimed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Staked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
 						"name": "implementation",
 						"type": "address"
 					}
 				],
 				"name": "Upgraded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdrawn",
 				"type": "event"
 			},
 			{
@@ -143,6 +224,19 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "annualRewardBudget",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -189,6 +283,45 @@
 			},
 			{
 				"inputs": [],
+				"name": "contractBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "currentAPY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dailyRatePerToken",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getStakers",
 				"outputs": [
 					{
@@ -206,6 +339,11 @@
 						"internalType": "address",
 						"name": "_cerToken",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_annualRewardBudget",
+						"type": "uint256"
 					}
 				],
 				"name": "initialize",
@@ -240,6 +378,29 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "recoverExcessTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
@@ -248,7 +409,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "rewardRatePerSecond",
+				"name": "rewardRatePerSecondGlobal",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -263,11 +424,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "newRate",
+						"name": "_annualRewardBudget",
 						"type": "uint256"
 					}
 				],
-				"name": "setRewardRate",
+				"name": "setAnnualRewardBudget",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -328,6 +489,11 @@
 						"internalType": "uint256",
 						"name": "lastClaim",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "unclaimed",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -335,11 +501,11 @@
 			},
 			{
 				"inputs": [],
-				"name": "totalStaked",
+				"name": "totalStakedAmount",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "total",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -440,6 +606,11 @@
 						"details": "The caller account is not authorized to perform an operation."
 					}
 				],
+				"SafeERC20FailedOperation(address)": [
+					{
+						"details": "An operation with an ERC-20 token failed."
+					}
+				],
 				"UUPSUnauthorizedCallContext()": [
 					{
 						"details": "The call is from an unauthorized context."
@@ -481,17 +652,38 @@
 					"details": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event."
 				}
 			},
+			"title": "Staking (budgeted annual rewards, dynamic APY)",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"calculateReward(address)": {
+					"notice": "Public view wrapper to get current claimable reward for a user (includes unclaimed snapshot)"
+				},
+				"contractBalance()": {
+					"notice": "quick setter to top-up the contract with tokens (owner just transfers tokens to contract address) This function is only a convenience to check current funding; actual funding is done by ERC20 transfer."
+				},
+				"currentAPY()": {
+					"notice": "Current APY (annual percentage yield) expressed in 1e18 precision. APY = (annualRewardBudget / totalStakedAmount)"
+				},
+				"dailyRatePerToken()": {
+					"notice": "Current daily reward rate per token staked (for frontend helper)"
+				},
+				"recoverExcessTokens(address,address,uint256)": {
+					"notice": "Owner can recover accidentally sent tokens that are not part of staked amounts or rewards budget. Use with care. This function does not withdraw tokens that are currently staked."
+				},
+				"setAnnualRewardBudget(uint256)": {
+					"notice": "Set annual reward budget (in token smallest units). Updates per-second rate."
+				}
+			},
+			"notice": "Distributes a fixed annual reward budget proportionally to stakers. - Annual budget (e.g. 250k tokens/year) is set in token smallest units (wei-like) - Rewards per second = annualBudget / 365 days - Each staker receives (stake / totalStaked) * rewardsPerSecond for the time they were staked Notes: - Contract must be funded with reward tokens by owner (transfer tokens to contract address). - To avoid expensive loops, totalStakedAmount is maintained on every stake/withdraw. - When a user increases stake we first snapshot accrued reward into `unclaimed` to avoid losing them.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Staking_Proxy.sol": "Staking"
+			"contracts/Staking_ProxyV2.sol": "Staking"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -537,12 +729,36 @@
 				"dweb:/ipfs/QmPYCzHjki1HQLvBub3uUqoUKGrwdgR3xP9Zpya14YTdXS"
 			]
 		},
+		"@openzeppelin/contracts/interfaces/IERC1363.sol": {
+			"keccak256": "0xd5ea07362ab630a6a3dee4285a74cf2377044ca2e4be472755ad64d7c5d4b69d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://da5e832b40fc5c3145d3781e2e5fa60ac2052c9d08af7e300dc8ab80c4343100",
+				"dweb:/ipfs/QmTzf7N5ZUdh5raqtzbM11yexiUoLC9z3Ws632MCuycq1d"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/IERC165.sol": {
+			"keccak256": "0x0afcb7e740d1537b252cb2676f600465ce6938398569f09ba1b9ca240dde2dfc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1c299900ac4ec268d4570ecef0d697a3013cd11a6eb74e295ee3fbc945056037",
+				"dweb:/ipfs/Qmab9owJoxcA7vJT5XNayCMaUR1qxqj1NDzzisduwaJMcZ"
+			]
+		},
 		"@openzeppelin/contracts/interfaces/IERC1967.sol": {
 			"keccak256": "0xbf2aefe54b76d7f7bcd4f6da1080b7b1662611937d870b880db584d09cea56b5",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://f5e7e2f12e0feec75296e57f51f82fdaa8bd1551f4b8cc6560442c0bf60f818c",
 				"dweb:/ipfs/QmcW9wDMaQ8RbQibMarfp17a3bABzY5KraWe2YDwuUrUoz"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/IERC20.sol": {
+			"keccak256": "0x1a6221315ce0307746c2c4827c125d821ee796c74a676787762f4778671d4f44",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1bb2332a7ee26dd0b0de9b7fe266749f54820c99ab6a3bcb6f7e6b751d47ee2d",
+				"dweb:/ipfs/QmcRWpaBeCYkhy68PR3B4AgD7asuQk7PwkWxrvJbZcikLF"
 			]
 		},
 		"@openzeppelin/contracts/interfaces/draft-IERC1822.sol": {
@@ -593,6 +809,14 @@
 				"dweb:/ipfs/QmeCfPykghhMc81VJTrHTC7sF6CRvaA1FXVq2pJhwYp1dV"
 			]
 		},
+		"@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+			"keccak256": "0x304d732678032a9781ae85c8f204c8fba3d3a5e31c02616964e75cfdc5049098",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://299ced486011781dc98f638059678323c03079fefae1482abaa2135b22fa92d0",
+				"dweb:/ipfs/QmbZNbcPTBxNvwChavN2kkZZs7xHhYL7mv51KrxMhsMs3j"
+			]
+		},
 		"@openzeppelin/contracts/utils/Address.sol": {
 			"keccak256": "0x0fa9e0d3a859900b5a46f70a03c73adf259603d5e05027a37fe0b45529d85346",
 			"license": "MIT",
@@ -625,12 +849,20 @@
 				"dweb:/ipfs/QmarDJ5hZEgBtCmmrVzEZWjub9769eD686jmzb2XpSU1cM"
 			]
 		},
-		"contracts/Staking_Proxy.sol": {
-			"keccak256": "0x6ba556de5d5dbeecc39d6561dabb2d0ef4ef74b2c4fb8545233f925e8111fbcf",
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x8891738ffe910f0cf2da09566928589bf5d63f4524dd734fd9cedbac3274dd5c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3ac1314373bf3394754777d868b5e904dbca5941b28a2566e07ccd1664cd4b72",
-				"dweb:/ipfs/QmdBLk9XSaW9xNjAfznZWCC4yx3CrF8zMsJdXcTLjhRAQK"
+				"bzz-raw://971f954442df5c2ef5b5ebf1eb245d7105d9fbacc7386ee5c796df1d45b21617",
+				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
+			]
+		},
+		"contracts/Staking_ProxyV2.sol": {
+			"keccak256": "0xe0788cff013de6d96172a5414778f13b235f4275e70d5079cf2c91ad2b19907a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c15067824230f59d5689d2f6cc4bfade66ce534c7a1b5e50e7cfce951265e18f",
+				"dweb:/ipfs/QmS9Xg2cTufpFPycL1keds3NYoriV9mzXqMGnZEqWXep8o"
 			]
 		}
 	},

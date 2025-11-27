@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "./StakingPage.css";
+import { CONFIG } from "../config";
 
 const StakingStatus = ({
   account,
@@ -10,21 +11,32 @@ const StakingStatus = ({
 }) => {
   const [stakedAmount, setStakedAmount] = useState("0");
   const [pendingReward, setPendingReward] = useState("0");
+  const [usdcBalance, setUsdcBalance] = useState("0");
+  const [usdcAPY, setUsdcAPY] = useState("0");
+
   const [isLoading, setIsLoading] = useState(false);
   const [transactionStatus, setTransactionStatus] = useState("");
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
+
+  const [globalAPY, setGlobalAPY] = useState("0");
+  const [globalTVL, setGlobalTVL] = useState("0");
 
   // --- Withdraw parziale ---
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [maxStake, setMaxStake] = useState("0");
 
-  const STAKING_ABI = [
-    "function stakes(address) view returns (uint256 amount, uint256 since, uint256 lastClaim)",
-    "function calculateReward(address) view returns (uint256)",
-    "function claim() external",
-    "function withdrawPartial(uint256 amount) external",
-  ];
+  // NUOVO: tipo token selezionato nel modal
+  const [withdrawType, setWithdrawType] = useState(null);
+
+  const getProvider = () => {
+    if (window.ethereum) {
+      return new ethers.providers.Web3Provider(window.ethereum);
+    }
+    return new ethers.providers.JsonRpcProvider(
+      "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
+    );
+  };
 
   const fetchStakeInfo = async () => {
     if (!account) return;
@@ -33,7 +45,7 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        STAKING_ABI,
+        CONFIG.ABI_STAKING,
         provider
       );
 
@@ -53,6 +65,69 @@ const StakingStatus = ({
     }
   };
 
+  const fetchUSDCStake = async () => {
+    if (!account) return;
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      const aTokenContract = new ethers.Contract(
+        CONFIG.AAVE_USDC_ATOKEN,
+        ["function balanceOf(address) view returns (uint256)"],
+        provider
+      );
+
+      const balance = await aTokenContract.balanceOf(account);
+      const formatted = ethers.utils.formatUnits(balance, 6);
+
+      setUsdcBalance(formatted);
+    } catch (err) {
+      console.error("Errore nel fetch dello stake USDC:", err);
+    }
+  };
+
+  const fetchUSDCAPY = async () => {
+    if (!account) return;
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      const poolContract = new ethers.Contract(
+        CONFIG.AAVE_POOL, // indirizzo Pool
+        CONFIG.ABI_AAVE_POOL, // ABI minima con getReserveData()
+        provider
+      );
+
+      const reserveData = await poolContract.getReserveData(
+        CONFIG.USDT_ADDRESS
+      );
+      // currentLiquidityRate è in RAY (1e27)
+      const apy = Number(reserveData.currentLiquidityRate) / 1e27;
+      const apyPercent = (apy * 100).toFixed(2);
+
+      setUsdcAPY(apyPercent);
+    } catch (error) {
+      console.error("Errore nel fetch APY USDC:", error);
+      setUsdcAPY("0");
+    }
+  };
+
+  const fetchGlobalData = async () => {
+    try {
+      const provider = getProvider();
+      const stakingContract = new ethers.Contract(
+        stakingAddress,
+        CONFIG.ABI_STAKING,
+        provider
+      );
+
+      const apyRaw = await stakingContract.currentAPY();
+      setGlobalAPY((ethers.utils.formatUnits(apyRaw, 18) * 100).toFixed(2));
+    } catch (error) {
+      console.error("Error fetching global data:", error);
+    }
+  };
+
   const handleClaim = async () => {
     try {
       setTransactionStatus("Claiming rewards...");
@@ -60,7 +135,11 @@ const StakingStatus = ({
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      const contract = new ethers.Contract(stakingAddress, STAKING_ABI, signer);
+      const contract = new ethers.Contract(
+        stakingAddress,
+        CONFIG.ABI_STAKING,
+        signer
+      );
 
       const tx = await contract.claim();
       await tx.wait();
@@ -75,7 +154,9 @@ const StakingStatus = ({
     }
   };
 
-  // --- Apri modal per withdraw ---
+  // ---------------------------------
+  //   MODAL AIBTC
+  // ---------------------------------
   const openWithdrawModal = async () => {
     if (!isConnected || !account) {
       setTransactionStatus("Please connect your wallet first");
@@ -86,20 +167,55 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        STAKING_ABI,
+        CONFIG.ABI_STAKING,
         provider
       );
-      const stakeData = await stakingContract.stakes(account);
 
+      const stakeData = await stakingContract.stakes(account);
       const amount = ethers.utils.formatUnits(stakeData.amount, tokenDecimals);
+
       setMaxStake(amount);
-      setWithdrawAmount(amount); // default tutto
+      setWithdrawAmount(amount);
+      setWithdrawType("AIBTC"); // 🔥 IMPORTANTE
       setIsWithdrawModalOpen(true);
     } catch (error) {
       console.error(error);
     }
   };
 
+  // ---------------------------------
+  //   MODAL USDC
+  // ---------------------------------
+  const openWithdrawModalUSDC = async () => {
+    if (!isConnected || !account) {
+      setTransactionStatus("Please connect your wallet first");
+      return;
+    }
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      const aTokenContract = new ethers.Contract(
+        CONFIG.AAVE_USDC_ATOKEN,
+        ["function balanceOf(address account) view returns (uint256)"],
+        provider
+      );
+
+      const balance = await aTokenContract.balanceOf(account);
+      const amount = ethers.utils.formatUnits(balance, 6);
+
+      setMaxStake(amount);
+      setWithdrawAmount(amount);
+      setWithdrawType("USDC"); // 🔥 IMPORTANTE
+      setIsWithdrawModalOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // ---------------------------------
+  //   WITHDRAW AIBTC
+  // ---------------------------------
   const handleWithdrawPartial = async () => {
     if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
       setTransactionStatus("Enter a valid amount");
@@ -114,7 +230,7 @@ const StakingStatus = ({
       const signer = provider.getSigner();
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        STAKING_ABI,
+        CONFIG.ABI_STAKING,
         signer
       );
 
@@ -122,6 +238,7 @@ const StakingStatus = ({
         withdrawAmount,
         tokenDecimals
       );
+
       const tx = await stakingContract.withdrawPartial(amountInWei);
       await tx.wait();
 
@@ -136,32 +253,79 @@ const StakingStatus = ({
     }
   };
 
+  // ---------------------------------
+  //   WITHDRAW USDC
+  // ---------------------------------
+  const handleWithdrawUSDT = async () => {
+    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
+      setTransactionStatus("Enter a valid amount");
+      return;
+    }
+
+    try {
+      setTransactionStatus("Processing withdraw...");
+      setIsTransactionLoading(true);
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const wrapperContract = new ethers.Contract(
+        CONFIG.AAVE_STAKING,
+        CONFIG.ABI_WRAPPER_USDC,
+        signer
+      );
+
+      const amountInWei = ethers.utils.parseUnits(withdrawAmount, 6);
+
+      const aTokenContract = new ethers.Contract(
+        CONFIG.AAVE_USDC_ATOKEN,
+        [
+          "function approve(address spender, uint256 amount) external returns (bool)",
+        ],
+        signer
+      );
+
+      const approveTx = await aTokenContract.approve(
+        CONFIG.AAVE_STAKING,
+        amountInWei
+      );
+      await approveTx.wait();
+
+      setTransactionStatus("Approval confirmed. Withdrawing...");
+
+      const tx = await wrapperContract.withdraw(amountInWei);
+      await tx.wait();
+
+      setTransactionStatus(`Withdraw confirmed ✅ Hash: ${tx.hash}`);
+      setIsWithdrawModalOpen(false);
+
+      openWithdrawModalUSDC();
+    } catch (error) {
+      console.error(error);
+      setTransactionStatus("Withdraw failed ❌");
+    } finally {
+      setIsTransactionLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchGlobalData();
     if (isConnected && account) {
       fetchStakeInfo();
+      fetchUSDCStake();
+      fetchUSDCAPY(); // APY USDC
     }
-  }, [isConnected, account]);
+  }, [isConnected, account, stakingAddress]);
 
   const formatAmount = (value) => {
     if (!value) return "0";
-
     const num = Number(value);
-
-    // Caso speciale: più piccolo di 0.001
     if (num > 0 && num < 0.001) return "< 0.001";
-
-    // Troncamento a 3 decimali (no arrotondamento)
     const truncated = Math.floor(num * 1000) / 1000;
-
     let str = truncated.toString();
-
-    // Se non c'è la virgola, restituisco così com'è
     if (!str.includes(".")) return str;
-
-    // Rimuovo SOLO gli zeri dopo la virgola
-    str = str.replace(/(\.\d*?[1-9])0+$/, "$1"); // zeri inutili
-    str = str.replace(/\.0+$/, ""); // caso ".000"
-
+    str = str.replace(/(\.\d*?[1-9])0+$/, "$1");
+    str = str.replace(/\.0+$/, "");
     return str;
   };
 
@@ -179,6 +343,7 @@ const StakingStatus = ({
             <div className="cell actions-cell"></div>
           </div>
 
+          {/* RIGA AIBTC */}
           <div className="staking-row">
             <div className="cell vault-cell">
               <img
@@ -188,20 +353,23 @@ const StakingStatus = ({
               />
               <span>AIBTC</span>
             </div>
-            <div className="cell apy-cell">180%</div>
+            <div className="cell apy-cell">
+              {globalAPY ? `${globalAPY}%` : "loading..."}
+            </div>
             <div className="cell deposit-cell">
-              {formatAmount(stakedAmount)}
+              {account ? formatAmount(stakedAmount) : "-"}
             </div>
             <div className="cell reward-cell">
-              {formatAmount(pendingReward)}
+              {account ? formatAmount(pendingReward) : "-"}
             </div>
-
             <div className="cell actions-cell">
               <button
                 onClick={handleClaim}
                 className="btn btn-secondary"
                 disabled={
-                  isTransactionLoading || parseFloat(pendingReward) === 0
+                  isTransactionLoading ||
+                  !account ||
+                  parseFloat(pendingReward) === 0
                 }
               >
                 Claim
@@ -210,7 +378,41 @@ const StakingStatus = ({
                 onClick={openWithdrawModal}
                 className="btn btn-secondary"
                 disabled={
-                  isTransactionLoading || parseFloat(stakedAmount) === 0
+                  isTransactionLoading ||
+                  !account ||
+                  parseFloat(stakedAmount) === 0
+                }
+              >
+                Withdraw
+              </button>
+            </div>
+          </div>
+
+          {/* RIGA USDT */}
+          <div className="staking-row">
+            <div className="cell vault-cell">
+              <img
+                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                alt="USDC Token"
+                className="vault-token-img"
+              />
+              <span>USDC</span>
+            </div>
+            <div className="cell apy-cell">
+              {globalAPY ? `${usdcAPY}%` : "loading..."}
+            </div>
+            <div className="cell deposit-cell">
+              {account ? formatAmount(usdcBalance) : "-"}
+            </div>
+            <div className="cell reward-cell"></div>
+            <div className="cell actions-cell">
+              <button
+                onClick={openWithdrawModalUSDC}
+                className="btn btn-secondary"
+                disabled={
+                  isTransactionLoading ||
+                  !account ||
+                  parseFloat(stakedAmount) === 0
                 }
               >
                 Withdraw
@@ -220,11 +422,10 @@ const StakingStatus = ({
         </div>
       )}
 
-      {/* Modal Withdraw Parziale */}
       {isWithdrawModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>Withdraw Tokens</h3>
+            <h3>Withdraw {withdrawType === "AIBTC" ? "AIBTC" : "USDC"}</h3>
             <p className="max-available-text">Max available: {maxStake}</p>
 
             <input
@@ -246,7 +447,11 @@ const StakingStatus = ({
 
             <div className="modal-buttons">
               <button
-                onClick={handleWithdrawPartial}
+                onClick={
+                  withdrawType === "AIBTC"
+                    ? handleWithdrawPartial
+                    : handleWithdrawUSDT
+                }
                 className="btn btn-primary"
               >
                 Confirm Withdraw

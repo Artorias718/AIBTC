@@ -79,6 +79,11 @@ const LabPage = () => {
       let imgs = ["", "", "", ""];
       let descs = ["", "", "", ""];
 
+      imgs[0] = "/aibtc_module.png";
+      imgs[1] = "/btc_module.png";
+      imgs[2] = "/btc_module.png";
+      imgs[3] = "/meme_module.png";
+
       for (let i = 0; i < 4; i++) {
         try {
           const contract = new ethers.Contract(
@@ -95,12 +100,12 @@ const LabPage = () => {
           descs[i] = metadata.description || nfts[i].description;
 
           //temporaneo, solo per vedere la seconda immagine senza dover deployare l nft
-          if (i === 1) {
-            // immagine statica
-            imgs[i] = "/btc_module.png";
-          } else {
-            imgs[i] = metadata.image;
-          }
+          // if (i === 1) {
+          //   // immagine statica
+          //   imgs[i] = "/btc_module.png";
+          // } else {
+          //   imgs[i] = metadata.image;
+          // }
         } catch (e) {
           console.error("Metadata load error:", e);
         }
@@ -218,7 +223,7 @@ const LabPage = () => {
           <img src={heroImage} alt="NFT Highlight" className="nft-hero-image" />
         </div>
 
-        <div className="wallet-section">
+        {/* <div className="wallet-section">
           {isConnected ? (
             <div className="wallet-connected">
               <span className="wallet-address">{formatAddress(account)}</span>
@@ -231,7 +236,7 @@ const LabPage = () => {
               Connect Wallet
             </button>
           )}
-        </div>
+        </div> */}
 
         {/* TABELLA NFT */}
         <table className="nft-table">

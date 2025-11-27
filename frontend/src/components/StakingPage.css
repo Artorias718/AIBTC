@@ -465,4 +465,107 @@
     font-weight: 600;
   }
 }
+/* ================================
+   TOKEN SELECTOR (VERSIONE MIGLIORATA)
+=================================== */
 
+.token-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 16px 22px !important;   /* PIÙ GRANDE */
+  border: 2px solid #0f6600;
+  border-radius: 12px;
+  background: #06A7E2 !important; /* VERDE */
+  transition: 0.2s ease;
+  user-select: none;
+  font-size: 20px !important;      /* TESTO PIÙ GRANDE */
+  color: #fff;
+}
+
+.token-selector:hover {
+  background: #06A7E2 !important; /* VERDE PIÙ SCURO */
+}
+
+.token-selector img {
+  width: 36px !important;         /* IMMAGINE PIÙ GRANDE */
+  height: 36px !important;
+  border-radius: 50%;
+}
+
+/* ==================================
+   MENU DROPDOWN TOKEN
+==================================== */
+
+.token-dropdown {
+  position: absolute;
+  top: 62px;                      /* ADEGUATO AL BOTTONE PIÙ GRANDE */
+  left: 0;
+  width: 220px;                   /* PIÙ LARGO */
+  background: #06A7E2 !important; /* VERDE */
+  padding: 14px;
+  border-radius: 14px;
+  border: 2px solid #0f6600;
+  z-index: 50;
+  box-shadow: 0 8px 20px rgba(0, 128, 0, 0.5);
+  animation: dropdownFade 0.15s ease-out;
+}
+
+/* ELEMENTI DEL MENU */
+.token-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.15s ease;
+  font-size: 18px;                /* PIÙ GRANDI */
+  color: #fff;
+}
+
+.token-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.18); /* HOVER SU VERDE */
+}
+
+.token-dropdown-item img {
+  width: 32px !important;          /* ICONE PIÙ GRANDI */
+  height: 32px !important;
+  border-radius: 50%;
+}
+
+/* ANIMAZIONE APERTURA */
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Forza il bottone a mantenere sempre la stessa larghezza */
+.token-selector {
+  min-width: 180px;   /* larghezza minima stabile */
+  max-width: 180px;   /* garantisce dimensione fissa */
+  justify-content: flex-start; /* distribuisce icona e testo */
+
+}
+
+/* Riduce lo spazio dell'input amount per lasciare più spazio al bottone */
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+/* Campo amount leggermente più stretto */
+.amount-input {
+  flex: 1.2; /* prima era flex:1 ora prende meno spazio */
+}
+
+/* Token selector più largo rispetto all’input */
+.token-selector {
+  flex: 0.8; /* prima era auto, ora prende più spazio */
+}
