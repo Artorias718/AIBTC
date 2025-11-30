@@ -10,6 +10,7 @@ import StakingPage from "./components/StakingPage";
 import { WalletProvider } from "./components/WalletContext"; // ✅ importa il provider
 import NetworkGuard from "./components/NetworkGuard";
 import LabPage from "./components/Lab";
+import TransakUSDTArbitrum from "./components/TransakUSDTArbitrum";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/ico" element={<ICOPage />} />
               <Route path="/dao" element={<StakingPage />} />
               <Route path="/lab" element={<LabPage />} />
+              <Route path="/test" element={<TransakUSDTArbitrum />} />
             </Routes>
           </NetworkGuard>
         </div>

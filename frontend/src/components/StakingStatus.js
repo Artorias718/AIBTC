@@ -19,7 +19,6 @@ const StakingStatus = ({
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
 
   const [globalAPY, setGlobalAPY] = useState("0");
-  const [globalTVL, setGlobalTVL] = useState("0");
 
   // --- Withdraw parziale ---
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -38,14 +37,14 @@ const StakingStatus = ({
     );
   };
 
-  const fetchStakeInfo = async () => {
+  const fetchAIBTCStakeInfo = async () => {
     if (!account) return;
     try {
       setIsLoading(true);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        CONFIG.ABI_STAKING,
+        CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         provider
       );
 
@@ -72,7 +71,7 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
       const aTokenContract = new ethers.Contract(
-        CONFIG.AAVE_USDC_ATOKEN,
+        CONFIG.AUSDC_ADDRESS,
         ["function balanceOf(address) view returns (uint256)"],
         provider
       );
@@ -93,8 +92,8 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
       const poolContract = new ethers.Contract(
-        CONFIG.AAVE_POOL, // indirizzo Pool
-        CONFIG.ABI_AAVE_POOL, // ABI minima con getReserveData()
+        CONFIG.AAVE_USDC_POOL, // indirizzo Pool
+        CONFIG.ABI_AAVE_USDC_POOL, // ABI minima con getReserveData()
         provider
       );
 
@@ -117,7 +116,7 @@ const StakingStatus = ({
       const provider = getProvider();
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        CONFIG.ABI_STAKING,
+        CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         provider
       );
 
@@ -137,7 +136,7 @@ const StakingStatus = ({
       const signer = provider.getSigner();
       const contract = new ethers.Contract(
         stakingAddress,
-        CONFIG.ABI_STAKING,
+        CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         signer
       );
 
@@ -145,7 +144,7 @@ const StakingStatus = ({
       await tx.wait();
 
       setTransactionStatus("Rewards claimed ✅");
-      fetchStakeInfo();
+      fetchAIBTCStakeInfo();
     } catch (error) {
       console.error(error);
       setTransactionStatus("Claim failed ❌");
@@ -167,7 +166,7 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        CONFIG.ABI_STAKING,
+        CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         provider
       );
 
@@ -196,7 +195,7 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
       const aTokenContract = new ethers.Contract(
-        CONFIG.AAVE_USDC_ATOKEN,
+        CONFIG.AUSDC_ADDRESS,
         ["function balanceOf(address account) view returns (uint256)"],
         provider
       );
@@ -230,7 +229,7 @@ const StakingStatus = ({
       const signer = provider.getSigner();
       const stakingContract = new ethers.Contract(
         stakingAddress,
-        CONFIG.ABI_STAKING,
+        CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         signer
       );
 
@@ -244,7 +243,7 @@ const StakingStatus = ({
 
       setTransactionStatus(`Withdraw confirmed ✅ Hash: ${tx.hash}`);
       setIsWithdrawModalOpen(false);
-      fetchStakeInfo();
+      fetchAIBTCStakeInfo();
     } catch (error) {
       console.error(error);
       setTransactionStatus("Withdraw failed ❌");
@@ -270,15 +269,15 @@ const StakingStatus = ({
       const signer = provider.getSigner();
 
       const wrapperContract = new ethers.Contract(
-        CONFIG.AAVE_STAKING,
-        CONFIG.ABI_WRAPPER_USDC,
+        CONFIG.AAVE_USDC_WRAPPER,
+        CONFIG.ABI_WRAPPER,
         signer
       );
 
       const amountInWei = ethers.utils.parseUnits(withdrawAmount, 6);
 
       const aTokenContract = new ethers.Contract(
-        CONFIG.AAVE_USDC_ATOKEN,
+        CONFIG.AUSDC_ADDRESS,
         [
           "function approve(address spender, uint256 amount) external returns (bool)",
         ],
@@ -286,7 +285,7 @@ const StakingStatus = ({
       );
 
       const approveTx = await aTokenContract.approve(
-        CONFIG.AAVE_STAKING,
+        CONFIG.AAVE_USDC_WRAPPER,
         amountInWei
       );
       await approveTx.wait();
@@ -311,7 +310,7 @@ const StakingStatus = ({
   useEffect(() => {
     fetchGlobalData();
     if (isConnected && account) {
-      fetchStakeInfo();
+      fetchAIBTCStakeInfo();
       fetchUSDCStake();
       fetchUSDCAPY(); // APY USDC
     }

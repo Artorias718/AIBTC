@@ -5,32 +5,23 @@ import React, { useState, useEffect, useContext } from "react";
 import { WalletContext } from "./WalletContext";
 import { CONFIG } from "../config";
 
-const STAKING_ABI = ["function stake(uint256 amount) external"];
-const AAVE_WRAPPER_ABI = ["function deposit(uint256 amount) external"];
-
-const TOKEN_ABI = [
-  "function approve(address spender, uint256 amount) public returns (bool)",
-  "function allowance(address owner, address spender) public view returns (uint256)",
-  "function balanceOf(address owner) public view returns (uint256)",
-];
-
 const TOKENS = [
   {
     name: "AIBTC",
     symbol: "AIBTC",
-    address: CONFIG.TOKEN_ADDRESS,
+    address: CONFIG.AIBTC_ADDRESS,
     decimals: 18,
     image: "/aibtc.png",
-    stakingContract: CONFIG.STAKING_ADDRESS,
+    stakingContract: CONFIG.AIBTC_STAKING,
     useAaveWrapper: false,
   },
   {
     name: "USDC",
     symbol: "USDC",
-    address: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+    address: CONFIG.USDT_ADDRESS,
     decimals: 6,
     image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-    stakingContract: CONFIG.AAVE_STAKING, // AaveWrapper
+    stakingContract: CONFIG.AAVE_USDC_WRAPPER,
     useAaveWrapper: true,
   },
   {
@@ -39,7 +30,7 @@ const TOKENS = [
     address: "0x0000000000000000000000000000000000000002",
     decimals: 18,
     image: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
-    stakingContract: CONFIG.STAKING_ADDRESS,
+    stakingContract: CONFIG.AIBTC_STAKING,
     useAaveWrapper: false,
   },
 ];
@@ -71,7 +62,7 @@ const StakingPage = () => {
     try {
       const tokenContract = new ethers.Contract(
         selectedToken.address,
-        TOKEN_ABI,
+        CONFIG.ERC20_ABI,
         provider
       );
       const allowance = await tokenContract.allowance(
@@ -105,7 +96,7 @@ const StakingPage = () => {
 
       const tokenContract = new ethers.Contract(
         selectedToken.address,
-        TOKEN_ABI,
+        CONFIG.ERC20_ABI,
         signer
       );
       const amountInWei = ethers.utils.parseUnits(
@@ -159,7 +150,7 @@ const StakingPage = () => {
       if (selectedToken.useAaveWrapper) {
         const aaveContract = new ethers.Contract(
           selectedToken.stakingContract,
-          AAVE_WRAPPER_ABI,
+          CONFIG.ABI_WRAPPER,
           signer
         );
         const tx = await aaveContract.deposit(amountInWei);
@@ -169,7 +160,7 @@ const StakingPage = () => {
       } else {
         const stakingContract = new ethers.Contract(
           selectedToken.stakingContract,
-          STAKING_ABI,
+          CONFIG.ABI_AIBTC_STAKING_CONCRAT,
           signer
         );
         const tx = await stakingContract.stake(amountInWei);

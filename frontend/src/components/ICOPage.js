@@ -4,9 +4,10 @@ import { ethers } from "ethers";
 import { WalletContext } from "./WalletContext";
 import { RiArrowDownWideFill } from "react-icons/ri";
 import { CONFIG } from "../config";
+import TransakUSDTArbitrum from "./TransakUSDTArbitrum";
 
-const tokenAddress = CONFIG.TOKEN_ADDRESS;
-const ico = CONFIG.ICO_ADDRESS;
+const tokenAddress = CONFIG.AIBTC_ADDRESS;
+const ico = CONFIG.ICO;
 const usdt = CONFIG.USDT_ADDRESS;
 
 const ICOPage = () => {
@@ -255,8 +256,8 @@ const ICOPage = () => {
 
             <div className="swap-input">
               <img
-                src="https://cryptologos.cc/logos/tether-usdt-logo.png"
-                alt="USDT"
+                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                alt="USDC"
                 className="token-icon"
               />
               <input
@@ -265,7 +266,7 @@ const ICOPage = () => {
                 value={usdtAmount}
                 onChange={(e) => setUsdtAmount(e.target.value)}
               />
-              <span>USDT</span>
+              <span>USDC</span>
             </div>
             <div className="swap-arrow">
               <RiArrowDownWideFill size={64} color="#3ABBA7" />
@@ -296,6 +297,7 @@ const ICOPage = () => {
                 {transactionStatus}
               </div>
             )}
+            <TransakUSDTArbitrum walletAddress={usdt} />
           </div>
         </div>
       </div>
