@@ -44,7 +44,7 @@ export default function TransakUSDCArbitrum() {
         <h2 className="text-xl font-bold" style={{ color: "#7794e3ff" }}>
           Don’t have USDC? Top up here
         </h2>{" "}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4 justify-center">
           <img
             src="https://on-ramp-cache.api.cx.metamask.io/assets/Mastercard-regular@3x.png"
             alt="Mastercard"

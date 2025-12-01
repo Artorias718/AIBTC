@@ -281,12 +281,10 @@
   .progress-stats {
     grid-template-columns: 1fr;
   }
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
 
   .swap-input input {
     width: 100%;  /* occuperà tutto lo spazio disponibile */
   }
+
 
 }
