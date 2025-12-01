@@ -12,14 +12,14 @@ const usdt = CONFIG.USDT_ADDRESS;
 
 const ICOPage = () => {
   const [tokensSold, setTokensSold] = useState(0);
-  const [totalTokens, setTotalTokens] = useState("");
+  const [totalTokens, setTotalTokens] = useState("5250000");
   const { isConnected, account } = useContext(WalletContext);
   const [transactionStatus, setTransactionStatus] = useState("");
   const [usdtAmount, setUsdtAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState(0);
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
 
-  const TOKEN_PRICE = 1; // prezzo token in USDT
+  const TOKEN_PRICE = 0.1; // prezzo token in USDT
 
   const ICO_ABI = [
     "function deposit(uint256 amount) external",
@@ -77,7 +77,7 @@ const ICOPage = () => {
 
   // --- Aggiorna dati globali ---
   useEffect(() => {
-    fetchTotalSupply();
+    //fetchTotalSupply();
     fetchTokensSold();
     const interval = setInterval(fetchTokensSold, 10000); // refresh ogni 10s
     return () => clearInterval(interval);

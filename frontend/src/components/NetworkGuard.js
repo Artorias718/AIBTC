@@ -19,8 +19,7 @@ const NetworkGuard = ({ children }) => {
             borderBottom: "2px solid #000",
           }}
         >
-          ⚠️ Wrong Network – Please switch to{" "}
-          <strong>Arbitrum Sepolia Chain</strong>{" "}
+          ⚠️ Wrong Network, please switch to <strong>Arbitrum One</strong>{" "}
           <button
             onClick={switchNetwork}
             style={{

@@ -21,10 +21,13 @@ function App() {
           <NetworkGuard>
             <Routes>
               <Route path="/" element={<Homepage />} />
+              {/* <Route path="/ico" element={<ICOPage />} />
+              <Route path="/staking" element={<StakingPage />} />
+              <Route path="/lab" element={<LabPage />} /> */}
               <Route path="/ico" element={<ICOPage />} />
-              <Route path="/dao" element={<StakingPage />} />
-              <Route path="/lab" element={<LabPage />} />
-              <Route path="/test" element={<TransakUSDTArbitrum />} />
+              <Route path="/staking" element={<ComingSoonPage />} />
+              <Route path="/lab" element={<ComingSoonPage />} />
+              <Route path="/test" element={<ComingSoonPage />} />
             </Routes>
           </NetworkGuard>
         </div>

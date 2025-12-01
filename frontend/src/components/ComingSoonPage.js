@@ -1,22 +1,35 @@
-import React from 'react';
-import './ComingSoonPage.css';
+import React from "react";
+import "./ComingSoonPage.css";
 
 const ComingSoonPage = () => {
   return (
-    <div className="coming-soon-page">
-      <div className="coming-container">
-        {/* Header */}
-        <div className="coming-header">
-          <h1>🚧 Coming Soon</h1>
-          <p>We’re working hard to bring you something amazing. Stay tuned!</p>
-        </div>
+    <div className="coming-soon-container">
+      {/* Logo
+      <img src="/aibtc.png" alt="Logo" className="logo" /> */}
 
+      {/* Titolo */}
+      <h1 className="title">Coming Soon</h1>
 
-        {/* Actions */}
-        <div className="coming-actions">
-          <button className="coming-btn coming-btn-secondary">Back to Home</button>
-        </div>
-      </div>
+      {/* Sottotitolo con link */}
+      <p className="subtitle">
+        Meanwhile, explore our{" "}
+        <a
+          href="https://aibtc.finance/Whitepaper"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="docs-link"
+        >
+          whitepaper
+        </a>
+        .
+      </p>
+
+      {/* Immagine */}
+      <img
+        src="/work.png"
+        alt="Coming Soon Illustration"
+        className="illustration"
+      />
     </div>
   );
 };

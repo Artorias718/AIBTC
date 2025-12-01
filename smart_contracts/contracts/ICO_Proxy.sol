@@ -17,6 +17,11 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 public totalDepositedUSDT;
     uint256 public totalDistributedCER;
 
+    event Deposited(address indexed user, uint256 usdtAmount, uint256 cerAmount);
+    event PriceUpdated(uint256 newPrice);
+    event SaleStarted();
+    event SaleStopped();
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -32,7 +37,7 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         cerToken = IERC20(_cerTokenAddress);
 
         saleActive = true;
-        price_usdt = 1; // 1 USDT iniziale
+        price_usdt = 10; // Initial price
     }
 
     function _authorizeUpgrade(address newImplementation)
@@ -42,14 +47,14 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     {}
 
     function deposit(uint256 amount) external {
-        require(saleActive, "Vendita non attiva");
-        require(amount > 0, "Importo nullo");
+        require(saleActive, "Sale not active");
+        require(amount > 0, "Amount is null");
 
-        uint256 cerAmount = (amount * 1e12) / price_usdt;
+        uint256 cerAmount = (amount * 1e14) / price_usdt;
 
         require(
             usdt.transferFrom(msg.sender, address(this), amount),
-            "Trasferimento USDT fallito"
+            "AIBTC transfer failed"
         );
 
         totalDepositedUSDT += amount;
@@ -57,30 +62,34 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         require(
             cerToken.transfer(msg.sender, cerAmount),
-            "Trasferimento CER fallito"
+            "AIBTC transfer failed"
         );
+        emit Deposited(msg.sender, amount, cerAmount);
     }
 
-    function withdrawUSDT(uint256 amount) external onlyOwner {
+    function withdrawUSDC(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(usdt.transfer(msg.sender, amount * 1e6), "Prelievo USDT fallito");
+        require(usdt.transfer(msg.sender, amount * 1e6), "USDC Withdraw failed");
     }
 
     function withdrawCER(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(cerToken.transfer(msg.sender, amount * 1e18), "Prelievo CER fallito");
+        require(cerToken.transfer(msg.sender, amount * 1e18), "AIBTC Withdraw failed");
     }
 
     function setPrice(uint256 newPrice) external onlyOwner {
-        require(newPrice > 0, "Prezzo non valido");
+        require(newPrice > 0, "Invalid price");
         price_usdt = newPrice;
+        emit PriceUpdated(newPrice);
     }
 
     function startSale() external onlyOwner {
         saleActive = true;
+        emit SaleStarted();
     }
 
     function stopSale() external onlyOwner {
         saleActive = false;
+        emit SaleStopped();
     }
 }

@@ -4,17 +4,14 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
-// import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-
 contract Token is ERC20, Ownable {
     constructor() ERC20("AIBTC", "AI Bitcoin") Ownable(msg.sender) {
         feeCollector = msg.sender;
-        _mint(msg.sender, 1_000_000 * 10 ** decimals());
+        _mint(msg.sender, 21_000_000 * 10 ** decimals());
     }
 
-    uint256 public feeBasisPoints = 100; // 100 = 1%
-    uint256 public constant MAX_FEE_BPS = 300; // massimo 3%
+    uint256 public feeBasisPoints = 100; 
+    uint256 public constant MAX_FEE_BPS = 300;
     address public feeCollector;
     bool public feeEnabled = false;
 
@@ -36,9 +33,7 @@ contract Token is ERC20, Ownable {
             uint256 fee = (value * feeBasisPoints) / 10000;
             uint256 amountAfterFee = value - fee;
 
-            // invia la fee al feeCollector
             super._update(from, feeCollector, fee);
-            // invia il resto al destinatario
             super._update(from, to, amountAfterFee);
         } else {
             super._update(from, to, value);

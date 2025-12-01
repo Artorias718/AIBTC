@@ -94,6 +94,31 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "usdtAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "cerAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "Deposited",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": false,
 						"internalType": "uint64",
 						"name": "version",
@@ -120,6 +145,31 @@
 					}
 				],
 				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newPrice",
+						"type": "uint256"
+					}
+				],
+				"name": "PriceUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [],
+				"name": "SaleStarted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [],
+				"name": "SaleStopped",
 				"type": "event"
 			},
 			{
@@ -369,7 +419,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "withdrawUSDT",
+				"name": "withdrawUSDC",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -603,11 +653,11 @@
 			]
 		},
 		"contracts/ICO_Proxy.sol": {
-			"keccak256": "0xcd5290bc157960cf9b741bb6b4985bd549d82638fb799afd6829201784f8f39f",
+			"keccak256": "0x7b3dae3cf45eba56acfbcce31eece95c53530afde456fb41cb7b8febccea5990",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://752edf17ccb611ec3a60334cf45a65d142d0e2fe59ecaca1d868d66827361ffd",
-				"dweb:/ipfs/QmP4SDzYX8cwfMDkXqdasjEKb8gkayeQJwBZ1zD27Yve3a"
+				"bzz-raw://2cd80443da8d872d86d43a9278d079ed38f3525cf62c571c8a079ed794930b99",
+				"dweb:/ipfs/QmYxgKCHxa9rtht5dXbF9pei71S9gU8dDaqCbbpbxwa5hs"
 			]
 		}
 	},

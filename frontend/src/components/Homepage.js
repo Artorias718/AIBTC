@@ -19,7 +19,7 @@ const Homepage = () => {
                 optimize your earning strategy and maximize returns
               </p>
               <div className="hero-buttons">
-                <a href="/dao" className="btn btn-primary btn-large">
+                <a href="/staking" className="btn btn-primary btn-large">
                   Explore AIBTC
                 </a>
                 <a href="/ico" className="btn btn-secondary btn-large">
@@ -52,7 +52,7 @@ const Homepage = () => {
                 long-term stability.
               </p>
               <div className="hero-buttons">
-                <a href="/dao" className="btn btn-primary btn-large">
+                <a href="/staking" className="btn btn-primary btn-large">
                   Explore Staking
                 </a>
                 <a href="/ico" className="btn btn-secondary btn-large">
@@ -78,7 +78,7 @@ const Homepage = () => {
                 time, it helps preserve the value of your staked assets.
               </p>
               <div className="hero-buttons">
-                <a href="/dao" className="btn btn-primary btn-large">
+                <a href="/staking" className="btn btn-primary btn-large">
                   Explore Staking
                 </a>
               </div>
