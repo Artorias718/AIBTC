@@ -25,8 +25,9 @@ function App() {
               <Route path="/staking" element={<StakingPage />} />
               <Route path="/lab" element={<LabPage />} /> */}
               <Route path="/ico" element={<ICOPage />} />
-              <Route path="/staking" element={<ComingSoonPage />} />
-              <Route path="/lab" element={<ComingSoonPage />} />
+              <Route path="/staking" element={<StakingPage />} />
+              <Route path="/lab" element={<LabPage />} />
+              <Route path="/Luckydrop" element={<ComingSoonPage />} />
               <Route path="/test" element={<ComingSoonPage />} />
             </Routes>
           </NetworkGuard>

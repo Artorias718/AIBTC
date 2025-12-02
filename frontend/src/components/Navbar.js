@@ -64,6 +64,14 @@ const Navbar = () => {
             >
               Lab
             </Link>
+            <Link
+              to="/luckydrop"
+              className={`nav-link ${
+                location.pathname === "/luckydrop" ? "active" : ""
+              }`}
+            >
+              LuckyDrop
+            </Link>
             <a
               href="/Whitepaper.pdf"
               target="_blank"
