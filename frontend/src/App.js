@@ -11,6 +11,7 @@ import { WalletProvider } from "./components/WalletContext"; // ✅ importa il p
 import NetworkGuard from "./components/NetworkGuard";
 import LabPage from "./components/Lab";
 import TransakUSDTArbitrum from "./components/TransakUSDTArbitrum";
+import WheelOfFortune from "./components/Wheel";
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
               <Route path="/staking" element={<StakingPage />} />
               <Route path="/lab" element={<LabPage />} />
               <Route path="/Luckydrop" element={<ComingSoonPage />} />
-              <Route path="/test" element={<ComingSoonPage />} />
+              <Route path="/test" element={<WheelOfFortune />} />
             </Routes>
           </NetworkGuard>
         </div>

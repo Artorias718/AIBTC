@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+
 
 /**
  * @title Staking (budgeted annual rewards, dynamic APY)
@@ -19,7 +21,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
  * - To avoid expensive loops, totalStakedAmount is maintained on every stake/withdraw.
  * - When a user increases stake we first snapshot accrued reward into `unclaimed` to avoid losing them.
  */
-contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
+contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, PausableUpgradeable {
     using SafeERC20 for IERC20;
 
     IERC20 public cerToken;
@@ -57,7 +59,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function initialize(address _cerToken, uint256 _annualRewardBudget) external initializer {
         __Ownable_init(msg.sender);
-
+        __Pausable_init();
         cerToken = IERC20(_cerToken);
         _setAnnualBudget(_annualRewardBudget);
     }
@@ -87,7 +89,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     // ----------------------------- stake logic -----------------------------
 
-    function stake(uint256 amount) external {
+    function stake(uint256 amount) external whenNotPaused{
         require(amount > 0, "Importo nullo");
         Stake storage s = stakes[msg.sender];
 
@@ -150,7 +152,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     // ----------------------------- claim & withdraw -----------------------------
 
-    function claim() external {
+    function claim() external whenNotPaused{
         Stake storage s = stakes[msg.sender];
         require(s.amount > 0 || s.unclaimed > 0, "Nessuno stake o reward");
 
@@ -171,7 +173,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         emit RewardClaimed(msg.sender, reward);
     }
 
-    function withdraw() external {
+    function withdraw() external whenNotPaused{
         Stake memory s = stakes[msg.sender];
         require(s.amount > 0, "Nessuno stake");
 
@@ -194,7 +196,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         emit Withdrawn(msg.sender, total);
     }
 
-    function withdrawPartial(uint256 amount) external {
+    function withdrawPartial(uint256 amount) external whenNotPaused{
         Stake storage s = stakes[msg.sender];
         require(s.amount > 0, "Nessuno stake");
         require(amount > 0 && amount <= s.amount, "Importo non valido");
@@ -247,4 +249,12 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function contractBalance() external view returns (uint256) {
         return cerToken.balanceOf(address(this));
     }
-}
+
+    function pause() external onlyOwner {
+    _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+    }

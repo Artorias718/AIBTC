@@ -9,6 +9,8 @@ const StakingStatus = ({
   stakingAddress,
   tokenDecimals = 18,
 }) => {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const [stakedAmount, setStakedAmount] = useState("0");
   const [pendingReward, setPendingReward] = useState("0");
   const [usdcBalance, setUsdcBalance] = useState("0");
@@ -98,7 +100,7 @@ const StakingStatus = ({
       );
 
       const reserveData = await poolContract.getReserveData(
-        CONFIG.USDT_ADDRESS
+        CONFIG.USDC_ADDRESS
       );
       // currentLiquidityRate è in RAY (1e27)
       const apy = Number(reserveData.currentLiquidityRate) / 1e27;
@@ -135,7 +137,7 @@ const StakingStatus = ({
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(
-        stakingAddress,
+        CONFIG.AIBTC_STAKING,
         CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         signer
       );
@@ -165,7 +167,7 @@ const StakingStatus = ({
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const stakingContract = new ethers.Contract(
-        stakingAddress,
+        CONFIG.AIBTC_STAKING,
         CONFIG.ABI_AIBTC_STAKING_CONCRAT,
         provider
       );
@@ -280,6 +282,7 @@ const StakingStatus = ({
         CONFIG.AUSDC_ADDRESS,
         [
           "function approve(address spender, uint256 amount) external returns (bool)",
+          "function allowance(address owner, address spender) view returns (uint256)",
         ],
         signer
       );
@@ -291,6 +294,21 @@ const StakingStatus = ({
       await approveTx.wait();
 
       setTransactionStatus("Approval confirmed. Withdrawing...");
+      // await sleep(5000);
+
+      // Controllo esplicito allowance
+      const allowance = await aTokenContract.allowance(
+        account,
+        CONFIG.AAVE_USDC_WRAPPER
+      );
+
+      console.log(allowance);
+      if (allowance.lt(amountInWei)) {
+        console.log(
+          "Allowance non ancora aggiornata, ritento tra 2 secondi..."
+        );
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
 
       const tx = await wrapperContract.withdraw(amountInWei);
       await tx.wait();
@@ -411,7 +429,7 @@ const StakingStatus = ({
                 disabled={
                   isTransactionLoading ||
                   !account ||
-                  parseFloat(stakedAmount) === 0
+                  parseFloat(usdcBalance) === 0
                 }
               >
                 Withdraw

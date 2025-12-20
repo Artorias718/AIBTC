@@ -12,7 +12,7 @@ contract AaveWrapper {
     using SafeERC20 for IERC20;
 
     IERC20 public usdc;
-    IERC20 aToken = IERC20(0x460b97BD498E1157530AEb3086301d5225b91216);
+    IERC20 aToken = IERC20(0x10F1A9D11CDf50041f3f8cB7191CBE2f31750ACC);
     IPool public aavePool;
     address public feeRecipient = 0x709c729ad1Bf900dfa503a9E510175FD65135cDB;
 
