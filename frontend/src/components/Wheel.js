@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Gift } from "lucide-react"; // solo se vuoi icone decorative
+//import { Gift } from "lucide-react"; // solo se vuoi icone decorative
 import { WheelOfFortune } from "../libs/dist/components/wheel-of-fortune.js"; // il tuo wheel copiato dalla libreria
 import { ethers } from "ethers";
 
