@@ -21,7 +21,8 @@ export default function TransakUSDCArbitrum() {
   }, []);
 
   const crypto = "USDC";
-  const network = "arbitrum";
+  //const network = "arbitrum";
+  const network = "base";
   const fiatCurrency = "EUR";
 
   const handleBuy = () => {
@@ -34,7 +35,7 @@ export default function TransakUSDCArbitrum() {
     window.open(
       transakUrl,
       "transakPopup",
-      "width=500,height=700,resizable,scrollbars=yes,status=1"
+      "width=500,height=700,resizable,scrollbars=yes,status=1",
     );
   };
 

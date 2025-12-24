@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.24+commit.e11b9ed9"
+		"version": "0.8.30+commit.73712a01"
 	},
 	"language": "Solidity",
 	"output": {
@@ -118,9 +118,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Aave_Wrapper.sol": "AaveWrapper"
+			"contracts/Aave_WrapperUSDT.sol": "AaveWrapper"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "prague",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -180,11 +180,11 @@
 				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
 			]
 		},
-		"contracts/Aave_Wrapper.sol": {
-			"keccak256": "0xc418c18aa6e7c38520d8350ebe0591d8b7aba1c8570e80e50032136504fbe8fa",
+		"contracts/Aave_WrapperUSDT.sol": {
+			"keccak256": "0x6e4c5e7f530ad675db365a20b801da11c8556615a5bc1133e99a02f7c0c103ab",
 			"urls": [
-				"bzz-raw://c987e829057c5c8092d0ab069bca233205a1a7c890ce33673da4db36c2b33cd4",
-				"dweb:/ipfs/Qme7ZotdgmTf4zzPTfiNB5Kmx5nW1YnAPNQ9SQXTf12Ewe"
+				"bzz-raw://e6b37f8f28f567fadbe599b9c1f82f9a11d3704bb8aaa6dfb4e3b26914b7b782",
+				"dweb:/ipfs/QmeYnC2zCiamHwUYdmeYG3M23nESjHHWD9AdUiqJ2WV5K9"
 			]
 		}
 	},

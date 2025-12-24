@@ -12,8 +12,9 @@ export const WalletProvider = ({ children }) => {
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
 
   // ✅ Imposta la rete corretta (Arbitrum Sepolia Testnet)
-  const CORRECT_CHAIN_ID = "0x66eee"; // 421614 in decimale Arbitrum sepolia
+  //const CORRECT_CHAIN_ID = "0x66eee"; // 421614 in decimale Arbitrum sepolia
   //const CORRECT_CHAIN_ID = "0xa4b1"; // 42161 in decimale Arbitrum one
+  const CORRECT_CHAIN_ID = "0x2105"; // Base Sepolia
 
   useEffect(() => {
     if (window.ethereum) {
@@ -28,7 +29,7 @@ export const WalletProvider = ({ children }) => {
       return () => {
         window.ethereum.removeListener(
           "accountsChanged",
-          handleAccountsChanged
+          handleAccountsChanged,
         );
         window.ethereum.removeListener("chainChanged", handleChainChanged);
       };

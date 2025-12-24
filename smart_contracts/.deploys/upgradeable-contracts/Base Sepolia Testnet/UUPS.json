@@ -1,0 +1,12 @@
+{
+  "id": 84532,
+  "network": "Base Sepolia Testnet",
+  "deployments": {
+    "0xf79545b27c6ba633bf5ad9973877171084427597": {
+      "date": "2026-02-15T16:28:12.718Z",
+      "contractName": "ICO",
+      "fork": "london",
+      "implementationAddress": "0xFb4CdF273Ac28850fF94EC0a4B65A61A561Cb211"
+    }
+  }
+}

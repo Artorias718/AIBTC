@@ -5,10 +5,11 @@ import { WalletContext } from "./WalletContext";
 import { RiArrowDownWideFill } from "react-icons/ri";
 import { CONFIG } from "../config";
 import TransakUSDTArbitrum from "./TransakUSDTArbitrum";
+import Countdown from "./Countdown";
 
 const tokenAddress = CONFIG.AIBTC_ADDRESS;
 const ico = CONFIG.ICO;
-const usdt = CONFIG.USDT_ADDRESS;
+const usdt = CONFIG.USDC_ADDRESS;
 
 const ICOPage = () => {
   const [tokensSold, setTokensSold] = useState(0);
@@ -36,7 +37,7 @@ const ICOPage = () => {
       return new ethers.providers.Web3Provider(window.ethereum);
     }
     return new ethers.providers.JsonRpcProvider(
-      "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
+      "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j",
     );
   };
 
@@ -48,7 +49,7 @@ const ICOPage = () => {
       const tokenContract = new ethers.Contract(
         tokenAddress,
         ERC20_ABI,
-        provider
+        provider,
       );
       const supply = await tokenContract.totalSupply();
       setTotalTokens(ethers.utils.formatUnits(supply, 18));
@@ -105,7 +106,7 @@ const ICOPage = () => {
         alert(
           wasAdded
             ? "✅ Token aggiunto a MetaMask!"
-            : "❌ L'utente ha annullato l'aggiunta del token."
+            : "❌ L'utente ha annullato l'aggiunta del token.",
         );
       } else
         alert("⚠️ MetaMask non rilevato. Installa MetaMask per continuare.");
@@ -145,7 +146,7 @@ const ICOPage = () => {
       const receipt = await tx.wait();
 
       setTransactionStatus(
-        receipt.status === 1 ? "Transaction successful!" : "Transaction failed"
+        receipt.status === 1 ? "Transaction successful!" : "Transaction failed",
       );
 
       // Aggiorna tokens sold subito dopo la transazione
@@ -162,7 +163,7 @@ const ICOPage = () => {
       setTransactionStatus(
         error?.code === 4001
           ? "Transaction rejected by user"
-          : `Transaction failed: ${shortMessage}`
+          : `Transaction failed: ${shortMessage}`,
       );
     } finally {
       setIsTransactionLoading(false);
@@ -188,6 +189,8 @@ const ICOPage = () => {
         <div className="progress-section">
           <div className="progress-card">
             <h2>Token Sale Progress</h2>
+            <Countdown targetDate="2025-01-31T18:00:00Z" />
+
             <div className="progress-stats">
               <div className="stat">
                 <div className="stat-number">{tokensSold.toLocaleString()}</div>
