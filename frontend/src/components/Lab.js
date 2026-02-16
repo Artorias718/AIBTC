@@ -8,10 +8,10 @@ import Modal from "./Modal";
   👉 QUI METTI GLI INDIRIZZI DEI 4 CONTRATTI NFT
 */
 const NFT_CONTRACTS = [
-  "0xEa521f642D1eE05aCA25979B7B6d7C83b24aA901",
-  "0xEa521f642D1eE05aCA25979B7B6d7C83b24aA901",
-  "0xEa521f642D1eE05aCA25979B7B6d7C83b24aA901",
-  "0xEa521f642D1eE05aCA25979B7B6d7C83b24aA901",
+  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
+  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
+  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
+  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
 ];
 
 const NFT_ABI = [
@@ -89,7 +89,7 @@ const LabPage = () => {
           const contract = new ethers.Contract(
             NFT_CONTRACTS[i],
             NFT_ABI,
-            provider
+            provider,
           );
 
           const uri = await contract.tokenURI(1); // tutti gli NFT hanno stesso baseURI
@@ -132,7 +132,7 @@ const LabPage = () => {
         const contract = new ethers.Contract(
           NFT_CONTRACTS[i],
           NFT_ABI,
-          provider
+          provider,
         );
         const balance = await contract.balanceOf(account);
 
@@ -172,7 +172,7 @@ const LabPage = () => {
       const nftContract = new ethers.Contract(
         NFT_CONTRACTS[index],
         NFT_ABI,
-        signer
+        signer,
       );
 
       const tx = await nftContract.publicMint({

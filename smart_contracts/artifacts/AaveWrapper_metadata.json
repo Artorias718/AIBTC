@@ -118,7 +118,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Aave_WrapperUSDT.sol": "AaveWrapper"
+			"contracts/Aave_WrapperWETH.sol": "AaveWrapper"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -180,11 +180,11 @@
 				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
 			]
 		},
-		"contracts/Aave_WrapperUSDT.sol": {
-			"keccak256": "0x6e4c5e7f530ad675db365a20b801da11c8556615a5bc1133e99a02f7c0c103ab",
+		"contracts/Aave_WrapperWETH.sol": {
+			"keccak256": "0x3af81c5617820995074579eb87b15f2823427ae32acb25ae865ee2354abb4560",
 			"urls": [
-				"bzz-raw://e6b37f8f28f567fadbe599b9c1f82f9a11d3704bb8aaa6dfb4e3b26914b7b782",
-				"dweb:/ipfs/QmeYnC2zCiamHwUYdmeYG3M23nESjHHWD9AdUiqJ2WV5K9"
+				"bzz-raw://91c03c3121f0b8091449a6b4e4d97f93910efd9820e0ba5b97852c2003737f57",
+				"dweb:/ipfs/QmW3bTANYiPTjyHXC8vTccnPVCKXGQsgD9QC9GP4da8B16"
 			]
 		}
 	},

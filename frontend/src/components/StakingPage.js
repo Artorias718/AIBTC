@@ -31,13 +31,26 @@ const TOKENS = [
   {
     name: "USDT",
     symbol: "USDT",
-    address: "0x0a215D8ba66387DCA84B284D18c3B4ec3de6E54a",
-    aTokenAddress: "0xcE3CAae5Ed17A7AafCEEbc897DE843fA6CC0c018",
+    address: CONFIG.AUSDT_ADDRESS,
+    aTokenAddress: CONFIG.AUSDT_ADDRESS,
     poolAddress: CONFIG.AAVE_USDC_POOL,
-    underlyingAsset: "0x0a215d8ba66387dca84b284d18c3b4ec3de6e54a",
+    underlyingAsset: CONFIG.AUSDT_ADDRESS,
     decimals: 6,
     image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-    stakingContract: "0x547c469e641ec689e109709b975d1f5f211016ee",
+    stakingContract: CONFIG.AAVE_USDT_WRAPPER,
+    useAaveWrapper: true,
+    hasClaim: false,
+  },
+  {
+    name: "ETH",
+    symbol: "ETH",
+    address: CONFIG.WETH_ADDRESS,
+    aTokenAddress: CONFIG.aWETH_ADDRESS,
+    poolAddress: CONFIG.AAVE_WETH_POOL,
+    underlyingAsset: CONFIG.WETH_ADDRESS,
+    decimals: 18,
+    image: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    stakingContract: CONFIG.AAVE_WETH_WRAPPER,
     useAaveWrapper: true,
     hasClaim: false,
   },
@@ -72,7 +85,7 @@ const StakingDashboard = () => {
       ? new ethers.providers.Web3Provider(window.ethereum)
       : new ethers.providers.JsonRpcProvider(
           //"https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j"
-          "https://base-sepolia-rpc.publicnode.com"
+          "https://base-sepolia-rpc.publicnode.com",
         );
 
   const formatAmount = (value) => {
@@ -92,7 +105,7 @@ const StakingDashboard = () => {
     spender,
     amount,
     retries = 10,
-    delay = 2000
+    delay = 2000,
   ) => {
     for (let i = 0; i < retries; i++) {
       const allowance = await tokenContract.allowance(account, spender);
@@ -126,7 +139,7 @@ const StakingDashboard = () => {
       const stakingContract = new ethers.Contract(
         CONFIG.AIBTC_STAKING,
         CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-        provider
+        provider,
       );
       const apyRaw = await stakingContract.currentAPY();
       setGlobalAPY((ethers.utils.formatUnits(apyRaw, 18) * 100).toFixed(2));
@@ -143,14 +156,14 @@ const StakingDashboard = () => {
         const aToken = new ethers.Contract(
           token.aTokenAddress,
           ["function balanceOf(address) view returns (uint256)"],
-          provider
+          provider,
         );
         const aBalance = await aToken.balanceOf(account);
 
         const walletToken = new ethers.Contract(
           token.address,
           ["function balanceOf(address) view returns (uint256)"],
-          provider
+          provider,
         );
         const walletBalance = await walletToken.balanceOf(account);
 
@@ -158,7 +171,7 @@ const StakingDashboard = () => {
           ...prev,
           [token.symbol]: ethers.utils.formatUnits(
             walletBalance,
-            token.decimals
+            token.decimals,
           ),
         }));
         setStakedBalances((prev) => ({
@@ -170,10 +183,10 @@ const StakingDashboard = () => {
           const poolContract = new ethers.Contract(
             token.poolAddress,
             CONFIG.ABI_AAVE_USDC_POOL,
-            provider
+            provider,
           );
           const reserveData = await poolContract.getReserveData(
-            token.underlyingAsset
+            token.underlyingAsset,
           );
           const apy = (
             (Number(reserveData.currentLiquidityRate) / 1e27) *
@@ -187,7 +200,7 @@ const StakingDashboard = () => {
         const stakingContract = new ethers.Contract(
           token.stakingContract,
           CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-          provider
+          provider,
         );
         const [stakeData, reward] = await Promise.all([
           stakingContract.stakes(account),
@@ -198,7 +211,7 @@ const StakingDashboard = () => {
           ...prev,
           [token.symbol]: ethers.utils.formatUnits(
             stakeData.amount,
-            token.decimals
+            token.decimals,
           ),
         }));
         setStakedBalances((prev) => ({
@@ -224,10 +237,10 @@ const StakingDashboard = () => {
         const poolContract = new ethers.Contract(
           token.poolAddress,
           CONFIG.ABI_AAVE_USDC_POOL,
-          provider
+          provider,
         );
         const reserveData = await poolContract.getReserveData(
-          token.underlyingAsset
+          token.underlyingAsset,
         );
         const apy = (
           (Number(reserveData.currentLiquidityRate) / 1e27) *
@@ -252,11 +265,12 @@ const StakingDashboard = () => {
       const tokenContract = new ethers.Contract(
         selectedToken.address,
         CONFIG.ERC20_ABI,
-        provider
+        //provider,
+        signer.provider,
       );
       const allowance = await tokenContract.allowance(
         account,
-        selectedToken.stakingContract
+        selectedToken.stakingContract,
       );
       const amountInWei = stakeAmount
         ? ethers.utils.parseUnits(stakeAmount, selectedToken.decimals)
@@ -285,28 +299,28 @@ const StakingDashboard = () => {
       const tokenContract = new ethers.Contract(
         selectedToken.address,
         CONFIG.ERC20_ABI,
-        signer
+        signer,
       );
 
       const amountInWei = ethers.utils.parseUnits(
         amountToApprove,
-        selectedToken.decimals
+        selectedToken.decimals,
       );
 
       const tx = await tokenContract.approve(
         selectedToken.stakingContract,
-        amountInWei
+        amountInWei,
       );
       await tx.wait();
 
       setTransactionStatus(
-        "Approval transaction mined, waiting for allowance..."
+        "Approval transaction mined, waiting for allowance...",
       );
 
       const allowanceConfirmed = await waitForAllowance(
         tokenContract,
         selectedToken.stakingContract,
-        amountInWei
+        amountInWei,
       );
 
       if (!allowanceConfirmed) {
@@ -322,7 +336,7 @@ const StakingDashboard = () => {
     } catch (error) {
       console.error(error);
       setTransactionStatus(
-        error.code === 4001 ? "Approval rejected by user" : "Approval failed"
+        error.code === 4001 ? "Approval rejected by user" : "Approval failed",
       );
     } finally {
       setIsTransactionLoading(false);
@@ -336,6 +350,18 @@ const StakingDashboard = () => {
       setTransactionStatus("Enter a valid amount");
       return;
     }
+    const token = new ethers.Contract(
+      selectedToken.address,
+      CONFIG.ERC20_ABI,
+      signer.provider,
+    );
+
+    const bal = await token.balanceOf(account);
+    const balFmt = ethers.utils.formatUnits(bal, selectedToken.decimals);
+
+    console.log("Token address:", selectedToken.address);
+    console.log("Amount to stake:", amountToStake);
+    console.log("WETH balance:", balFmt);
 
     try {
       setTransactionStatus("Processing stake...");
@@ -343,14 +369,14 @@ const StakingDashboard = () => {
 
       const amountInWei = ethers.utils.parseUnits(
         amountToStake,
-        selectedToken.decimals
+        selectedToken.decimals,
       );
 
       if (selectedToken.useAaveWrapper) {
         const aaveContract = new ethers.Contract(
           selectedToken.stakingContract,
           CONFIG.ABI_WRAPPER,
-          signer
+          signer,
         );
         const tx = await aaveContract.deposit(amountInWei);
         await tx.wait();
@@ -358,7 +384,7 @@ const StakingDashboard = () => {
         const stakingContract = new ethers.Contract(
           selectedToken.stakingContract,
           CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-          signer
+          signer,
         );
         const tx = await stakingContract.stake(amountInWei);
         await tx.wait();
@@ -377,7 +403,7 @@ const StakingDashboard = () => {
       setTransactionStatus(
         error?.code === 4001
           ? "Transaction rejected by user"
-          : `Transaction failed: ${shortMessage}`
+          : `Transaction failed: ${shortMessage}`,
       );
     } finally {
       setIsTransactionLoading(false);
@@ -399,26 +425,26 @@ const StakingDashboard = () => {
 
       const amountInWei = ethers.utils.parseUnits(
         modalAmount,
-        selectedToken.decimals
+        selectedToken.decimals,
       );
 
       if (selectedToken.useAaveWrapper) {
         const wrapper = new ethers.Contract(
           selectedToken.stakingContract,
           CONFIG.ABI_WRAPPER,
-          signer
+          signer,
         );
 
         const token = new ethers.Contract(
           selectedToken.aTokenAddress,
           CONFIG.ERC20_ABI,
-          signer
+          signer,
         );
 
         // Check allowance
         const currentAllowance = await token.allowance(
           account,
-          selectedToken.stakingContract
+          selectedToken.stakingContract,
         );
 
         if (currentAllowance.lt(amountInWei)) {
@@ -426,21 +452,21 @@ const StakingDashboard = () => {
           if (!currentAllowance.isZero()) {
             const resetTx = await token.approve(
               selectedToken.stakingContract,
-              0
+              0,
             );
             await resetTx.wait();
           }
 
           const approveTx = await token.approve(
             selectedToken.stakingContract,
-            amountInWei
+            amountInWei,
           );
           await approveTx.wait();
 
           const allowanceConfirmed = await waitForAllowance(
             token,
             selectedToken.stakingContract,
-            amountInWei
+            amountInWei,
           );
 
           if (!allowanceConfirmed) {
@@ -456,7 +482,7 @@ const StakingDashboard = () => {
         const stakingContract = new ethers.Contract(
           selectedToken.stakingContract,
           CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-          signer
+          signer,
         );
         const tx = await stakingContract.withdrawPartial(amountInWei);
         await tx.wait();
@@ -475,7 +501,7 @@ const StakingDashboard = () => {
       setTransactionStatus(
         error?.code === 4001
           ? "Transaction rejected by user"
-          : `Withdraw failed: ${shortMessage}`
+          : `Withdraw failed: ${shortMessage}`,
       );
     } finally {
       setIsTransactionLoading(false);
@@ -492,7 +518,7 @@ const StakingDashboard = () => {
       const contract = new ethers.Contract(
         token.stakingContract,
         CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-        signer
+        signer,
       );
       const tx = await contract.claim();
       await tx.wait();
@@ -579,7 +605,7 @@ const StakingDashboard = () => {
                   {formatAmount(
                     token.useAaveWrapper
                       ? stakedBalances[token.symbol]
-                      : walletBalances[token.symbol]
+                      : walletBalances[token.symbol],
                   )}
                 </div>
 
