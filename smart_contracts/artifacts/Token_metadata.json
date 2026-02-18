@@ -295,6 +295,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "enableTrading",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "feeBasisPoints",
 				"outputs": [
 					{
@@ -341,6 +348,25 @@
 					}
 				],
 				"name": "isFeeExempt",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isTradingExempt",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -460,6 +486,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "exempt",
+						"type": "bool"
+					}
+				],
+				"name": "setTradingExempt",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "symbol",
 				"outputs": [
@@ -480,6 +524,32 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tradingEnabled",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tradingPermanentlyEnabled",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -674,7 +744,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Token.sol": "Token"
+			"contracts/TokenV2.sol": "Token"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -736,12 +806,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"contracts/Token.sol": {
-			"keccak256": "0xede75d6c428c3ee704f21a9b010b6fedf794158e7b9d4fca8e2a2f087d37b16f",
+		"contracts/TokenV2.sol": {
+			"keccak256": "0x13ef1183dd9e212c02da451a50c064148f5f34f459a1e427f5ccdf3ab207746b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f26839ad4bf292621ebea9056b1c504d942e0e7b66da8a5731b7e50f64710170",
-				"dweb:/ipfs/QmPKNWvAbgc9tuGu47FjywnfooHJa9oj8XEpiRaUWtn14o"
+				"bzz-raw://add0cc5b357c41f01826a294904b861370a6c3b8cc74c852651d26eef31e3a31",
+				"dweb:/ipfs/QmWrp6Nzas94MS5QvZNJFWSBvdwANLQWR7cvaPMwA2BCyH"
 			]
 		}
 	},
