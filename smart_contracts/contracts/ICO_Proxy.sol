@@ -8,16 +8,16 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
-    IERC20 public usdt;
-    IERC20 public cerToken;
+    IERC20 public usdc;
+    IERC20 public aibtc;
 
     bool public saleActive;
-    uint256 public price_usdt;
+    uint256 public price_usdc;
 
-    uint256 public totalDepositedUSDT;
+    uint256 public totalDepositedusdc;
     uint256 public totalDistributedCER;
 
-    event Deposited(address indexed user, uint256 usdtAmount, uint256 cerAmount);
+    event Deposited(address indexed user, uint256 usdcAmount, uint256 cerAmount);
     event PriceUpdated(uint256 newPrice);
     event SaleStarted();
     event SaleStopped();
@@ -28,16 +28,16 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function initialize(
-        address _usdtAddress,
-        address _cerTokenAddress
+        address _usdcAddress,
+        address _aibtcAddress
     ) external initializer {
         __Ownable_init(msg.sender);
 
-        usdt = IERC20(_usdtAddress);
-        cerToken = IERC20(_cerTokenAddress);
+        usdc = IERC20(_usdcAddress);
+        aibtc = IERC20(_aibtcAddress);
 
         saleActive = true;
-        price_usdt = 10; // Initial price
+        price_usdc = 10; // Initial price
     }
 
     function _authorizeUpgrade(address newImplementation)
@@ -50,18 +50,18 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         require(saleActive, "Sale not active");
         require(amount > 0, "Amount is null");
 
-        uint256 cerAmount = (amount * 1e14) / price_usdt;
+        uint256 cerAmount = (amount * 1e14) / price_usdc;
 
         require(
-            usdt.transferFrom(msg.sender, address(this), amount),
+            usdc.transferFrom(msg.sender, address(this), amount),
             "AIBTC transfer failed"
         );
 
-        totalDepositedUSDT += amount;
+        totalDepositedusdc += amount;
         totalDistributedCER += cerAmount;
 
         require(
-            cerToken.transfer(msg.sender, cerAmount),
+            aibtc.transfer(msg.sender, cerAmount),
             "AIBTC transfer failed"
         );
         emit Deposited(msg.sender, amount, cerAmount);
@@ -69,17 +69,17 @@ contract ICO is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function withdrawUSDC(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(usdt.transfer(msg.sender, amount * 1e6), "USDC Withdraw failed");
+        require(usdc.transfer(msg.sender, amount * 1e6), "USDC Withdraw failed");
     }
 
     function withdrawCER(uint256 amount) external onlyOwner {
         require(amount > 0, "Importo nullo");
-        require(cerToken.transfer(msg.sender, amount * 1e18), "AIBTC Withdraw failed");
+        require(aibtc.transfer(msg.sender, amount * 1e18), "AIBTC Withdraw failed");
     }
 
     function setPrice(uint256 newPrice) external onlyOwner {
         require(newPrice > 0, "Invalid price");
-        price_usdt = newPrice;
+        price_usdc = newPrice;
         emit PriceUpdated(newPrice);
     }
 

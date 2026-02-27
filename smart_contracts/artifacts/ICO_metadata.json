@@ -102,7 +102,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "usdtAmount",
+						"name": "usdcAmount",
 						"type": "uint256"
 					},
 					{
@@ -200,7 +200,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "cerToken",
+				"name": "aibtc",
 				"outputs": [
 					{
 						"internalType": "contract IERC20",
@@ -228,12 +228,12 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_usdtAddress",
+						"name": "_usdcAddress",
 						"type": "address"
 					},
 					{
 						"internalType": "address",
-						"name": "_cerTokenAddress",
+						"name": "_aibtcAddress",
 						"type": "address"
 					}
 				],
@@ -257,7 +257,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "price_usdt",
+				"name": "price_usdc",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -330,7 +330,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "totalDepositedUSDT",
+				"name": "totalDepositedusdc",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -387,7 +387,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "usdt",
+				"name": "usdc",
 				"outputs": [
 					{
 						"internalType": "contract IERC20",
@@ -653,11 +653,11 @@
 			]
 		},
 		"contracts/ICO_Proxy.sol": {
-			"keccak256": "0x7b3dae3cf45eba56acfbcce31eece95c53530afde456fb41cb7b8febccea5990",
+			"keccak256": "0xe093286d3da4955516373c45341938fd4487fa439455d051edb0871ac2ad869e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2cd80443da8d872d86d43a9278d079ed38f3525cf62c571c8a079ed794930b99",
-				"dweb:/ipfs/QmYxgKCHxa9rtht5dXbF9pei71S9gU8dDaqCbbpbxwa5hs"
+				"bzz-raw://ad97a1b91ff8d6ab3f43f966b637ea091502659a6370a26c4e5b033006ce2e36",
+				"dweb:/ipfs/QmSvtu1uzeMwzqcF3PvYQZ6oXs8V7M7DcCHCE3xPQCKHyN"
 			]
 		}
 	},

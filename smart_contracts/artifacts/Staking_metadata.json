@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.24+commit.e11b9ed9"
+		"version": "0.8.30+commit.73712a01"
 	},
 	"language": "Solidity",
 	"output": {
@@ -35,6 +35,16 @@
 			{
 				"inputs": [],
 				"name": "ERC1967NonPayable",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "EnforcedPause",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ExpectedPause",
 				"type": "error"
 			},
 			{
@@ -150,6 +160,19 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "user",
@@ -182,6 +205,19 @@
 					}
 				],
 				"name": "Staked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Unpaused",
 				"type": "event"
 			},
 			{
@@ -366,6 +402,26 @@
 			},
 			{
 				"inputs": [],
+				"name": "pause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "proxiableUUID",
 				"outputs": [
 					{
@@ -526,6 +582,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "unpause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -581,6 +644,16 @@
 						"details": "An upgrade function sees `msg.value > 0` that may be lost."
 					}
 				],
+				"EnforcedPause()": [
+					{
+						"details": "The operation failed because the contract is paused."
+					}
+				],
+				"ExpectedPause()": [
+					{
+						"details": "The operation failed because the contract is not paused."
+					}
+				],
 				"FailedCall()": [
 					{
 						"details": "A call to an address target failed. The target may have reverted."
@@ -626,6 +699,12 @@
 				"Initialized(uint64)": {
 					"details": "Triggered when the contract has been initialized or reinitialized."
 				},
+				"Paused(address)": {
+					"details": "Emitted when the pause is triggered by `account`."
+				},
+				"Unpaused(address)": {
+					"details": "Emitted when the pause is lifted by `account`."
+				},
 				"Upgraded(address)": {
 					"details": "Emitted when the implementation is upgraded."
 				}
@@ -637,6 +716,9 @@
 				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
+				},
+				"paused()": {
+					"details": "Returns true if the contract is paused, and false otherwise."
 				},
 				"proxiableUUID()": {
 					"details": "Implementation of the ERC-1822 {proxiableUUID} function. This returns the storage slot used by the implementation. It is used to validate the implementation's compatibility when performing an upgrade. IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this function revert if invoked through a proxy. This is guaranteed by the `notDelegated` modifier."
@@ -685,7 +767,7 @@
 		"compilationTarget": {
 			"contracts/Staking_ProxyV2.sol": "Staking"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "prague",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -727,6 +809,14 @@
 			"urls": [
 				"bzz-raw://66463434d266816fca2a3a2734ceee88544e61b7cc3899c50333b46e8e771455",
 				"dweb:/ipfs/QmPYCzHjki1HQLvBub3uUqoUKGrwdgR3xP9Zpya14YTdXS"
+			]
+		},
+		"@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol": {
+			"keccak256": "0x1149f6c3445a564f5b9cd27c2dc85c6bcaed254c67cb57a416bc7ca1f667ad1f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8a72ecd1a82f8ece4d83280a4920a6269e83bec971a27d0ce2e3a21d2ae08450",
+				"dweb:/ipfs/QmSn68D8stm6b7m4nZndhTqincMQdoTqNrRXmAReV9Xb2r"
 			]
 		},
 		"@openzeppelin/contracts/interfaces/IERC1363.sol": {
@@ -858,11 +948,11 @@
 			]
 		},
 		"contracts/Staking_ProxyV2.sol": {
-			"keccak256": "0xe0788cff013de6d96172a5414778f13b235f4275e70d5079cf2c91ad2b19907a",
+			"keccak256": "0xc5a2b2a62626d45a16a8667f324d6e0bfad2314604ff373c19d390e683806d4a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c15067824230f59d5689d2f6cc4bfade66ce534c7a1b5e50e7cfce951265e18f",
-				"dweb:/ipfs/QmS9Xg2cTufpFPycL1keds3NYoriV9mzXqMGnZEqWXep8o"
+				"bzz-raw://da0e5e30bab5c49ad8166a1c48f7c87a4ac0e3e16b2f884fbc222814b13f7946",
+				"dweb:/ipfs/QmcEnbfabYQyJzZnv4zo4BXcTcAMoPTAHhcoyMoV8ZENSZ"
 			]
 		}
 	},

@@ -19,12 +19,14 @@ const ICOPage = () => {
   const [usdtAmount, setUsdtAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState(0);
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
+  const [priceUsdc, setPriceUsdc] = useState(null);
 
   const TOKEN_PRICE = 0.1; // prezzo token in USDT
 
   const ICO_ABI = [
     "function deposit(uint256 amount) external",
     "function totalDistributedCER() view returns (uint256)",
+    "function price_usdc() view returns (uint256)",
   ];
 
   const USDT_ABI = [
@@ -57,7 +59,16 @@ const ICOPage = () => {
       console.error("Errore nel leggere total supply:", error);
     }
   };
-
+  const fetchPrice = async () => {
+    try {
+      const provider = getProvider();
+      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
+      const p = await icoContract.price_usdc(); // uint256
+      setPriceUsdc(p);
+    } catch (e) {
+      console.error("Errore nel leggere price_usdc:", e);
+    }
+  };
   // --- Fetch tokens sold dinamico ---
   const fetchTokensSold = async () => {
     try {
@@ -72,14 +83,30 @@ const ICOPage = () => {
 
   // --- Aggiorna token ricevuti al cambio ---
   useEffect(() => {
-    const amount = parseFloat(usdtAmount) || 0;
-    setTokenAmount(amount / TOKEN_PRICE);
-  }, [usdtAmount]);
+    if (!priceUsdc || !usdtAmount) {
+      setTokenAmount(0);
+      return;
+    }
+
+    try {
+      const amountInUSDCUnits = ethers.utils.parseUnits(usdtAmount, 6);
+
+      const cerAmount = amountInUSDCUnits
+        .mul("100000000000000") // 1e14 (come nel contratto)
+        .div(priceUsdc);
+
+      const formatted = ethers.utils.formatUnits(cerAmount, 18);
+      setTokenAmount(parseFloat(formatted));
+    } catch {
+      setTokenAmount(0);
+    }
+  }, [usdtAmount, priceUsdc]);
 
   // --- Aggiorna dati globali ---
   useEffect(() => {
     //fetchTotalSupply();
     fetchTokensSold();
+    fetchPrice();
     const interval = setInterval(fetchTokensSold, 10000); // refresh ogni 10s
     return () => clearInterval(interval);
   }, []);
