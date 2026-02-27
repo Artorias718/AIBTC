@@ -47,27 +47,27 @@ const LabPage = () => {
   const nfts = [
     {
       name: "Protron I Module",
-      description: "+25% AIBTC",
+      description: "AIBTC Rewards boost",
       price: "FREE",
       value: ethers.utils.parseEther("0"),
     },
     {
-      name: "Protron II Module",
-      description: "+10% BTC",
-      price: "0.02 ETH",
+      name: "Coming Soon",
+      description: "",
+      price: "",
       value: ethers.utils.parseEther("0.02"),
     },
     {
-      name: "Protron III Module",
-      description: "+30% AIBTC",
-      price: "0.03 ETH",
-      value: ethers.utils.parseEther("0.03"),
+      name: "Coming Soon",
+      description: "",
+      price: "",
+      value: ethers.utils.parseEther("0.02"),
     },
     {
-      name: "Protron IV Module",
-      description: "+40% AIBTC",
-      price: "0.05 ETH",
-      value: ethers.utils.parseEther("0.05"),
+      name: "Coming Soon",
+      description: "",
+      price: "",
+      value: ethers.utils.parseEther("0.02"),
     },
   ];
 
@@ -80,9 +80,9 @@ const LabPage = () => {
       let descs = ["", "", "", ""];
 
       imgs[0] = "/aibtc_module.png";
-      imgs[1] = "/btc_module.png";
-      imgs[2] = "/btc_module.png";
-      imgs[3] = "/meme_module.png";
+      imgs[1] = "/aibtc_gen_mod.png";
+      imgs[2] = "/aibtc_gen_mod.png";
+      imgs[3] = "/aibtc_gen_mod.png";
 
       for (let i = 0; i < 4; i++) {
         try {

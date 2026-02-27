@@ -192,6 +192,25 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newBudget",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newRewardsEnd",
+						"type": "uint256"
+					}
+				],
+				"name": "RewardsRestarted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "user",
@@ -464,8 +483,47 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "newAnnualBudget",
+						"type": "uint256"
+					}
+				],
+				"name": "restartRewards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "rewardRatePerSecondGlobal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rewardsActive",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rewardsEnd",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -734,7 +792,7 @@
 					"details": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event."
 				}
 			},
-			"title": "Staking (budgeted annual rewards, dynamic APY)",
+			"title": "Staking (budgeted annual rewards, dynamic APY) + yearly periods with restart",
 			"version": 1
 		},
 		"userdoc": {
@@ -744,22 +802,28 @@
 					"notice": "Public view wrapper to get current claimable reward for a user (includes unclaimed snapshot)"
 				},
 				"contractBalance()": {
-					"notice": "quick setter to top-up the contract with tokens (owner just transfers tokens to contract address) This function is only a convenience to check current funding; actual funding is done by ERC20 transfer."
+					"notice": "Convenience balance view"
 				},
 				"currentAPY()": {
-					"notice": "Current APY (annual percentage yield) expressed in 1e18 precision. APY = (annualRewardBudget / totalStakedAmount)"
+					"notice": "Current APY expressed in 1e18 precision. After rewardsEnd, returns 0 (since rewards no longer accrue)."
 				},
 				"dailyRatePerToken()": {
-					"notice": "Current daily reward rate per token staked (for frontend helper)"
+					"notice": "Current daily reward rate per token staked (for frontend helper) After rewardsEnd, returns 0."
 				},
 				"recoverExcessTokens(address,address,uint256)": {
-					"notice": "Owner can recover accidentally sent tokens that are not part of staked amounts or rewards budget. Use with care. This function does not withdraw tokens that are currently staked."
+					"notice": "Owner can recover accidentally sent tokens that are not cerToken."
+				},
+				"restartRewards(uint256)": {
+					"notice": "Restart rewards for a new 365-day period. Requirements: - previous period must be finished (block.timestamp >= rewardsEnd) - newAnnualBudget must be > 0 IMPORTANT: - Before calling, owner should fund the contract with enough reward tokens   (transfer cerToken to this contract address)."
+				},
+				"rewardsActive()": {
+					"notice": "Returns whether rewards are currently accruing."
 				},
 				"setAnnualRewardBudget(uint256)": {
 					"notice": "Set annual reward budget (in token smallest units). Updates per-second rate."
 				}
 			},
-			"notice": "Distributes a fixed annual reward budget proportionally to stakers. - Annual budget (e.g. 250k tokens/year) is set in token smallest units (wei-like) - Rewards per second = annualBudget / 365 days - Each staker receives (stake / totalStaked) * rewardsPerSecond for the time they were staked Notes: - Contract must be funded with reward tokens by owner (transfer tokens to contract address). - To avoid expensive loops, totalStakedAmount is maintained on every stake/withdraw. - When a user increases stake we first snapshot accrued reward into `unclaimed` to avoid losing them.",
+			"notice": "Distributes a fixed annual reward budget proportionally to stakers. - Rewards accrue ONLY until `rewardsEnd` (1-year window). - After `rewardsEnd`, rewards stop increasing (APY returns 0). - Owner can \"refill\" tokens and call `restartRewards(newAnnualBudget)` to start a new 365-day period. Notes: - Contract must be funded with reward tokens by owner (transfer tokens to contract address). - totalStakedAmount is maintained on every stake/withdraw.",
 			"version": 1
 		}
 	},
@@ -948,11 +1012,11 @@
 			]
 		},
 		"contracts/Staking_ProxyV2.sol": {
-			"keccak256": "0xc5a2b2a62626d45a16a8667f324d6e0bfad2314604ff373c19d390e683806d4a",
+			"keccak256": "0x4eb36483c6cca161062454b7487787be959c5c4f8b80309be58275b6d802928a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://da0e5e30bab5c49ad8166a1c48f7c87a4ac0e3e16b2f884fbc222814b13f7946",
-				"dweb:/ipfs/QmcEnbfabYQyJzZnv4zo4BXcTcAMoPTAHhcoyMoV8ZENSZ"
+				"bzz-raw://75889760528593df52a4d8a686ac2bf5fc4313ff4bb335ceddd9fda478e7b700",
+				"dweb:/ipfs/QmNij85eTgrcYPqZjFmFDdGdneA2vVPbiCfWjkyQcczz78"
 			]
 		}
 	},

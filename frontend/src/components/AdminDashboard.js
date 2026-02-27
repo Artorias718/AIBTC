@@ -85,11 +85,16 @@ const STAKING_ABI = [
   "function currentAPY() view returns (uint256)",
   "function contractBalance() view returns (uint256)",
 
+  // ✅ New in updated staking
+  "function rewardsEnd() view returns (uint256)",
+  "function rewardsActive() view returns (bool)",
+  "function restartRewards(uint256 newAnnualBudget) external",
+
   // User reads
   "function stakes(address) view returns (uint256 amount, uint256 since, uint256 lastClaim, uint256 unclaimed)",
   "function calculateReward(address staker) view returns (uint256)",
 
-  // Owner write
+  // Owner write (still exists)
   "function setAnnualRewardBudget(uint256 _annualRewardBudget) external",
 ];
 
@@ -187,6 +192,10 @@ const AdminDashboard = () => {
   const [stakingAPY, setStakingAPY] = useState("0");
   const [stakingContractBalance, setStakingContractBalance] = useState("0");
 
+  // ✅ New staking period state
+  const [stakingRewardsEnd, setStakingRewardsEnd] = useState("0"); // unix
+  const [stakingRewardsActive, setStakingRewardsActive] = useState(false);
+
   const [stakingUserStaked, setStakingUserStaked] = useState("0");
   const [stakingUserUnclaimed, setStakingUserUnclaimed] = useState("0");
   const [stakingUserPending, setStakingUserPending] = useState("0");
@@ -194,6 +203,8 @@ const AdminDashboard = () => {
 
   // Staking write forms
   const [stakingNewBudgetTokens, setStakingNewBudgetTokens] = useState(""); // in whole tokens (human input)
+  const [stakingRestartBudgetTokens, setStakingRestartBudgetTokens] =
+    useState(""); // ✅ restartRewards()
 
   // ======================
   // Contracts
@@ -273,6 +284,16 @@ const AdminDashboard = () => {
       );
     } finally {
       setTxLoading(false);
+    }
+  };
+
+  const formatUnix = (unix) => {
+    try {
+      const n = Number(unix || 0);
+      if (!n) return "-";
+      return new Date(n * 1000).toLocaleString();
+    } catch {
+      return "-";
     }
   };
 
@@ -405,7 +426,7 @@ const AdminDashboard = () => {
       setStakingAnnualBudget(ethers.utils.formatUnits(_budget, 18)); // show in tokens
 
       const _rate = await stakingRead.rewardRatePerSecondGlobal();
-      setStakingRewardRatePerSec(_rate.toString()); // raw per-second in wei-like
+      setStakingRewardRatePerSec(_rate.toString()); // raw per-second
 
       const _apyRaw = await stakingRead.currentAPY();
       const _apyPct = (
@@ -416,9 +437,23 @@ const AdminDashboard = () => {
       const _bal = await stakingRead.contractBalance();
       setStakingContractBalance(ethers.utils.formatUnits(_bal, 18));
 
+      // ✅ NEW: rewardsEnd + rewardsActive
+      try {
+        const _end = await stakingRead.rewardsEnd();
+        setStakingRewardsEnd(_end.toString());
+      } catch {
+        setStakingRewardsEnd("0");
+      }
+
+      try {
+        const _active = await stakingRead.rewardsActive();
+        setStakingRewardsActive(Boolean(_active));
+      } catch {
+        setStakingRewardsActive(false);
+      }
+
       if (isConnected && account) {
         const s = await stakingRead.stakes(account);
-        // s.amount, s.unclaimed, s.lastClaim
         setStakingUserStaked(ethers.utils.formatUnits(s.amount, 18));
         setStakingUserUnclaimed(ethers.utils.formatUnits(s.unclaimed, 18));
         setStakingUserLastClaim(String(s.lastClaim));
@@ -637,7 +672,6 @@ const AdminDashboard = () => {
       return setTxStatus("Enter valid annual budget (tokens)");
     }
 
-    // budget in smallest units (assume 18 decimals)
     const budgetWei = ethers.utils.parseUnits(
       String(stakingNewBudgetTokens),
       18,
@@ -646,6 +680,29 @@ const AdminDashboard = () => {
     return runTx(
       "Staking: setting annual budget",
       () => stakingWrite.setAnnualRewardBudget(budgetWei),
+      fetchAll,
+    );
+  };
+
+  const onStakingRestartRewards = async () => {
+    if (!stakingWrite) return setTxStatus("Signer not available");
+    if (!isStakingOwner) return setTxStatus("Only Staking owner");
+    if (
+      stakingRestartBudgetTokens === "" ||
+      Number.isNaN(Number(stakingRestartBudgetTokens)) ||
+      Number(stakingRestartBudgetTokens) <= 0
+    ) {
+      return setTxStatus("Enter valid restart budget (tokens)");
+    }
+
+    const budgetWei = ethers.utils.parseUnits(
+      String(stakingRestartBudgetTokens),
+      18,
+    );
+
+    return runTx(
+      "Staking: restarting rewards",
+      () => stakingWrite.restartRewards(budgetWei),
       fetchAll,
     );
   };
@@ -1277,6 +1334,20 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="admin-card">
+                  <div className="admin-card-label">Rewards Active</div>
+                  <div className="admin-value">
+                    {stakingRewardsActive ? "True" : "False"}
+                  </div>
+                </div>
+
+                <div className="admin-card admin-card-wide">
+                  <div className="admin-card-label">Rewards End (time)</div>
+                  <div className="admin-value">
+                    {formatUnix(stakingRewardsEnd)}
+                  </div>
+                </div>
+
+                <div className="admin-card">
                   <div className="admin-card-label">Contract Balance</div>
                   <div className="admin-value">
                     {Number(stakingContractBalance).toLocaleString()}
@@ -1357,7 +1428,7 @@ const AdminDashboard = () => {
                   <div className="admin-card-label">Set Annual Budget</div>
                   <div className="admin-hint">
                     Input is in <b>whole tokens</b>. It will be converted to 18
-                    decimals (wei-like) automatically.
+                    decimals automatically.
                   </div>
                   <div className="admin-row">
                     <input
@@ -1375,6 +1446,41 @@ const AdminDashboard = () => {
                       disabled={!isStakingOwner || txLoading}
                     >
                       Set Budget
+                    </button>
+                  </div>
+                </div>
+
+                <div className="admin-card admin-card-wide">
+                  <div className="admin-card-label">
+                    Restart Rewards (new year)
+                  </div>
+                  <div className="admin-hint">
+                    Use this <b>after rewards ended</b>. Remember: fund the
+                    contract with AIBTC first.
+                  </div>
+                  <div className="admin-row">
+                    <input
+                      className="admin-input"
+                      type="number"
+                      placeholder="e.g. 1000000"
+                      value={stakingRestartBudgetTokens}
+                      onChange={(e) =>
+                        setStakingRestartBudgetTokens(e.target.value)
+                      }
+                    />
+                    <button
+                      className="admin-btn"
+                      onClick={onStakingRestartRewards}
+                      disabled={
+                        !isStakingOwner || txLoading || stakingRewardsActive
+                      }
+                      title={
+                        stakingRewardsActive
+                          ? "Rewards still active (wait until rewardsEnd)"
+                          : ""
+                      }
+                    >
+                      Restart
                     </button>
                   </div>
                 </div>

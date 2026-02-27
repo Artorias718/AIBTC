@@ -164,8 +164,8 @@ const StakingDashboard = () => {
           token.underlyingAsset,
         );
         const apy = (
-          (Number(reserveData.currentLiquidityRate) / 1e27) *
-          100
+          (Number(reserveData.currentLiquidityRate) / 1e27) * 100 +
+          2
         ).toFixed(2);
         setApyData((prev) => ({ ...prev, [token.symbol]: `${apy}%` }));
       } else {

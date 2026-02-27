@@ -13,6 +13,9 @@ const AIBTC_TOKEN = {
   stakingContract: CONFIG.AIBTC_STAKING,
 };
 
+// RPC pubblico di fallback (stesso che usi nello staking dashboard)
+const FALLBACK_RPC = "https://base-sepolia-rpc.publicnode.com";
+
 const formatAmount = (value) => {
   if (!value) return "0";
   const num = Number(value);
@@ -49,21 +52,36 @@ export default function AIBTCStakingCard() {
 
   const [isApproved, setIsApproved] = useState(false);
 
-  // ---------- contracts ----------
-  const tokenRead = useMemo(() => {
-    if (!provider) return null;
-    return new ethers.Contract(AIBTC_TOKEN.address, CONFIG.ERC20_ABI, provider);
+  /**
+   * ✅ Provider di lettura sempre disponibile:
+   * - se WalletContext fornisce provider => usalo
+   * - altrimenti usa JsonRpcProvider di fallback
+   */
+  const readProvider = useMemo(() => {
+    if (provider) return provider;
+    return new ethers.providers.JsonRpcProvider(FALLBACK_RPC);
   }, [provider]);
 
+  // ---------- contracts (READ) ----------
+  const tokenRead = useMemo(() => {
+    if (!readProvider) return null;
+    return new ethers.Contract(
+      AIBTC_TOKEN.address,
+      CONFIG.ERC20_ABI,
+      readProvider,
+    );
+  }, [readProvider]);
+
   const stakingRead = useMemo(() => {
-    if (!provider) return null;
+    if (!readProvider) return null;
     return new ethers.Contract(
       AIBTC_TOKEN.stakingContract,
       CONFIG.ABI_AIBTC_STAKING_CONCRAT,
-      provider,
+      readProvider,
     );
-  }, [provider]);
+  }, [readProvider]);
 
+  // ---------- contracts (WRITE) ----------
   const tokenWrite = useMemo(() => {
     if (!signer) return null;
     return new ethers.Contract(AIBTC_TOKEN.address, CONFIG.ERC20_ABI, signer);
@@ -79,8 +97,27 @@ export default function AIBTCStakingCard() {
   }, [signer]);
 
   // ---------- reads ----------
-  const fetchAll = async () => {
-    if (!provider || !tokenRead || !stakingRead) return;
+  const fetchApy = async () => {
+    if (!stakingRead) return;
+    try {
+      const apyRaw = await stakingRead
+        .currentAPY()
+        .catch(() => ethers.constants.Zero);
+
+      // currentAPY ritorna 1e18 -> % = formatUnits * 100
+      const apyPct = (
+        Number(ethers.utils.formatUnits(apyRaw, 18)) * 100
+      ).toFixed(2);
+      setApy(`${apyPct}%`);
+    } catch (e) {
+      console.error("AIBTC APY fetch error:", e);
+      setApy("-");
+    }
+  };
+
+  const fetchUserData = async () => {
+    if (!tokenRead || !stakingRead) return;
+
     if (!account) {
       setWalletBal("0");
       setStakedBal("0");
@@ -89,11 +126,10 @@ export default function AIBTCStakingCard() {
     }
 
     try {
-      const [wb, stakeData, reward, apyRaw] = await Promise.all([
+      const [wb, stakeData, reward] = await Promise.all([
         tokenRead.balanceOf(account),
         stakingRead.stakes(account),
         stakingRead.calculateReward(account),
-        stakingRead.currentAPY().catch(() => ethers.constants.Zero),
       ]);
 
       setWalletBal(ethers.utils.formatUnits(wb, AIBTC_TOKEN.decimals));
@@ -101,15 +137,14 @@ export default function AIBTCStakingCard() {
         ethers.utils.formatUnits(stakeData.amount, AIBTC_TOKEN.decimals),
       );
       setPending(ethers.utils.formatUnits(reward, AIBTC_TOKEN.decimals));
-
-      // currentAPY ritorna 1e18 -> % = formatUnits * 100
-      const apyPct = (
-        Number(ethers.utils.formatUnits(apyRaw, 18)) * 100
-      ).toFixed(2);
-      setApy(`${apyPct}%`);
     } catch (e) {
-      console.error("AIBTC staking fetch error:", e);
+      console.error("AIBTC staking user fetch error:", e);
     }
+  };
+
+  const fetchAll = async () => {
+    await fetchApy(); // ✅ sempre (anche senza wallet)
+    await fetchUserData(); // ✅ solo se account (altrimenti resetta)
   };
 
   const checkAllowance = async (amountStr) => {
@@ -135,11 +170,13 @@ export default function AIBTCStakingCard() {
     const i = setInterval(fetchAll, 10000);
     return () => clearInterval(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, provider]);
+  }, [account, readProvider]);
 
   // ---------- actions ----------
   const doApproveIfNeeded = async (amountStr) => {
     if (!tokenWrite) throw new Error("Signer not available");
+    if (!account) throw new Error("Wallet not connected");
+
     const amountWei = ethers.utils.parseUnits(amountStr, AIBTC_TOKEN.decimals);
 
     const current = await tokenWrite.allowance(
@@ -274,7 +311,8 @@ export default function AIBTCStakingCard() {
           <button
             className="btn btn-secondary"
             onClick={handleClaim}
-            disabled={txLoading || Number(pending || "0") === 0}
+            disabled={txLoading || Number(pending || "0") === 0 || !account}
+            title={!account ? "Connect wallet to claim" : undefined}
           >
             Claim
           </button>

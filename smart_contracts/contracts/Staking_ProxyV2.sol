@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
- pragma solidity ^0.8.22;
+pragma solidity ^0.8.22;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -8,18 +8,16 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 
-
 /**
- * @title Staking (budgeted annual rewards, dynamic APY)
+ * @title Staking (budgeted annual rewards, dynamic APY) + yearly periods with restart
  * @notice Distributes a fixed annual reward budget proportionally to stakers.
- * - Annual budget (e.g. 250k tokens/year) is set in token smallest units (wei-like)
- * - Rewards per second = annualBudget / 365 days
- * - Each staker receives (stake / totalStaked) * rewardsPerSecond for the time they were staked
+ * - Rewards accrue ONLY until `rewardsEnd` (1-year window).
+ * - After `rewardsEnd`, rewards stop increasing (APY returns 0).
+ * - Owner can "refill" tokens and call `restartRewards(newAnnualBudget)` to start a new 365-day period.
  *
  * Notes:
  * - Contract must be funded with reward tokens by owner (transfer tokens to contract address).
- * - To avoid expensive loops, totalStakedAmount is maintained on every stake/withdraw.
- * - When a user increases stake we first snapshot accrued reward into `unclaimed` to avoid losing them.
+ * - totalStakedAmount is maintained on every stake/withdraw.
  */
 contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, PausableUpgradeable {
     using SafeERC20 for IERC20;
@@ -33,24 +31,28 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         uint256 unclaimed;   // accrued rewards not yet claimed
     }
 
-    // stakers list (used for reading / external views). Note: array may grow; you may want an alternative for large-scale.
+    // stakers list (used for reading / external views). Note: array may grow.
     address[] public stakers;
 
     mapping(address => Stake) public stakes;
     mapping(address => bool) internal _isStaker;
 
-    // total tokens currently staked (keeps gas low vs iterating stakers)
+    // total tokens currently staked
     uint256 public totalStakedAmount;
 
     // reward budget and derived rate
     uint256 public annualRewardBudget;          // e.g. 250_000 * 1e18
     uint256 public rewardRatePerSecondGlobal;   // = annualRewardBudget / 365 days
 
+    // rewards stop accruing after this timestamp (period end)
+    uint256 public rewardsEnd;
+
     // events
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 reward);
     event AnnualBudgetUpdated(uint256 newBudget);
+    event RewardsRestarted(uint256 newBudget, uint256 newRewardsEnd);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -60,8 +62,12 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
     function initialize(address _cerToken, uint256 _annualRewardBudget) external initializer {
         __Ownable_init(msg.sender);
         __Pausable_init();
+
         cerToken = IERC20(_cerToken);
         _setAnnualBudget(_annualRewardBudget);
+
+        // start first 1-year reward period
+        rewardsEnd = block.timestamp + 365 days;
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
@@ -76,12 +82,31 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     function _setAnnualBudget(uint256 _annualRewardBudget) internal {
         annualRewardBudget = _annualRewardBudget;
-        // use 365 days as year length. integer division: fine, small remainder ignored.
+        // integer division: small remainder ignored
         rewardRatePerSecondGlobal = _annualRewardBudget / 365 days;
     }
 
-    /// @notice Owner can recover accidentally sent tokens that are not part of staked amounts or rewards budget.
-    /// Use with care. This function does not withdraw tokens that are currently staked.
+    /**
+     * @notice Restart rewards for a new 365-day period.
+     * Requirements:
+     * - previous period must be finished (block.timestamp >= rewardsEnd)
+     * - newAnnualBudget must be > 0
+     *
+     * IMPORTANT:
+     * - Before calling, owner should fund the contract with enough reward tokens
+     *   (transfer cerToken to this contract address).
+     */
+    function restartRewards(uint256 newAnnualBudget) external onlyOwner {
+        require(block.timestamp >= rewardsEnd, "Previous period still active");
+        require(newAnnualBudget > 0, "Budget must be > 0");
+
+        _setAnnualBudget(newAnnualBudget);
+        rewardsEnd = block.timestamp + 365 days;
+
+        emit RewardsRestarted(newAnnualBudget, rewardsEnd);
+    }
+
+    /// @notice Owner can recover accidentally sent tokens that are not cerToken.
     function recoverExcessTokens(address token, address to, uint256 amount) external onlyOwner {
         require(token != address(cerToken), "use dedicated flow for cerToken");
         IERC20(token).safeTransfer(to, amount);
@@ -89,7 +114,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     // ----------------------------- stake logic -----------------------------
 
-    function stake(uint256 amount) external whenNotPaused{
+    function stake(uint256 amount) external whenNotPaused {
         require(amount > 0, "Importo nullo");
         Stake storage s = stakes[msg.sender];
 
@@ -98,7 +123,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
         // if user already has stake, snapshot pending reward into unclaimed
         if (s.amount > 0) {
-            uint256 pending = _calculateRewardInternal(msg.sender, s);
+            uint256 pending = _calculateRewardInternal(s);
             if (pending > 0) {
                 s.unclaimed += pending;
             }
@@ -128,19 +153,24 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         Stake memory s = stakes[staker];
         if (s.amount == 0 && s.unclaimed == 0) return 0;
 
-        uint256 pending = _calculateRewardInternal(staker, s);
+        uint256 pending = _calculateRewardInternalView(s);
         return s.unclaimed + pending;
     }
 
-    /// @dev internal reward calc using provided stake snapshot to avoid re-reading storage twice
-    function _calculateRewardInternal(address staker, Stake memory s) internal view returns (uint256) {
+    /// @dev internal reward calc (storage -> uses current msg.sender stake passed by reference)
+    function _calculateRewardInternal(Stake storage s) internal view returns (uint256) {
         if (s.amount == 0) return 0;
         if (totalStakedAmount == 0) return 0;
 
         uint256 from = s.lastClaim > 0 ? s.lastClaim : s.since;
-        if (block.timestamp <= from) return 0;
 
-        uint256 duration = block.timestamp - from; // seconds
+        // cap "to" at rewardsEnd so rewards stop accruing after period end
+        uint256 to = block.timestamp;
+        if (to > rewardsEnd) to = rewardsEnd;
+
+        if (to <= from) return 0;
+
+        uint256 duration = to - from; // seconds
 
         // userShare scaled by 1e18
         uint256 userShare = (s.amount * 1e18) / totalStakedAmount;
@@ -150,9 +180,28 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         return reward;
     }
 
+    /// @dev view version for calculateReward (works on memory snapshot)
+    function _calculateRewardInternalView(Stake memory s) internal view returns (uint256) {
+        if (s.amount == 0) return 0;
+        if (totalStakedAmount == 0) return 0;
+
+        uint256 from = s.lastClaim > 0 ? s.lastClaim : s.since;
+
+        uint256 to = block.timestamp;
+        if (to > rewardsEnd) to = rewardsEnd;
+
+        if (to <= from) return 0;
+
+        uint256 duration = to - from;
+
+        uint256 userShare = (s.amount * 1e18) / totalStakedAmount;
+        uint256 reward = (rewardRatePerSecondGlobal * duration * userShare) / 1e18;
+        return reward;
+    }
+
     // ----------------------------- claim & withdraw -----------------------------
 
-    function claim() external whenNotPaused{
+    function claim() external whenNotPaused {
         Stake storage s = stakes[msg.sender];
         require(s.amount > 0 || s.unclaimed > 0, "Nessuno stake o reward");
 
@@ -160,10 +209,9 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         require(reward > 0, "Nessun reward disponibile");
 
         // check contract has enough free tokens to pay the reward
-        uint256 contractBalance = cerToken.balanceOf(address(this));
-        // The contract holds both staked tokens and reward reserve. Ensure we can pay reward now.
-        require(contractBalance >= totalStakedAmount + reward, "not enough liquidity for rewards");
-
+        uint256 contractBalance_ = cerToken.balanceOf(address(this));
+        // The contract holds both staked tokens and reward reserve.
+        require(contractBalance_ >= totalStakedAmount + reward, "not enough liquidity for rewards");
 
         // reset accounting
         s.unclaimed = 0;
@@ -173,7 +221,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         emit RewardClaimed(msg.sender, reward);
     }
 
-    function withdraw() external whenNotPaused{
+    function withdraw() external whenNotPaused {
         Stake memory s = stakes[msg.sender];
         require(s.amount > 0, "Nessuno stake");
 
@@ -189,19 +237,19 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         _isStaker[msg.sender] = false; // note: stakers array still contains the address
 
         // safety: check contract has enough tokens to pay principal + reward
-        uint256 contractBalance = cerToken.balanceOf(address(this));
-        require(contractBalance >= total, "FondI insufficienti per pagare");
+        uint256 contractBalance_ = cerToken.balanceOf(address(this));
+        require(contractBalance_ >= total, "FondI insufficienti per pagare");
 
         cerToken.safeTransfer(msg.sender, total);
         emit Withdrawn(msg.sender, total);
     }
 
-    function withdrawPartial(uint256 amount) external whenNotPaused{
+    function withdrawPartial(uint256 amount) external whenNotPaused {
         Stake storage s = stakes[msg.sender];
         require(s.amount > 0, "Nessuno stake");
         require(amount > 0 && amount <= s.amount, "Importo non valido");
 
-        // snapshot reward up to now
+        // snapshot reward up to now (includes unclaimed)
         uint256 reward = calculateReward(msg.sender);
 
         // reduce stake and total
@@ -214,8 +262,8 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
         uint256 transferAmount = amount + reward;
 
-        uint256 contractBalance = cerToken.balanceOf(address(this));
-        require(contractBalance >= transferAmount, "FondI insufficienti per pagare");
+        uint256 contractBalance_ = cerToken.balanceOf(address(this));
+        require(contractBalance_ >= transferAmount, "FondI insufficienti per pagare");
 
         cerToken.safeTransfer(msg.sender, transferAmount);
         emit Withdrawn(msg.sender, transferAmount);
@@ -223,16 +271,23 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     // ----------------------------- views -----------------------------
 
-    /// @notice Current APY (annual percentage yield) expressed in 1e18 precision.
-    /// APY = (annualRewardBudget / totalStakedAmount)
+    /// @notice Returns whether rewards are currently accruing.
+    function rewardsActive() external view returns (bool) {
+        return block.timestamp < rewardsEnd;
+    }
+
+    /// @notice Current APY expressed in 1e18 precision.
+    /// After rewardsEnd, returns 0 (since rewards no longer accrue).
     function currentAPY() external view returns (uint256) {
+        if (block.timestamp >= rewardsEnd) return 0;
         if (totalStakedAmount == 0) return 0;
-        // APY in 1e18 precision
         return (annualRewardBudget * 1e18) / totalStakedAmount;
     }
 
     /// @notice Current daily reward rate per token staked (for frontend helper)
+    /// After rewardsEnd, returns 0.
     function dailyRatePerToken() external view returns (uint256) {
+        if (block.timestamp >= rewardsEnd) return 0;
         if (totalStakedAmount == 0) return 0;
         uint256 dailyReward = annualRewardBudget / 365;
         return (dailyReward * 1e18) / totalStakedAmount; // scaled
@@ -242,19 +297,18 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         return stakers;
     }
 
-    // ----------------------------- helpers / admins -----------------------------
-
-    /// @notice quick setter to top-up the contract with tokens (owner just transfers tokens to contract address)
-    /// This function is only a convenience to check current funding; actual funding is done by ERC20 transfer.
+    /// @notice Convenience balance view
     function contractBalance() external view returns (uint256) {
         return cerToken.balanceOf(address(this));
     }
 
+    // ----------------------------- pause -----------------------------
+
     function pause() external onlyOwner {
-    _pause();
+        _pause();
     }
 
     function unpause() external onlyOwner {
         _unpause();
     }
-    }
+}
