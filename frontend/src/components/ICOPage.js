@@ -11,8 +11,7 @@ const tokenAddress = CONFIG.AIBTC_ADDRESS;
 const ico = CONFIG.ICO;
 const usdt = CONFIG.USDC_ADDRESS;
 
-// ✅ RPC read-only: NON dipende da MetaMask
-const READ_RPC = "https://base-sepolia-rpc.publicnode.com";
+const READ_RPC = CONFIG.READ_RPC;
 
 const ICO_ABI = [
   "function deposit(uint256 amount) external",
@@ -290,11 +289,7 @@ const ICOPage = () => {
             <h3>Buy AIBTC</h3>
 
             <div className="swap-input">
-              <img
-                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
-                alt="USDC"
-                className="token-icon"
-              />
+              <img src="/usdc.png" alt="USDC" className="token-icon" />
               <input
                 type="number"
                 placeholder="0.0"

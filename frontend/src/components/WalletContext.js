@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
+import { CONFIG } from "../config";
 
 export const WalletContext = createContext();
 
@@ -11,11 +12,7 @@ export const WalletProvider = ({ children }) => {
   const [chainId, setChainId] = useState(null);
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
 
-  // ✅ Imposta la rete corretta (Arbitrum Sepolia Testnet)
-  //const CORRECT_CHAIN_ID = "0x66eee"; // 421614 in decimale Arbitrum sepolia
-  //const CORRECT_CHAIN_ID = "0xa4b1"; // 42161 in decimale Arbitrum one
-  //const CORRECT_CHAIN_ID = "0x2105"; // Base Sepolia (forse mainnet?)
-  const CORRECT_CHAIN_ID = "0x14a34"; // 84532 Base Sepoli
+  const CHAIN_ID = CONFIG.CHAIN_ID;
 
   useEffect(() => {
     if (window.ethereum) {
@@ -49,7 +46,7 @@ export const WalletProvider = ({ children }) => {
         setAccount(accounts[0]);
         setSigner(prov.getSigner());
       }
-      setIsCorrectNetwork(currentChainId === CORRECT_CHAIN_ID);
+      setIsCorrectNetwork(currentChainId === CHAIN_ID);
     } catch (error) {
       console.error("Error checking wallet connection:", error);
     }
@@ -68,7 +65,7 @@ export const WalletProvider = ({ children }) => {
   const handleChainChanged = (newChainId) => {
     console.log("🔄 Chain changed:", newChainId);
     setChainId(newChainId);
-    setIsCorrectNetwork(newChainId === CORRECT_CHAIN_ID);
+    setIsCorrectNetwork(newChainId === CHAIN_ID);
   };
 
   const connectWallet = async () => {
@@ -91,7 +88,7 @@ export const WalletProvider = ({ children }) => {
       setAccount(accounts[0]);
       setIsConnected(true);
       setChainId(currentChainId);
-      setIsCorrectNetwork(currentChainId === CORRECT_CHAIN_ID);
+      setIsCorrectNetwork(currentChainId === CHAIN_ID);
     } catch (error) {
       console.error("Wallet connection error:", error);
     }
@@ -109,7 +106,7 @@ export const WalletProvider = ({ children }) => {
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: CORRECT_CHAIN_ID }],
+        params: [{ chainId: CHAIN_ID }],
       });
     } catch (switchError) {
       // 🧩 Se la rete non è aggiunta in MetaMask, la aggiungiamo
@@ -117,19 +114,7 @@ export const WalletProvider = ({ children }) => {
         try {
           await window.ethereum.request({
             method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: CORRECT_CHAIN_ID,
-                chainName: "Arbitrum Sepolia Testnet",
-                nativeCurrency: {
-                  name: "Ethereum",
-                  symbol: "ETH",
-                  decimals: 18,
-                },
-                rpcUrls: ["https://sepolia-rollup.arbitrum.io/rpc"],
-                blockExplorerUrls: ["https://sepolia.arbiscan.io"],
-              },
-            ],
+            params: [CONFIG.NETWORK_PARAMS],
           });
         } catch (addError) {
           console.error("Error adding Arbitrum Sepolia:", addError);

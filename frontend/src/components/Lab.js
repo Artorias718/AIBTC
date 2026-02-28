@@ -3,12 +3,13 @@ import { ethers } from "ethers";
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { WalletContext } from "./WalletContext";
 import Modal from "./Modal";
+import { CONFIG } from "../config";
 
 /*
   👉 QUI METTI GLI INDIRIZZI DEI 4 CONTRATTI NFT
 */
 const NFT_CONTRACTS = [
-  "0x4ED7216922e0141177565D3DD9AC2616a53B084f",
+  CONFIG.NFT1,
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",

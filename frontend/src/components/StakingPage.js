@@ -21,19 +21,19 @@ const TOKENS = [
     poolAddress: CONFIG.AAVE_USDC_POOL,
     underlyingAsset: CONFIG.USDC_ADDRESS,
     decimals: 6,
-    image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+    image: "usdc.png",
     stakingContract: CONFIG.AAVE_USDC_WRAPPER,
     useAaveWrapper: true,
   },
   {
     name: "USDT",
     symbol: "USDT",
-    address: CONFIG.AUSDT_ADDRESS,
+    address: CONFIG.USDT_ADDRESS,
     aTokenAddress: CONFIG.AUSDT_ADDRESS,
     poolAddress: CONFIG.AAVE_USDC_POOL,
     underlyingAsset: CONFIG.AUSDT_ADDRESS,
     decimals: 6,
-    image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+    image: "usdt.png",
     stakingContract: CONFIG.AAVE_USDT_WRAPPER,
     useAaveWrapper: true,
   },
@@ -45,7 +45,7 @@ const TOKENS = [
     poolAddress: CONFIG.AAVE_WETH_POOL,
     underlyingAsset: CONFIG.WETH_ADDRESS,
     decimals: 18,
-    image: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    image: "eth.png",
     stakingContract: CONFIG.AAVE_WETH_WRAPPER,
     useAaveWrapper: true,
   },
@@ -76,9 +76,7 @@ const StakingDashboard = () => {
   const getProvider = () =>
     window.ethereum
       ? new ethers.providers.Web3Provider(window.ethereum)
-      : new ethers.providers.JsonRpcProvider(
-          "https://base-sepolia-rpc.publicnode.com",
-        );
+      : new ethers.providers.JsonRpcProvider(CONFIG.READ_RPC);
 
   const formatAmount = (value) => {
     if (!value) return "0";

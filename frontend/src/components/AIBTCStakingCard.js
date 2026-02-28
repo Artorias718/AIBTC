@@ -14,7 +14,7 @@ const AIBTC_TOKEN = {
 };
 
 // RPC pubblico di fallback (stesso che usi nello staking dashboard)
-const FALLBACK_RPC = "https://base-sepolia-rpc.publicnode.com";
+const FALLBACK_RPC = CONFIG.READ_RPC;
 
 const formatAmount = (value) => {
   if (!value) return "0";

@@ -1,6 +1,17 @@
 // src/config.js
 export const CONFIG = {
-  //addresses
+  // +++++++++++     BASE SEPOLIA    ++++++++++++++
+  READ_RPC: "https://base-sepolia-rpc.publicnode.com",
+
+  CHAIN_ID: "0x14a34", //base sepolia, 84532
+
+  NETWORK_PARAMS: {
+    chainId: "0x14a34",
+    chainName: "Base Sepolia",
+    nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://base-sepolia-rpc.publicnode.com"],
+    blockExplorerUrls: ["https://sepolia.basescan.org"],
+  },
 
   AIBTC_ADDRESS: "0x49252641AC377401Ce4CbAb6500Bb5040c694ff0",
   ICO: "0xF5B4EebE9dD6282f817cCDb0c7d9811A79C967C0",
@@ -25,10 +36,49 @@ export const CONFIG = {
   AAVE_WETH_POOL: "0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27",
   aWETH_ADDRESS: "0x73a5bB60b0B0fc35710DDc0ea9c407031E31Bdbb",
 
-  //Mainnet
-  // AIBTC_ADDRESS: "0xB84d2F10Be486E8b0170A77b53ff674aaCCC278C",
-  // USDT_ADDRESS: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-  // ICO: "0xae56A96E85EBD774Fe64f44f6EA43784A1441a02",
+  //NFTs
+  NFT1: "0x4ED7216922e0141177565D3DD9AC2616a53B084f",
+
+  // +++++++++++     MAINNET    ++++++++++++++
+
+  // READ_RPC: "https://mainnet.base.org",
+
+  // CHAIN_ID: "0x2105", // 8453 in hex
+
+  // NETWORK_PARAMS: {
+  //   chainId: "0x2105",
+  //   chainName: "Base",
+  //   nativeCurrency: {
+  //     name: "Ethereum",
+  //     symbol: "ETH",
+  //     decimals: 18,
+  //   },
+  //   rpcUrls: ["https://mainnet.base.org"],
+  //   blockExplorerUrls: ["https://basescan.org"],
+  // },
+
+  // AIBTC_ADDRESS: "0x49252641AC377401Ce4CbAb6500Bb5040c694ff0",
+  // ICO: "0xF5B4EebE9dD6282f817cCDb0c7d9811A79C967C0",
+
+  // AIBTC_STAKING: "0x9955F6b153D8f756CBf4645BeDd562376BC7e22D",
+
+  // //UDSC
+  // USDC_ADDRESS: "0xba50Cd2A20f6DA35D788639E581bca8d0B5d4D5f",
+  // AAVE_USDC_WRAPPER: "0x1e2914892C6a08bAbb52D9a1071FB283D42Df6D1",
+  // AAVE_USDC_POOL: "0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27",
+  // AUSDC_ADDRESS: "0x10F1A9D11CDf50041f3f8cB7191CBE2f31750ACC",
+
+  // //USDT
+  // USDT_ADDRESS: "0x0a215D8ba66387DCA84B284D18c3B4ec3de6E54a",
+  // AAVE_USDT_WRAPPER: "0xD272c5dA536651Eba9E17e8926050aea68E5a273",
+  // AAVE_USDT_POOL: "0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27",
+  // AUSDT_ADDRESS: "0xcE3CAae5Ed17A7AafCEEbc897DE843fA6CC0c018",
+
+  // //WETH
+  // WETH_ADDRESS: "0x4200000000000000000000000000000000000006",
+  // AAVE_WETH_WRAPPER: "0x74624439A03f77c324bF59d2fFC678f6d12298e7",
+  // AAVE_WETH_POOL: "0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27",
+  // aWETH_ADDRESS: "0x73a5bB60b0B0fc35710DDc0ea9c407031E31Bdbb",
 
   //ABIs
 
