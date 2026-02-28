@@ -8,12 +8,7 @@ import { CONFIG } from "../config";
 /*
   👉 QUI METTI GLI INDIRIZZI DEI 4 CONTRATTI NFT
 */
-const NFT_CONTRACTS = [
-  CONFIG.NFT1,
-  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
-  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
-  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
-];
+const NFT_CONTRACTS = [CONFIG.NFT1, CONFIG.NFT2, CONFIG.NFT3, CONFIG.NFT4];
 
 const NFT_ABI = [
   "function publicMint() external returns (uint256)",
