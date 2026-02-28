@@ -13,9 +13,6 @@ contract Token is ERC20, Ownable {
         _mint(msg.sender, 21_000_000 * 10 ** decimals());
     }
 
-    // ------------------------------------
-    //               FEES
-    // ------------------------------------
     uint256 public feeBasisPoints = 100; // 1%
     uint256 public constant MAX_FEE_BPS = 300; // max 3%
     address public feeCollector;
@@ -23,17 +20,11 @@ contract Token is ERC20, Ownable {
 
     mapping(address => bool) public isFeeExempt;
 
-    // ------------------------------------
-    //           TRADING LOCK
-    // ------------------------------------
     bool public tradingEnabled = false;
     bool public tradingPermanentlyEnabled = false;
 
     mapping(address => bool) public isTradingExempt;
 
-    // ------------------------------------
-    //           TRANSFER LOGIC
-    // ------------------------------------
     function _update(address from, address to, uint256 value) internal override {
 
         if (from != address(0) && to != address(0)) {
@@ -59,10 +50,6 @@ contract Token is ERC20, Ownable {
             super._update(from, to, value);
         }
     }
-
-    // ------------------------------------
-    //            OWNER
-    // ------------------------------------
 
     function enableTrading() external onlyOwner {
         require(!tradingPermanentlyEnabled, "Trading already permanently enabled");
@@ -93,15 +80,8 @@ contract Token is ERC20, Ownable {
         feeEnabled = enabled;
     }
 
-    // ------------------------------------
-    //       MINT & BURN
-    // ------------------------------------
-
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
     }
 
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount);
-    }
 }

@@ -1,14 +1,14 @@
 import "./LabPage.css";
 import { ethers } from "ethers";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { WalletContext } from "./WalletContext";
 import Modal from "./Modal";
 
-/*  
+/*
   👉 QUI METTI GLI INDIRIZZI DEI 4 CONTRATTI NFT
 */
 const NFT_CONTRACTS = [
-  "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
+  "0x4ED7216922e0141177565D3DD9AC2616a53B084f",
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
   "0x075eb9dc52177aa3492e1d26f0fde3d729625d2f",
@@ -21,14 +21,18 @@ const NFT_ABI = [
 ];
 
 const LabPage = () => {
-  const {
-    isConnected,
-    account,
-    connectWallet,
-    disconnectWallet,
-    provider,
-    signer,
-  } = useContext(WalletContext);
+  const { isConnected, account, provider, signer } = useContext(WalletContext);
+
+  // ✅ immagini default SEMPRE disponibili (anche senza provider)
+  const DEFAULT_IMAGES = useMemo(
+    () => [
+      "/aibtc_module.png",
+      "/aibtc_gen_mod.png",
+      "/aibtc_gen_mod.png",
+      "/aibtc_gen_mod.png",
+    ],
+    [],
+  );
 
   const [transactionStatus, setTransactionStatus] = useState(["", "", "", ""]);
   const [isTransactionLoading, setIsTransactionLoading] = useState([
@@ -38,7 +42,8 @@ const LabPage = () => {
     false,
   ]);
 
-  const [nftImages, setNftImages] = useState(["", "", "", ""]);
+  // ✅ inizializzo già con le immagini
+  const [nftImages, setNftImages] = useState(DEFAULT_IMAGES);
   const [nftDescriptions, setNftDescriptions] = useState(["", "", "", ""]);
 
   const [heroImage, setHeroImage] = useState("/lab_0.png");
@@ -71,18 +76,20 @@ const LabPage = () => {
     },
   ];
 
-  // Carica metadata di OGNI NFT dai 4 contratti
+  // ✅ Carica metadata (descrizioni) SOLO se provider esiste
   useEffect(() => {
     const loadAllMetadata = async () => {
-      if (!provider) return;
+      // metto immagini default sempre (se per caso qualcuno le cambia altrove)
+      setNftImages(DEFAULT_IMAGES);
 
-      let imgs = ["", "", "", ""];
-      let descs = ["", "", "", ""];
+      // se non c'è provider (incognito senza estensione) non posso chiamare tokenURI
+      if (!provider) {
+        // fallback: descrizioni di default dal array nfts
+        setNftDescriptions(nfts.map((x) => x.description || ""));
+        return;
+      }
 
-      imgs[0] = "/aibtc_module.png";
-      imgs[1] = "/aibtc_gen_mod.png";
-      imgs[2] = "/aibtc_gen_mod.png";
-      imgs[3] = "/aibtc_gen_mod.png";
+      const descs = ["", "", "", ""];
 
       for (let i = 0; i < 4; i++) {
         try {
@@ -92,36 +99,33 @@ const LabPage = () => {
             provider,
           );
 
-          const uri = await contract.tokenURI(1); // tutti gli NFT hanno stesso baseURI
-          const res = await fetch(uri);
+          const uri = await contract.tokenURI(1);
+
+          const res = await fetch(uri, { cache: "no-store" });
+          if (!res.ok) throw new Error(`fetch metadata failed: ${res.status}`);
+
           const metadata = await res.json();
 
-          //imgs[i] = metadata.image;
-          descs[i] = metadata.description || nfts[i].description;
-
-          //temporaneo, solo per vedere la seconda immagine senza dover deployare l nft
-          // if (i === 1) {
-          //   // immagine statica
-          //   imgs[i] = "/btc_module.png";
-          // } else {
-          //   imgs[i] = metadata.image;
-          // }
+          descs[i] = metadata?.description || nfts[i].description || "";
+          // Se in futuro vuoi usare l'immagine on-chain:
+          // imgs[i] = metadata?.image || DEFAULT_IMAGES[i];
         } catch (e) {
           console.error("Metadata load error:", e);
+          descs[i] = nfts[i].description || "";
         }
       }
 
-      setNftImages(imgs);
       setNftDescriptions(descs);
     };
 
     loadAllMetadata();
-  }, [provider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, DEFAULT_IMAGES]);
 
-  // Controlla quali NFT possiede il wallet e aggiorna HERO IMAGE
+  // ✅ HERO dinamico (se non connesso o non c’è provider torna a lab_0)
   useEffect(() => {
     const updateHeroImage = async () => {
-      if (!provider || !isConnected) {
+      if (!provider || !isConnected || !account) {
         setHeroImage("/lab_0.png");
         return;
       }
@@ -129,29 +133,29 @@ const LabPage = () => {
       let ownedIndex = -1;
 
       for (let i = 0; i < 4; i++) {
-        const contract = new ethers.Contract(
-          NFT_CONTRACTS[i],
-          NFT_ABI,
-          provider,
-        );
-        const balance = await contract.balanceOf(account);
+        try {
+          const contract = new ethers.Contract(
+            NFT_CONTRACTS[i],
+            NFT_ABI,
+            provider,
+          );
 
-        if (balance.toNumber() > 0) {
-          ownedIndex = i;
+          const balance = await contract.balanceOf(account);
+          if (balance?.toNumber?.() > 0) ownedIndex = i;
+        } catch (e) {
+          console.error("balanceOf error:", e);
         }
       }
 
-      if (ownedIndex === -1) {
-        setHeroImage("/lab_0.png");
-      } else {
-        setHeroImage(`/lab_${ownedIndex + 1}.png`);
-      }
+      setHeroImage(
+        ownedIndex === -1 ? "/lab_0.png" : `/lab_${ownedIndex + 1}.png`,
+      );
     };
 
     updateHeroImage();
   }, [provider, isConnected, account]);
 
-  // MINT di un NFT
+  // ✅ MINT
   const handleMint = async (index) => {
     if (!isConnected) {
       setTransactionStatus((prev) => {
@@ -185,7 +189,7 @@ const LabPage = () => {
         return up;
       });
 
-      const receipt = await tx.wait();
+      await tx.wait();
 
       setTransactionStatus((prev) => {
         const up = [...prev];
@@ -195,10 +199,34 @@ const LabPage = () => {
     } catch (error) {
       console.error(error);
 
+      // prova a pescare il revert reason nei vari campi possibili (ethers v5/metamask)
+      const rawMessage =
+        error?.reason ||
+        error?.error?.message ||
+        error?.data?.message ||
+        error?.message ||
+        "";
+
+      // normalizza: se è del tipo 'execution reverted: XYZ' tieni solo XYZ
+      let pretty = rawMessage;
+
+      // caso comune: "execution reverted: You have already minted this NFT"
+      const m1 = rawMessage.match(/execution reverted: (.*)/i);
+      if (m1?.[1]) pretty = m1[1].trim();
+
+      // caso: "reverted with reason string '...'"
+      const m2 = rawMessage.match(/reason string ['"](.+?)['"]/i);
+      if (m2?.[1]) pretty = m2[1].trim();
+
+      // se l'utente rifiuta in Metamask
+      if (error?.code === 4001) pretty = "Transaction rejected by user";
+
+      // fallback super semplice se non troviamo nulla
+      if (!pretty) pretty = "Mint failed";
+
       setTransactionStatus((prev) => {
         const up = [...prev];
-        if (error.code === 4001) up[index] = "Transaction rejected by user";
-        else up[index] = `Mint failed: ${error.message}`;
+        up[index] = pretty;
         return up;
       });
     }
@@ -210,33 +238,22 @@ const LabPage = () => {
     });
   };
 
-  const formatAddress = (address) =>
-    address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
-
   return (
     <div className="nft-page">
       <Modal />
 
       <div className="container">
-        {/* HERO dinamico */}
+        {/* HERO */}
         <div className="nft-hero">
-          <img src={heroImage} alt="NFT Highlight" className="nft-hero-image" />
+          <img
+            src={heroImage}
+            alt="NFT Highlight"
+            className="nft-hero-image"
+            onError={(e) => {
+              e.currentTarget.src = "/lab_0.png";
+            }}
+          />
         </div>
-
-        {/* <div className="wallet-section">
-          {isConnected ? (
-            <div className="wallet-connected">
-              <span className="wallet-address">{formatAddress(account)}</span>
-              <button className="btn btn-secondary" onClick={disconnectWallet}>
-                Disconnect
-              </button>
-            </div>
-          ) : (
-            <button className="btn btn-primary" onClick={connectWallet}>
-              Connect Wallet
-            </button>
-          )}
-        </div> */}
 
         {/* TABELLA NFT */}
         <table className="nft-table">
@@ -255,14 +272,22 @@ const LabPage = () => {
               <tr key={index} className="nft-row">
                 <td>
                   <img
-                    src={nftImages[index]}
+                    src={nftImages[index] || DEFAULT_IMAGES[index]}
                     alt={item.name}
                     className="nft-table-image"
+                    onError={(e) => {
+                      e.currentTarget.src = DEFAULT_IMAGES[index];
+                    }}
                   />
                 </td>
 
                 <td className="nft-table-name">{item.name}</td>
-                <td className="nft-table-description">{item.description}</td>
+
+                {/* ✅ usa descrizione caricata (se disponibile) */}
+                <td className="nft-table-description">
+                  {nftDescriptions[index] || item.description}
+                </td>
+
                 <td className="nft-table-price">{item.price}</td>
 
                 <td>
@@ -292,6 +317,11 @@ const LabPage = () => {
             ))}
           </tbody>
         </table>
+
+        {/* (opzionale) debug rapido */}
+        {/* <pre style={{ color: "#fff" }}>
+          provider: {String(!!provider)} | connected: {String(isConnected)}
+        </pre> */}
       </div>
     </div>
   );

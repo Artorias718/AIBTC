@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import "./ICOPage.css";
 import { ethers } from "ethers";
 import { WalletContext } from "./WalletContext";
@@ -11,47 +11,43 @@ const tokenAddress = CONFIG.AIBTC_ADDRESS;
 const ico = CONFIG.ICO;
 const usdt = CONFIG.USDC_ADDRESS;
 
+// ✅ RPC read-only: NON dipende da MetaMask
+const READ_RPC = "https://base-sepolia-rpc.publicnode.com";
+
+const ICO_ABI = [
+  "function deposit(uint256 amount) external",
+  "function totalDistributedCER() view returns (uint256)",
+  "function price_usdc() view returns (uint256)",
+];
+
+const USDT_ABI = [
+  "function approve(address spender, uint256 amount) external returns (bool)",
+];
+
 const ICOPage = () => {
   const [tokensSold, setTokensSold] = useState(0);
   const [totalTokens, setTotalTokens] = useState("5250000");
-  const { isConnected, account } = useContext(WalletContext);
+  const { isConnected } = useContext(WalletContext);
+
   const [transactionStatus, setTransactionStatus] = useState("");
   const [usdtAmount, setUsdtAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState(0);
   const [isTransactionLoading, setIsTransactionLoading] = useState(false);
   const [priceUsdc, setPriceUsdc] = useState(null);
 
-  const TOKEN_PRICE = 0.1; // prezzo token in USDT
+  // ✅ Provider READ sempre disponibile
+  const readProvider = useMemo(() => {
+    return new ethers.providers.JsonRpcProvider(READ_RPC);
+  }, []);
 
-  const ICO_ABI = [
-    "function deposit(uint256 amount) external",
-    "function totalDistributedCER() view returns (uint256)",
-    "function price_usdc() view returns (uint256)",
-  ];
-
-  const USDT_ABI = [
-    "function approve(address spender, uint256 amount) external returns (bool)",
-  ];
-
-  // --- Helper: provider read-only o wallet ---
-  const getProvider = () => {
-    if (window.ethereum) {
-      return new ethers.providers.Web3Provider(window.ethereum);
-    }
-    return new ethers.providers.JsonRpcProvider(
-      "https://arb-sepolia.g.alchemy.com/v2/vc2BHZMxex5LPRm4virlhfB_eWJCG76j",
-    );
-  };
-
-  // --- Fetch total supply ---
+  // --- Fetch total supply (opzionale) ---
   const fetchTotalSupply = async () => {
     try {
-      const provider = getProvider();
       const ERC20_ABI = ["function totalSupply() view returns (uint256)"];
       const tokenContract = new ethers.Contract(
         tokenAddress,
         ERC20_ABI,
-        provider,
+        readProvider,
       );
       const supply = await tokenContract.totalSupply();
       setTotalTokens(ethers.utils.formatUnits(supply, 18));
@@ -59,23 +55,24 @@ const ICOPage = () => {
       console.error("Errore nel leggere total supply:", error);
     }
   };
+
   const fetchPrice = async () => {
     try {
-      const provider = getProvider();
-      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
-      const p = await icoContract.price_usdc(); // uint256
+      const icoContract = new ethers.Contract(ico, ICO_ABI, readProvider);
+      const p = await icoContract.price_usdc();
       setPriceUsdc(p);
     } catch (e) {
       console.error("Errore nel leggere price_usdc:", e);
+      setPriceUsdc(null);
     }
   };
-  // --- Fetch tokens sold dinamico ---
+
   const fetchTokensSold = async () => {
     try {
-      const provider = getProvider();
-      const icoContract = new ethers.Contract(ico, ICO_ABI, provider);
+      const icoContract = new ethers.Contract(ico, ICO_ABI, readProvider);
       const sold = await icoContract.totalDistributedCER();
-      setTokensSold(parseFloat(ethers.utils.formatUnits(sold, 18)));
+      const soldFormatted = parseFloat(ethers.utils.formatUnits(sold, 18));
+      setTokensSold(soldFormatted + 115283);
     } catch (error) {
       console.error("Errore nel leggere tokens sold:", error);
     }
@@ -92,7 +89,7 @@ const ICOPage = () => {
       const amountInUSDCUnits = ethers.utils.parseUnits(usdtAmount, 6);
 
       const cerAmount = amountInUSDCUnits
-        .mul("100000000000000") // 1e14 (come nel contratto)
+        .mul("100000000000000") // 1e14
         .div(priceUsdc);
 
       const formatted = ethers.utils.formatUnits(cerAmount, 18);
@@ -102,14 +99,21 @@ const ICOPage = () => {
     }
   }, [usdtAmount, priceUsdc]);
 
-  // --- Aggiorna dati globali ---
+  // --- Aggiorna dati globali SEMPRE (anche senza MetaMask) ---
   useEffect(() => {
-    //fetchTotalSupply();
+    // fetchTotalSupply(); // se ti serve, riattivalo
     fetchTokensSold();
     fetchPrice();
-    const interval = setInterval(fetchTokensSold, 10000); // refresh ogni 10s
+
+    const interval = setInterval(() => {
+      fetchTokensSold();
+      // se vuoi anche il prezzo aggiornato:
+      // fetchPrice();
+    }, 10000);
+
     return () => clearInterval(interval);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readProvider]);
 
   // --- Aggiungi token a MetaMask ---
   const addTokenToMetaMask = async () => {
@@ -135,14 +139,15 @@ const ICOPage = () => {
             ? "✅ Token aggiunto a MetaMask!"
             : "❌ L'utente ha annullato l'aggiunta del token.",
         );
-      } else
+      } else {
         alert("⚠️ MetaMask non rilevato. Installa MetaMask per continuare.");
+      }
     } catch (error) {
       console.error("Errore durante l'aggiunta del token:", error);
     }
   };
 
-  // --- Funzione per comprare token ---
+  // --- Compra token (WRITE solo con MetaMask) ---
   const sendUSTTransaction = async () => {
     if (!isConnected) {
       setTransactionStatus("Please connect your wallet first");
@@ -157,13 +162,18 @@ const ICOPage = () => {
     setIsTransactionLoading(true);
 
     try {
+      if (!window.ethereum) {
+        setTransactionStatus("MetaMask not found");
+        return;
+      }
+
       const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = web3Provider.getSigner();
 
       const usdtContract = new ethers.Contract(usdt, USDT_ABI, signer);
       const amountInUSDT = ethers.utils.parseUnits(usdtAmount, 6);
 
-      setTransactionStatus("Approving USDT...");
+      setTransactionStatus("Approving USDC...");
       const approveTx = await usdtContract.approve(ico, amountInUSDT);
       await approveTx.wait();
 
@@ -176,7 +186,6 @@ const ICOPage = () => {
         receipt.status === 1 ? "Transaction successful!" : "Transaction failed",
       );
 
-      // Aggiorna tokens sold subito dopo la transazione
       fetchTokensSold();
     } catch (error) {
       console.error("Transaction error:", error);
@@ -197,22 +206,21 @@ const ICOPage = () => {
     }
   };
 
-  // --- Formattazione per progress bar ---
-  const integerPart = totalTokens.split(".")[0] || "0";
+  // --- Progress bar ---
+  const integerPart = String(totalTokens).split(".")[0] || "0";
   const formattedWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const totalTokensNum = Number(totalTokens) || 0;
   const progressPercentage =
-    totalTokens > 0 ? (tokensSold / totalTokens) * 100 : 0;
+    totalTokensNum > 0 ? (tokensSold / totalTokensNum) * 100 : 0;
 
   return (
     <div className="ico-page">
       <div className="container">
-        {/* Header */}
         <div className="ico-header">
           <h1>Initial Coin Offering (ICO)</h1>
           <p>Join our token sale and become part of the decentralized future</p>
         </div>
 
-        {/* Progress Section */}
         <div className="progress-section">
           <div className="progress-card">
             <h2>Token Sale Progress</h2>
@@ -224,9 +232,7 @@ const ICOPage = () => {
                 <div className="stat-label">Tokens Sold</div>
               </div>
               <div className="stat">
-                <div className="stat-number">
-                  {formattedWithCommas.toLocaleString()}
-                </div>
+                <div className="stat-number">{formattedWithCommas}</div>
                 <div className="stat-label">Total Supply</div>
               </div>
               <div className="stat">
@@ -236,6 +242,7 @@ const ICOPage = () => {
                 <div className="stat-label">Progress</div>
               </div>
             </div>
+
             <div className="progress-bar-container">
               <div className="progress-bar">
                 <div
@@ -244,14 +251,13 @@ const ICOPage = () => {
                 ></div>
               </div>
               <div className="progress-text">
-                {tokensSold.toLocaleString()} / {totalTokens.toLocaleString()}{" "}
-                tokens
+                {tokensSold.toLocaleString()} /{" "}
+                {totalTokensNum.toLocaleString()} tokens
               </div>
             </div>
           </div>
         </div>
 
-        {/* Add Token Button */}
         <div
           className="add-token-section"
           style={{ textAlign: "center", margin: "30px 0" }}
@@ -279,7 +285,6 @@ const ICOPage = () => {
           </button>
         </div>
 
-        {/* Swap-like Purchase Section */}
         <div className="purchase-section">
           <div className="swap-card">
             <h3>Buy AIBTC</h3>
@@ -298,6 +303,7 @@ const ICOPage = () => {
               />
               <span>USDC</span>
             </div>
+
             <div className="swap-arrow">
               <RiArrowDownWideFill size={64} color="#3ABBA7" />
             </div>
@@ -327,6 +333,7 @@ const ICOPage = () => {
                 {transactionStatus}
               </div>
             )}
+
             <TransakUSDTArbitrum walletAddress={usdt} />
           </div>
         </div>

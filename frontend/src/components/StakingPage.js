@@ -163,11 +163,11 @@ const StakingDashboard = () => {
         const reserveData = await poolContract.getReserveData(
           token.underlyingAsset,
         );
-        const apy = (
-          (Number(reserveData.currentLiquidityRate) / 1e27) * 100 +
-          2
-        ).toFixed(2);
-        setApyData((prev) => ({ ...prev, [token.symbol]: `${apy}%` }));
+        // const apy = (
+        //   (Number(reserveData.currentLiquidityRate) / 1e27) *
+        //   100
+        // ).toFixed(2);
+        //setApyData((prev) => ({ ...prev, [token.symbol]: `${apy}%` }));
       } else {
         setApyData((prev) => ({ ...prev, [token.symbol]: "APY N/A" }));
       }
@@ -191,8 +191,8 @@ const StakingDashboard = () => {
           token.underlyingAsset,
         );
         const apy = (
-          (Number(reserveData.currentLiquidityRate) / 1e27) *
-          100
+          (Number(reserveData.currentLiquidityRate) / 1e27) * 100 +
+          2
         ).toFixed(2);
         setApyData((prev) => ({ ...prev, [token.symbol]: `${apy}%` }));
       } else {

@@ -48,10 +48,10 @@ contract AIBTC_NFT is ERC721, Ownable {
     function publicMint() external returns (uint256) {
         require(
             aibtcToken.balanceOf(msg.sender) >= 1 * 10 ** 18,
-            "Devi possedere almeno 1 AIBTC"
+            "You must own at least 1 AIBTC"
         );
 
-        require(!hasMinted[msg.sender], "Hai gia mintato un NFT");
+        require(!hasMinted[msg.sender], "You have already minted this NFT");
 
         _tokenIdCounter += 1;
         uint256 tokenId = _tokenIdCounter;
@@ -60,5 +60,10 @@ contract AIBTC_NFT is ERC721, Ownable {
         hasMinted[msg.sender] = true;
 
         return tokenId;
+    }
+
+    function setAIBTCToken(address newToken) external onlyOwner {
+        require(newToken != address(0), "Invalid token address");
+        aibtcToken = IERC20(newToken);
     }
 }
