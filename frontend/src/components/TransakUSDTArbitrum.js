@@ -35,7 +35,7 @@ export default function TransakUSDCArbitrum() {
     window.open(
       transakUrl,
       "transakPopup",
-      "width=500,height=700,resizable,scrollbars=yes,status=1",
+      "width=500,height=700,resizable,scrollbars=yes,status=1,noopener,noreferrer",
     );
   };
 

@@ -196,6 +196,7 @@ export default function AIBTCStakingCard() {
     if (!modalAmount || Number(modalAmount) <= 0)
       return setStatus("Enter a valid amount");
 
+    setStakeModalOpen(false); // ✅ chiudi subito, stile "StakingDashboard"
     setTxLoading(true);
     setStatus("Preparing...");
     try {
@@ -211,7 +212,6 @@ export default function AIBTCStakingCard() {
       await tx.wait();
 
       setStatus("Stake confirmed ✅");
-      setStakeModalOpen(false);
       await fetchAll();
     } catch (e) {
       console.error(e);
@@ -271,14 +271,16 @@ export default function AIBTCStakingCard() {
   // ---------- modal open helpers ----------
   const openStakeModal = async () => {
     setModalMax(walletBal || "0");
-    setModalAmount("0");
+    setModalAmount(walletBal || "0");
     setStakeModalOpen(true);
     await checkAllowance("0");
   };
 
   const openWithdrawModal = () => {
     setModalMax(stakedBal || "0");
-    setModalAmount(stakedBal || "0");
+    //setModalAmount(stakedBal || "0");
+    setModalAmount("0");
+
     setWithdrawModalOpen(true);
   };
 
@@ -346,7 +348,7 @@ export default function AIBTCStakingCard() {
               type="range"
               min="0"
               max={modalMax}
-              step="0.01"
+              step="0.00001"
               value={modalAmount}
               onChange={(e) => {
                 const v = e.target.value;
@@ -358,7 +360,7 @@ export default function AIBTCStakingCard() {
               type="number"
               min="0"
               max={modalMax}
-              step="0.01"
+              step="0.00001"
               value={modalAmount}
               onChange={(e) => {
                 const v = e.target.value;
@@ -376,18 +378,14 @@ export default function AIBTCStakingCard() {
 
             <div className="modal-buttons">
               <button
-                className="btn btn-primary"
-                onClick={handleStake}
-                disabled={txLoading}
-              >
-                Confirm
-              </button>
-              <button
                 className="btn btn-secondary"
                 onClick={() => setStakeModalOpen(false)}
-                disabled={txLoading}
               >
                 Cancel
+              </button>
+
+              <button className="btn btn-primary" onClick={handleStake}>
+                Confirm
               </button>
             </div>
           </div>
@@ -405,7 +403,7 @@ export default function AIBTCStakingCard() {
               type="range"
               min="0"
               max={modalMax}
-              step="0.01"
+              step="0.00001"
               value={modalAmount}
               onChange={(e) => setModalAmount(e.target.value)}
             />
@@ -413,25 +411,25 @@ export default function AIBTCStakingCard() {
               type="number"
               min="0"
               max={modalMax}
-              step="0.01"
+              step="0.00001"
               value={modalAmount}
               onChange={(e) => setModalAmount(e.target.value)}
             />
 
             <div className="modal-buttons">
               <button
-                className="btn btn-primary"
-                onClick={handleWithdrawPartial}
-                disabled={txLoading}
-              >
-                Confirm Withdraw
-              </button>
-              <button
                 className="btn btn-secondary"
                 onClick={() => setWithdrawModalOpen(false)}
                 disabled={txLoading}
               >
                 Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleWithdrawPartial}
+                disabled={txLoading}
+              >
+                Confirm
               </button>
             </div>
           </div>

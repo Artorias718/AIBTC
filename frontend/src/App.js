@@ -18,6 +18,7 @@ import NetworkGuard from "./components/NetworkGuard";
 import LabPage from "./components/Lab";
 import WheelOfFortune from "./components/Wheel";
 import AdminDashboard from "./components/AdminDashboard";
+import SwapWidgetCard from "./components/SwapWidgetCard";
 
 function AppRoutes() {
   const location = useLocation();
@@ -37,11 +38,13 @@ function AppRoutes() {
             <Route path="/Luckydrop" element={<ComingSoonPage />} />
             <Route path="/test" element={<WheelOfFortune />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/swap" element={<SwapWidgetCard />} />
           </Routes>
         </NetworkGuard>
       ) : (
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/swap" element={<SwapWidgetCard />} />
         </Routes>
       )}
     </div>

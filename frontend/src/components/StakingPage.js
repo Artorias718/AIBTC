@@ -437,7 +437,7 @@ const StakingDashboard = () => {
     setSelectedToken(token);
     const maxAvailable = walletBalances[token.symbol] || "0";
     setModalMax(maxAvailable);
-    setModalAmount("0");
+    setModalAmount(maxAvailable);
     setIsSupplyModalOpen(true);
   };
 
@@ -445,7 +445,7 @@ const StakingDashboard = () => {
     setSelectedToken(token);
     const maxAvailable = stakedBalances[token.symbol] || "0";
     setModalMax(maxAvailable);
-    setModalAmount(maxAvailable);
+    setModalAmount("0");
     setIsWithdrawModalOpen(true);
   };
 
@@ -481,7 +481,13 @@ const StakingDashboard = () => {
                     alt={token.symbol}
                     className="vault-token-img"
                   />
-                  <span>{token.symbol}</span>
+
+                  <span className="vault-symbol">{token.symbol}</span>
+
+                  <span className="tooltip">
+                    <span className="fee-pill">0.3%</span>
+                    <span className="tooltip-bubble">Pool fee</span>
+                  </span>
                 </div>
 
                 <div className="cell apy-cell">
@@ -531,7 +537,7 @@ const StakingDashboard = () => {
                     type="range"
                     min="0"
                     max={modalMax}
-                    step="0.01"
+                    step="0.00001"
                     value={modalAmount}
                     onChange={(e) => setModalAmount(e.target.value)}
                   />
@@ -539,20 +545,20 @@ const StakingDashboard = () => {
                     type="number"
                     min="0"
                     max={modalMax}
-                    step="0.01"
+                    step="0.00001"
                     value={modalAmount}
                     onChange={(e) => setModalAmount(e.target.value)}
                   />
 
                   <div className="modal-buttons">
-                    <button className="btn btn-primary" onClick={confirmSupply}>
-                      Confirm
-                    </button>
                     <button
                       className="btn btn-secondary"
                       onClick={() => setIsSupplyModalOpen(false)}
                     >
                       Cancel
+                    </button>
+                    <button className="btn btn-primary" onClick={confirmSupply}>
+                      Confirm
                     </button>
                   </div>
                 </div>
@@ -572,7 +578,7 @@ const StakingDashboard = () => {
                     type="range"
                     min="0"
                     max={modalMax}
-                    step="0.01"
+                    step="0.00001"
                     value={modalAmount}
                     onChange={(e) => setModalAmount(e.target.value)}
                   />
@@ -580,23 +586,23 @@ const StakingDashboard = () => {
                     type="number"
                     min="0"
                     max={modalMax}
-                    step="0.01"
+                    step="0.00001"
                     value={modalAmount}
                     onChange={(e) => setModalAmount(e.target.value)}
                   />
 
                   <div className="modal-buttons">
                     <button
-                      className="btn btn-primary"
-                      onClick={confirmWithdraw}
-                    >
-                      Confirm Withdraw
-                    </button>
-                    <button
                       className="btn btn-secondary"
                       onClick={() => setIsWithdrawModalOpen(false)}
                     >
                       Cancel
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={confirmWithdraw}
+                    >
+                      Confirm
                     </button>
                   </div>
                 </div>

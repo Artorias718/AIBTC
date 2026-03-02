@@ -563,3 +563,71 @@
 .token-selector {
   flex: 0.8; /* prima era auto, ora prende più spazio */
 }
+
+.vault-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vault-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vault-symbol {
+  font-weight: 600;
+}
+
+/* Fee pill */
+.fee-pill {
+  font-size: 9px;
+  padding: 0.6px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(20, 24, 33, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  z-index: 50;
+}
+
+.tooltip-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: rgba(20, 24, 33, 0.95);
+}
+
+.tooltip:hover .tooltip-bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
