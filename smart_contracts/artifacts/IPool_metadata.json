@@ -76,7 +76,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Aave_WrapperWETH.sol": "IPool"
+			"contracts/Aave_Wrapper_BTC.sol": "IPool"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -138,11 +138,11 @@
 				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
 			]
 		},
-		"contracts/Aave_WrapperWETH.sol": {
-			"keccak256": "0x3af81c5617820995074579eb87b15f2823427ae32acb25ae865ee2354abb4560",
+		"contracts/Aave_Wrapper_BTC.sol": {
+			"keccak256": "0xd8ce36ab3af46bef7e712094cc9c0a7735d015d5bcdebf43f290b469b33426ba",
 			"urls": [
-				"bzz-raw://91c03c3121f0b8091449a6b4e4d97f93910efd9820e0ba5b97852c2003737f57",
-				"dweb:/ipfs/QmW3bTANYiPTjyHXC8vTccnPVCKXGQsgD9QC9GP4da8B16"
+				"bzz-raw://80e6de770b9b5327cd7c2a1ccd637def3f6f6e66dfab0852f9172609895d4aab",
+				"dweb:/ipfs/QmSeGSRyKPqvEXj3iBW7yhN3kZohjwqZ871bV4z2Gn3W7G"
 			]
 		}
 	},

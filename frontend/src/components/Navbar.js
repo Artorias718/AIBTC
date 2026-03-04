@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="container">
         <div className="nav-content">
           <Link to="/" className="nav-logo" onClick={closeMenu}>
-            <img src="text_logo.png" alt="aibtc" className="logo-img" />
+            <img src="text_logo.svg" alt="aibtc" className="logo-img" />
           </Link>
 
           {/* HAMBURGER BUTTON (mobile only) */}
