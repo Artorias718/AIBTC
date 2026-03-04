@@ -125,9 +125,9 @@ const Navbar = () => {
             ICO
           </Link>
           <Link
-            to="/dao"
+            to="/staking"
             className={`nav-link ${
-              location.pathname === "/dao" ? "active" : ""
+              location.pathname === "/staking" ? "active" : ""
             }`}
             onClick={closeMenu}
           >

@@ -1,1 +1,1 @@
-testNoFeeWhenFeeDisabled
+testDeposit_HappyPath_TakesFee_SuppliesToPool_MintsAToken

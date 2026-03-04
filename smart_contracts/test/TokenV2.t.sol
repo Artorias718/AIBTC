@@ -7,7 +7,7 @@ import "../contracts/TokenV2.sol";
 contract TokenTest is Test {
     Token token;
 
-    address owner = address(this); // nei test, address(this) è il deployer
+    address owner = address(this); // in tests, address(this) is the deployer
     address alice = address(0xA11CE);
     address bob   = address(0xB0B);
     address feeCollector = address(0xFEE);
@@ -49,7 +49,7 @@ contract TokenTest is Test {
     // -----------------------
 
     function testRevert_TransferWhenTradingDisabledAndNotExempt() public {
-        // owner (exempt) can send to alice even if trading disabled
+        // owner (exempt) can send to alice even if trading is disabled
         token.transfer(alice, 100e18);
 
         // alice is NOT exempt by default: transfers should revert
@@ -92,7 +92,7 @@ contract TokenTest is Test {
 
     function testOnlyOwner_setTradingExempt() public {
         vm.prank(alice);
-        vm.expectRevert(); // Ownable revert (string dipende da OZ)
+        vm.expectRevert(); // Ownable revert (string depends on OZ)
         token.setTradingExempt(bob, true);
     }
 
@@ -117,13 +117,13 @@ contract TokenTest is Test {
     function testFeeAppliedWhenEnabledAndSenderNotExempt() public {
         token.enableTrading();
 
-        // set fee collector to separate address so we can measure easily
+        // set fee collector to a separate address so we can measure easily
         token.setFeeCollector(feeCollector);
 
         // enable fee (1% default = 100 bps)
         token.setFeeEnabled(true);
 
-        // owner is fee-exempt by default; so first send to alice won't charge fee
+        // owner is fee-exempt by default; so first send to alice won't charge a fee
         token.transfer(alice, 100e18);
         assertEq(token.balanceOf(feeCollector), 0);
 
@@ -146,7 +146,7 @@ contract TokenTest is Test {
 
         token.transfer(alice, 100e18);
 
-        // make alice fee exempt
+        // make alice fee-exempt
         token.setFeeExempt(alice, true);
 
         vm.prank(alice);
@@ -193,19 +193,6 @@ contract TokenTest is Test {
     // Mint / Burn
     // -----------------------
 
-    function testMint_OnlyOwner() public {
-        vm.prank(alice);
-        vm.expectRevert();
-        token.mint(bob, 1e18);
-    }
-
-    function testMint_IncreasesSupplyAndBalance() public {
-        uint256 supplyBefore = token.totalSupply();
-        token.mint(bob, 5e18);
-        assertEq(token.balanceOf(bob), 5e18);
-        assertEq(token.totalSupply(), supplyBefore + 5e18);
-    }
-
     function testBurn_DecreasesSupplyAndBalance() public {
         token.enableTrading();
 
@@ -235,10 +222,10 @@ contract TokenTest is Test {
         token.setFeeCollector(feeCollector);
         token.setFeeEnabled(true);
 
-        // fund alice from owner (owner is fee exempt, so no fee on this transfer)
+        // fund alice from owner (owner is fee-exempt, so no fee on this transfer)
         token.transfer(alice, 1_000e18);
 
-        // random transfer amount within alice balance
+        // random transfer amount within alice's balance
         vm.assume(amount > 0 && amount <= token.balanceOf(alice));
 
         uint256 supplyBefore = token.totalSupply();

@@ -140,7 +140,7 @@
   /* MENU MOBILE */
   .nav-menu {
     position: absolute;
-    top: 70px; /* sotto la navbar */
+    top: 130px; /* sotto la navbar */
     left: 0;
     width: 100%;
     background-color: #140D36;

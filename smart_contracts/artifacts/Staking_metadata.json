@@ -1012,11 +1012,11 @@
 			]
 		},
 		"contracts/Staking_ProxyV2.sol": {
-			"keccak256": "0x4eb36483c6cca161062454b7487787be959c5c4f8b80309be58275b6d802928a",
+			"keccak256": "0x61e30e46e4297ed3cbfb1c5f376566f1a7497139f42190755cf67e8bde3ac0a9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://75889760528593df52a4d8a686ac2bf5fc4313ff4bb335ceddd9fda478e7b700",
-				"dweb:/ipfs/QmNij85eTgrcYPqZjFmFDdGdneA2vVPbiCfWjkyQcczz78"
+				"bzz-raw://36191daf563ba78a4f6f485e68485f186b1a3b55815a14f5d6800f7c60c8a267",
+				"dweb:/ipfs/QmYBtfHX5jZyuh6cSq6bawyWwYqCbC1718FKgiMwA69pDn"
 			]
 		}
 	},

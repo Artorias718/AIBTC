@@ -115,7 +115,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
     // ----------------------------- stake logic -----------------------------
 
     function stake(uint256 amount) external whenNotPaused {
-        require(amount > 0, "Importo nullo");
+        require(amount > 0, "Amount is zero");
         Stake storage s = stakes[msg.sender];
 
         // transfer tokens first
@@ -203,10 +203,10 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     function claim() external whenNotPaused {
         Stake storage s = stakes[msg.sender];
-        require(s.amount > 0 || s.unclaimed > 0, "Nessuno stake o reward");
+        require(s.amount > 0 || s.unclaimed > 0, "No stake or reward");
 
         uint256 reward = calculateReward(msg.sender);
-        require(reward > 0, "Nessun reward disponibile");
+        require(reward > 0, "No reward available");
 
         // check contract has enough free tokens to pay the reward
         uint256 contractBalance_ = cerToken.balanceOf(address(this));
@@ -223,7 +223,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     function withdraw() external whenNotPaused {
         Stake memory s = stakes[msg.sender];
-        require(s.amount > 0, "Nessuno stake");
+        require(s.amount > 0, "No stake");
 
         uint256 reward = calculateReward(msg.sender);
         uint256 principal = s.amount;
@@ -238,7 +238,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
         // safety: check contract has enough tokens to pay principal + reward
         uint256 contractBalance_ = cerToken.balanceOf(address(this));
-        require(contractBalance_ >= total, "FondI insufficienti per pagare");
+        require(contractBalance_ >= total, "Insufficient funds to pay");
 
         cerToken.safeTransfer(msg.sender, total);
         emit Withdrawn(msg.sender, total);
@@ -246,8 +246,8 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
 
     function withdrawPartial(uint256 amount) external whenNotPaused {
         Stake storage s = stakes[msg.sender];
-        require(s.amount > 0, "Nessuno stake");
-        require(amount > 0 && amount <= s.amount, "Importo non valido");
+        require(s.amount > 0, "No stake");
+        require(amount > 0 && amount <= s.amount, "Invalid amount");
 
         // snapshot reward up to now (includes unclaimed)
         uint256 reward = calculateReward(msg.sender);
@@ -263,7 +263,7 @@ contract Staking is Initializable, OwnableUpgradeable, UUPSUpgradeable, Pausable
         uint256 transferAmount = amount + reward;
 
         uint256 contractBalance_ = cerToken.balanceOf(address(this));
-        require(contractBalance_ >= transferAmount, "FondI insufficienti per pagare");
+        require(contractBalance_ >= transferAmount, "Insufficient funds to pay");
 
         cerToken.safeTransfer(msg.sender, transferAmount);
         emit Withdrawn(msg.sender, transferAmount);
