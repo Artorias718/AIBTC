@@ -116,7 +116,7 @@ const ICOPage = () => {
 
   // --- Aggiungi token a MetaMask ---
   const addTokenToMetaMask = async () => {
-    const tokenSymbol = "AI Bitcoin";
+    const tokenSymbol = "AIBTC";
     const tokenDecimals = 18;
     const tokenImage = "https://aibtc.finance/aibtc.png";
     try {

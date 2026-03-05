@@ -9,7 +9,7 @@
 				"inputs": [
 					{
 						"internalType": "contract IERC20",
-						"name": "_usdc",
+						"name": "_token",
 						"type": "address"
 					},
 					{
@@ -96,7 +96,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "usdc",
+				"name": "token",
 				"outputs": [
 					{
 						"internalType": "contract IERC20",
@@ -141,7 +141,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Aave_Wrapper_BTC.sol": "AaveWrapper"
+			"contracts/Aaave_Generic_wrapper.sol": "AaveWrapper"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -203,11 +203,11 @@
 				"dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
 			]
 		},
-		"contracts/Aave_Wrapper_BTC.sol": {
-			"keccak256": "0xd8ce36ab3af46bef7e712094cc9c0a7735d015d5bcdebf43f290b469b33426ba",
+		"contracts/Aaave_Generic_wrapper.sol": {
+			"keccak256": "0x9a39a4f22dc23c3589010e8b689b83abc7e9db283eef9e0cc338e46e52ebc3bc",
 			"urls": [
-				"bzz-raw://80e6de770b9b5327cd7c2a1ccd637def3f6f6e66dfab0852f9172609895d4aab",
-				"dweb:/ipfs/QmSeGSRyKPqvEXj3iBW7yhN3kZohjwqZ871bV4z2Gn3W7G"
+				"bzz-raw://0f5b5e7f3cbdd1eb445b26fa76936ca271e9440e114d153b8dadfb397489afe6",
+				"dweb:/ipfs/QmWtvLCo2UwiUc8QZbpw5UYBLVqPhoHSAqjjtaZ8Bnk6Nf"
 			]
 		}
 	},

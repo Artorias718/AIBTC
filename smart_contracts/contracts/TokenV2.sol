@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Token is ERC20, Ownable {
-    constructor() ERC20("AIBTC", "AI Bitcoin") Ownable(msg.sender) {
+    constructor() ERC20("AIBTC", "AIBTC") Ownable(msg.sender) {
         feeCollector = msg.sender;
         isFeeExempt[msg.sender] = true;
         isTradingExempt[msg.sender] = true;

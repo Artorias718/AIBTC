@@ -50,8 +50,8 @@ const TOKENS = [
     useAaveWrapper: true,
   },
   {
-    name: "ETH",
-    symbol: "ETH",
+    name: "WETH",
+    symbol: "WETH",
     address: CONFIG.WETH_ADDRESS,
     aTokenAddress: CONFIG.aWETH_ADDRESS,
     poolAddress: CONFIG.AAVE_WETH_POOL,
@@ -202,7 +202,7 @@ const StakingDashboard = () => {
         );
         const apy = (
           (Number(reserveData.currentLiquidityRate) / 1e27) * 100 +
-          2
+          0.75
         ).toFixed(2);
         setApyData((prev) => ({ ...prev, [token.symbol]: `${apy}%` }));
       } else {
@@ -497,7 +497,7 @@ const StakingDashboard = () => {
                   <span className="vault-symbol">{token.symbol}</span>
 
                   <span className="tooltip">
-                    <span className="fee-pill">0.3%</span>
+                    <span className="fee-pill">0.5%</span>
                     <span className="tooltip-bubble">Pool fee</span>
                   </span>
                 </div>

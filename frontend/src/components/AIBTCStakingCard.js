@@ -51,6 +51,8 @@ export default function AIBTCStakingCard() {
   const [status, setStatus] = useState("");
 
   const [isApproved, setIsApproved] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
+  const reqIdRef = React.useRef(0);
 
   /**
    * ✅ Provider di lettura sempre disponibile:
@@ -118,12 +120,12 @@ export default function AIBTCStakingCard() {
   const fetchUserData = async () => {
     if (!tokenRead || !stakingRead) return;
 
-    if (!account) {
-      setWalletBal("0");
-      setStakedBal("0");
-      setPending("0");
-      return;
-    }
+    // Se account non c’è (durante refresh può sparire per 1-2s),
+    // NON resettiamo a 0: teniamo i valori vecchi per evitare flicker.
+    if (!account) return;
+
+    // id progressivo per ignorare risposte vecchie (race condition)
+    const reqId = ++reqIdRef.current;
 
     try {
       const [wb, stakeData, reward] = await Promise.all([
@@ -132,12 +134,16 @@ export default function AIBTCStakingCard() {
         stakingRead.calculateReward(account),
       ]);
 
+      // Se nel frattempo è partita un’altra fetch, ignora questa risposta
+      if (reqId !== reqIdRef.current) return;
+
       setWalletBal(ethers.utils.formatUnits(wb, AIBTC_TOKEN.decimals));
       setStakedBal(
         ethers.utils.formatUnits(stakeData.amount, AIBTC_TOKEN.decimals),
       );
       setPending(ethers.utils.formatUnits(reward, AIBTC_TOKEN.decimals));
     } catch (e) {
+      // Evita di settare 0 anche in errore: logga e basta
       console.error("AIBTC staking user fetch error:", e);
     }
   };

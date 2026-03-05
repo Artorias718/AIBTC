@@ -15,7 +15,7 @@ contract AaveWrapper {
     IERC20 public immutable aToken;
     IPool public immutable aavePool;
 
-    address public feeRecipient; // la lasci uguale, ma ora non hardcoded
+    address public feeRecipient; 
 
     constructor(IERC20 _usdc, IERC20 _aToken, IPool _aavePool, address _feeRecipient) {
         require(address(_usdc) != address(0), "USDC=0");
