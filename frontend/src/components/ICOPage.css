@@ -1,8 +1,8 @@
-/* ICOPage.css aggiornato */
+/* ICOPage.css */
 
 .ico-page {
   min-height: 100vh;
-  background-color: #140D36;
+  background-color: var(--color-hero-bg);
   padding: 2rem 0;
 }
 
@@ -14,7 +14,7 @@
 .ico-header h1 {
   font-size: 3rem;
   font-weight: 800;
-  color: #3ABBA7;
+  color: var(--primary-green);
   margin-bottom: 1rem;
 }
 
@@ -26,18 +26,19 @@
 }
 
 /* Progress Card */
+
 .progress-section {
   margin-bottom: 3rem;
 }
 
 .progress-card {
-  background-color: #1f1261;
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid #3ABBA7;
-  max-width: 900px;  /* larghezza massima desiderata */
-  margin: 0 auto;    /* centra orizzontalmente */
+  border: 1px solid var(--primary-green);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .progress-card h2 {
@@ -45,7 +46,7 @@
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #3ABBA7;
+  color: var(--primary-green);
 }
 
 .progress-stats {
@@ -62,7 +63,7 @@
 .stat-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #3ABBA7;
+  color: var(--primary-green);
   margin-bottom: 0.5rem;
 }
 
@@ -78,7 +79,7 @@
 .progress-bar {
   width: 100%;
   height: 20px;
-  background-color: #3ABBA7;
+  background-color: var(--primary-green);
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -86,7 +87,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #1d5e54;
+  background: var(--color-progress-fill);
   border-radius: 10px;
   transition: width 0.5s ease;
   position: relative;
@@ -95,11 +96,13 @@
 .progress-fill::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
   animation: shimmer 2s infinite;
 }
 
@@ -111,16 +114,18 @@
 .progress-text {
   text-align: center;
   font-weight: 600;
-  color: #3ABBA7;
+  color: var(--primary-green);
 }
 
 /* Add Token Button */
+
 .add-token-section {
   text-align: center;
   margin: 30px 0;
 }
 
 /* Swap Card */
+
 .purchase-section {
   display: flex;
   justify-content: center;
@@ -128,13 +133,13 @@
 }
 
 .swap-card {
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 16px;
   max-width: 600px;
   width: 100%;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid #3ABBA7;
+  border: 1px solid var(--primary-green);
   display: flex;
   flex-direction: column;
   gap: 1.3rem;
@@ -143,13 +148,13 @@
 
 .swap-card h3 {
   font-size: 1.8rem;
-  color: white;
+  color: var(--white);
   font-weight: 700;
   text-align: center;
 }
 
 .swap-input {
-  background-color: #4a887f;
+  background-color: var(--color-input-green);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -165,20 +170,18 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  background-color: #1F1261;
-  color: white;
-
-  
+  background-color: var(--color-card-dark);
+  color: var(--white);
 }
 
 .swap-input input:disabled {
-  background-color: #1F1261;
-  color: #fff;
+  background-color: var(--color-card-dark);
+  color: var(--white);
 }
 
 .swap-input span {
   font-weight: 600;
-  color: white;
+  color: var(--white);
 }
 
 .token-icon {
@@ -190,23 +193,22 @@
 
 .swap-arrow {
   font-size: 2rem;
-  color: #3ABBA7;
-
+  color: var(--primary-green);
 }
 
 /* Swap Button */
+
 .swap-btn {
   width: 100%;
   padding: 0.75rem;
   border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 600;
-    margin-top: 2.5rem; /* aggiungi questo per abbassare il pulsante */
-
+  margin-top: 2.5rem;
 }
 
 .swap-btn.loading {
-  background-color: #1d5e54;
+  background-color: var(--color-progress-fill);
   cursor: not-allowed;
 }
 
@@ -220,18 +222,19 @@
 }
 
 .transaction-status.success {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--light-green);
 }
 
 .transaction-status.error {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 /* Info Section */
+
 .info-section {
   margin-bottom: 2rem;
 }
@@ -243,12 +246,12 @@
 }
 
 .info-card {
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 15px var(--shadow);
-  border: 1px solid #3ABBA7;
+  border: 1px solid var(--primary-green);
 }
 
 .info-icon {
@@ -260,31 +263,35 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--white);
 }
 
 .info-card p {
-  color: white;
+  color: var(--white);
   line-height: 1.6;
 }
+
 .swap-arrow {
   font-size: 2rem;
-  color: #3ABBA7;
+  color: var(--primary-green);
   margin: 0.5rem 0;
   cursor: default;
 }
+
 /* Responsive */
+
 @media (max-width: 768px) {
+
   .swap-card {
     max-width: 90%;
   }
+
   .progress-stats {
     grid-template-columns: 1fr;
   }
 
   .swap-input input {
-    width: 100%;  /* occuperà tutto lo spazio disponibile */
+    width: 100%;
   }
-
 
 }

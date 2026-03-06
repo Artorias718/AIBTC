@@ -1,13 +1,12 @@
 /* --- BASE NAVBAR --- */
 .navbar {
-  background-color: #140D36;
-  height: 130px; /* fissa l’altezza */
+  background-color: var(--color-hero-bg);
+  height: 130px;
   position: sticky;
   top: 0;
   z-index: 1000;
   padding: 1.5rem 0;
-  align-items: center; /* centra verticalmente tutto */
-
+  align-items: center;
 }
 
 .nav-content {
@@ -28,7 +27,6 @@
 .logo-img {
   height: 77px;
   width: auto;
-
 }
 
 .nav-links {
@@ -40,7 +38,7 @@
 }
 
 .nav-link {
-  color: white;
+  color: var(--white);
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -49,63 +47,60 @@
 }
 
 .nav-link:hover {
-  color: white;
-  background-color: #3ABBA7;
+  color: var(--white);
+  background-color: var(--primary-green);
 }
 
 .nav-link.active {
-  color: white;
-  background-color: #3ABBA7;
+  color: var(--white);
+  background-color: var(--primary-green);
 }
 
 .wallet-section {
-  display: flex;  
+  display: flex;
   align-items: center;
-  
 }
+
 /* Stile pulsante Connect Wallet (non connesso) */
 .connect-wallet {
   display: flex;
-  align-items: center;       /* centra icona + testo verticalmente */
-  justify-content: center;   /* centra il contenuto orizzontalmente */
-  gap: 0.6rem;               /* spazio tra icona e testo */
-  background-color: #3ABBA7;
-  color: white;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: var(--primary-green);
+  color: var(--white);
   border: none;
   border-radius: 6px;
   padding: 1rem 1.5rem;
   font-size: 0.97rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  transform: translateY(30%); /* centra verticalmente indipendentemente dall’altezza */
-
+  transform: translateY(30%);
 }
 
 .connect-wallet:hover {
-  background-color: #288577;
-    transform: translateY(30%); /* centra verticalmente indipendentemente dall’altezza */
-
+  background-color: var(--color-social-hover);
+  transform: translateY(30%);
 }
 
 .wallet-btn-icon {
-  font-size: 1.2rem; /* aumenta proporzionalmente al pulsante */
+  font-size: 1.2rem;
 }
 
 .wallet-connected {
   display: flex;
   align-items: center;
   gap: 1rem;
-  transform: translateY(30%); /* centra verticalmente indipendentemente dall’altezza */
-  background-color: #3ABBA7;
+  transform: translateY(30%);
+  background-color: var(--primary-green);
   padding: 0.3rem .5rem;
   border-radius: 6px;
   padding: 0.6rem 0.5rem !important;
-
 }
 
 .wallet-address {
-  background-color: #288577;
-  color: white;
+  background-color: var(--color-social-hover);
+  color: var(--white);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-family: monospace;
@@ -118,32 +113,28 @@
   font-size: .9rem;
 }
 
-
 /* --- MOBILE NAVBAR --- */
 @media (max-width: 768px) {
-  /* Hamburger button */
   .hamburger {
     display: block;
     font-size: 1.8rem;
-    color: white;
+    color: var(--white);
     background: none;
     border: none;
     cursor: pointer;
   }
 
-  /* Nascondiamo il menu desktop e wallet desktop */
   .nav-links,
   .wallet-desktop {
     display: none;
   }
 
-  /* MENU MOBILE */
   .nav-menu {
     position: absolute;
-    top: 130px; /* sotto la navbar */
+    top: 130px;
     left: 0;
     width: 100%;
-    background-color: #140D36;
+    background-color: var(--color-hero-bg);
     flex-direction: column;
     align-items: center;
     gap: 1.2rem;
@@ -154,10 +145,9 @@
     pointer-events: none;
     transition: all 0.3s ease;
     z-index: 999;
-    display: flex; /* necessario per flex column */
+    display: flex;
   }
 
-  /* Menu aperto */
   .nav-menu.open {
     height: auto;
     opacity: 1;
@@ -172,7 +162,6 @@
     border-radius: 0;
   }
 
-  /* Wallet mobile */
   .wallet-mobile {
     display: flex;
     flex-direction: column;

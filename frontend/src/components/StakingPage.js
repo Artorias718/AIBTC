@@ -45,7 +45,7 @@ const TOKENS = [
     poolAddress: CONFIG.AAVE_BTC_POOL,
     underlyingAsset: CONFIG.aBTC_ADDRESS,
     decimals: 18,
-    image: "Cbbtc.svg",
+    image: "cbbtc.svg",
     stakingContract: CONFIG.AAVE_BTC_WRAPPER,
     useAaveWrapper: true,
   },

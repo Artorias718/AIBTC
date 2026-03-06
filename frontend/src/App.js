@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
+import "./styles/colorsK.css";
+
 import Homepage from "./components/Homepage";
 import DAOPage from "./components/DAOPage";
 import ICOPage from "./components/ICOPage";

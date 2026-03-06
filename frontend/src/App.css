@@ -10,25 +10,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #140D36;
-  color: #1f2937;
+  background-color: var(--color-hero-bg);
+  color: var(--text-dark);
 }
 
 .App {
   min-height: 100vh;
-}
-
-:root {
-  --primary-green: #22c55e;
-  --dark-green: #16a34a;
-  --light-green: #86efac;
-  --bg-green: #f0fdf4;
-  --text-dark: #1f2937;
-  --text-light: #6b7280;
-  --white: #ffffff;
-  --backy: #140D36;
-  --acqua2: #3ABBA7;
-  --shadow: rgba(34, 197, 94, 0.1);
 }
 
 .btn {
@@ -44,31 +31,31 @@ body {
 }
 
 .btn-primary {
-  background-color: #3ABBA7;
+  background-color: var(--primary-green);
   color: var(--white);
 }
 
 .btn-primary:hover {
-  background-color: #258677;
+  background-color: var(--color-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--shadow);
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: white;
-  border: 2px solid #258677;
+  color: var(--white);
+  border: 2px solid var(--color-primary-hover);
 }
 
 .btn-secondary:hover {
-  background-color: #258677;
+  background-color: var(--color-primary-hover);
   color: var(--white);
 }
 
 .container {
   max-width: 1500px;
-  margin:  auto;
-  padding:  20px;
+  margin: auto;
+  padding: 20px;
 }
 
 .navbar .container {

@@ -4,12 +4,11 @@
   align-items: center;
   min-height: 100vh;
   text-align: center;
-  background-color: 140D36;
+  background-color: var(--color-hero-bg);
   padding: 20px;
-  justify-content: flex-start; /* allinea dall'inizio */
-  padding-top: 10vh; /* sposta il contenuto più in alto */
+  justify-content: flex-start;
+  padding-top: 10vh;
 }
-
 
 .logo {
   width: 80px;
@@ -20,13 +19,13 @@
 .title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #3ABBA7; /* grigio scuro */
+  color: var(--primary-green);
   margin-bottom: 16px;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #4b5563; /* grigio medio */
+  color: var(--color-text-muted);
   margin-bottom: 32px;
 }
 
@@ -36,10 +35,10 @@
 }
 
 .docs-link {
-  color: #2563eb; /* blu Tailwind-like */
+  color: var(--color-link);
   text-decoration: underline;
 }
 
 .docs-link:hover {
-  color: #1d4ed8; /* blu più scuro al hover */
+  color: var(--color-link-hover);
 }

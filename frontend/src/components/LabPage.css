@@ -1,16 +1,16 @@
 .nft-page {
   min-height: 100vh;
-  background-color: #140D36;
+  background-color: var(--color-hero-bg);
   padding: 2rem 0;
 }
 
 .nft-hero {
   display: flex;
-  justify-content: center; /* centra orizzontalmente */
-  align-items: center;     /* centra verticalmente se vuoi un'altezza fissa */
+  justify-content: center;
+  align-items: center;
   margin-bottom: 2rem;
-  height: 720px;           /* puoi adattare l'altezza */
-  background-color: #140D36; /* opzionale: sfondo */
+  height: 720px;
+  background-color: var(--color-hero-bg);
   border-radius: 16px;
 }
 
@@ -18,18 +18,18 @@
   max-width: 100%;
   max-height: 100%;
   border-radius: 16px;
-  object-fit: contain;     /* mantiene proporzioni senza tagliare */
+  object-fit: contain;
 }
 
 .nft-hero-placeholder {
   width: 500px;
   height: 300px;
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--white);
   margin: 0 auto;
 }
 
@@ -53,8 +53,8 @@
 }
 
 .nft-card {
-  background-color: #1F1261;
-  border: 1px solid #3ABBA7;
+  background-color: var(--color-card-dark);
+  border: 1px solid var(--primary-green);
   border-radius: 16px;
   padding: 1.5rem;
   width: 300px;
@@ -68,12 +68,12 @@
 }
 
 .nft-card h3 {
-  color: #3ABBA7;
+  color: var(--primary-green);
   margin-bottom: 0.5rem;
 }
 
 .nft-card p {
-  color: white;
+  color: var(--white);
   margin-bottom: 1rem;
 }
 
@@ -85,15 +85,15 @@
 }
 
 .transaction-status.success {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--light-green);
 }
 
 .transaction-status.error {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 .btn-large-lab {
@@ -105,6 +105,7 @@
 .btn.loading {
   opacity: 0.7;
 }
+
 /* NFT TABLE */
 
 .nft-table {
@@ -112,21 +113,21 @@
   max-width: 1100px;
   margin: 0 auto;
   border-collapse: collapse;
-  color: white;
+  color: var(--white);
 }
 
 .nft-table th {
   padding: 1rem;
-  background-color: #1F1261;
-  border-bottom: 2px solid #3ABBA7;
-  color: #3ABBA7;
+  background-color: var(--color-card-dark);
+  border-bottom: 2px solid var(--primary-green);
+  color: var(--primary-green);
   font-size: 1.2rem;
 }
 
 .nft-row td {
   padding: 1rem;
   text-align: center;
-  border-bottom: 1px solid #3ABBA7;
+  border-bottom: 1px solid var(--primary-green);
 }
 
 .nft-table-image {
@@ -136,7 +137,7 @@
 
 .nft-table-name {
   font-weight: bold;
-  color: #3ABBA7;
+  color: var(--primary-green);
   font-size: 1.1rem;
 }
 
@@ -146,6 +147,6 @@
 
 .nft-table-price {
   font-weight: bold;
-  color: #3ABBA7;
+  color: var(--primary-green);
   font-size: 1.1rem;
 }

@@ -1,7 +1,7 @@
 .privacy-page {
   min-height: 100vh;
-  background: #140d36;
-  color: white;
+  background: var(--color-hero-bg);
+  color: var(--white);
   padding: 4rem 0 5rem;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .privacy-eyebrow {
-  color: #3abba7;
+  color: var(--primary-green);
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
@@ -29,7 +29,7 @@
 }
 
 .privacy-updated {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-white-72);
   font-size: 0.98rem;
   margin-bottom: 2.5rem;
 }
@@ -37,25 +37,25 @@
 .privacy-section {
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-white-08);
 }
 
 .privacy-section h2 {
   font-size: 1.45rem;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--white);
 }
 
 .privacy-section h3 {
   font-size: 1.05rem;
   margin-top: 1.25rem;
   margin-bottom: 0.75rem;
-  color: #3abba7;
+  color: var(--primary-green);
   font-weight: 700;
 }
 
 .privacy-section p {
-  color: rgba(255, 255, 255, 0.86);
+  color: var(--color-white-86);
   line-height: 1.8;
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -67,19 +67,19 @@
 }
 
 .privacy-section li {
-  color: rgba(255, 255, 255, 0.86);
+  color: var(--color-white-86);
   line-height: 1.8;
   margin-bottom: 0.55rem;
 }
 
 .privacy-mail {
-  color: #3abba7;
+  color: var(--primary-green);
   text-decoration: none;
   font-weight: 600;
 }
 
 .privacy-mail:hover {
-  color: white;
+  color: var(--white);
 }
 
 @media (max-width: 768px) {

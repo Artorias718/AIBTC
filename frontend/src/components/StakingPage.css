@@ -1,6 +1,6 @@
 .staking-page {
   min-height: 100vh;
-  background-color: #140D36;
+  background-color: var(--color-hero-bg);
   padding: 2rem 0;
 }
 
@@ -12,23 +12,23 @@
 .staking-header h1 {
   font-size: 3rem;
   font-weight: 800;
-  color: #3ABBA7;
+  color: var(--primary-green);
   margin-bottom: 1rem;
 }
 
 .staking-header p {
   font-size: 1.2rem;
-  color: white;
+  color: var(--white);
   max-width: 600px;
   margin: 0 auto;
 }
 
 .staking-card {
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow);
-  border: 1px solid #3ABBA7;
+  border: 1px solid var(--primary-green);
   max-width: 500px;
   margin: 0 auto 3rem;
   text-align: center;
@@ -42,7 +42,7 @@
   padding: 1rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  background-color: #3ABBA7;
+  background-color: var(--primary-green);
 }
 
 .amount-input-section {
@@ -52,7 +52,7 @@
 .amount-input-section label {
   display: block;
   font-weight: 600;
-  color: white;
+  color: var(--white);
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
@@ -65,19 +65,19 @@
 .amount-input {
   width: 100%;
   padding: 1rem;
-  border: 2px solid #3ABBA7;
+  border: 2px solid var(--primary-green);
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  background-color: #3ABBA7;
-  color: white;
+  background-color: var(--primary-green);
+  color: var(--white);
 }
 
 .amount-input:focus {
   outline: none;
-  border-color: #3ABBA7;
-  box-shadow: 0 0 0 3px rgba(58, 187, 167, 0.3);
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .stake-btn {
@@ -87,7 +87,7 @@
 }
 
 .stake-btn.loading {
-  background-color: #1d5e54;
+  background-color: var(--color-progress-fill);
 }
 
 .stake-btn.loading::after {
@@ -99,7 +99,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid transparent;
-  border-top: 2px solid white;
+  border-top: 2px solid var(--white);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -117,17 +117,16 @@
 }
 
 .transaction-status.success {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--light-green);
 }
 
 .transaction-status.error {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
-
 
 .info-section {
   margin-top: 2rem;
@@ -138,7 +137,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: white;
+  color: var(--white);
 }
 
 .info-grid {
@@ -148,32 +147,31 @@
 }
 
 .info-card {
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 15px var(--shadow);
-  border: 1px solid #3ABBA7;
+  border: 1px solid var(--primary-green);
 }
 
 .info-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #3ABBA7;
+  color: var(--primary-green);
 }
 
 .info-card h3 {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--white);
 }
 
 .info-card p {
-  color: white;
+  color: var(--white);
   line-height: 1.6;
 }
-
 
 .staking-row {
   display: flex;
@@ -184,7 +182,7 @@
 
 .staking-row.header {
   font-weight: 600;
-  color: white;
+  color: var(--white);
 }
 
 .cell {
@@ -192,22 +190,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem; /* per icona + testo */
-  color: white;
+  gap: 0.5rem;
+  color: var(--white);
 }
 
 .actions-cell {
-  justify-content: center; /* bottoni centrati nella colonna */
-  gap: 0.5rem; /* spazio tra Claim e Withdraw */
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .staking-card-status {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
   border-radius: 16px;
-  border: 1px solid #3ABBA7;
+  border: 1px solid var(--primary-green);
 }
 
 .staking-row {
@@ -219,42 +217,43 @@
 
 .staking-row.header {
   font-weight: 600;
-  color: white;
+  color: var(--white);
 }
 
 .cell {
-  flex: 1; /* tutte le colonne base */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: white;
+  color: var(--white);
   font-weight: 600;
 }
 
 /* Assegno più spazio alla colonna Actions */
 .actions-cell {
-  flex: 1.5; /* aumenta lo spazio solo per i bottoni */
+  flex: 1.5;
   justify-content: center;
   gap: 0.5rem;
 }
 
 .vault-cell {
-  justify-content: center; /* icona + testo centrati */
+  justify-content: center;
 }
 
 .vault-token-img {
-  width: 36px;        /* larghezza fissa */
-  height: 36px;       /* altezza fissa */
-  object-fit: contain; 
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .telegram-note {
   display: block;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-muted-gray);
   margin-top: 4px;
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -275,7 +274,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(20, 13, 54, 0.8); /* leggero overlay scuro */
+  background-color: var(--color-overlay-dark);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -284,14 +283,14 @@
 
 /* Modal Content */
 .modal-content {
-  background-color: #1F1261; /* stesso colore delle card */
+  background-color: var(--color-card-dark);
   padding: 2rem;
   border-radius: 16px;
   width: 90%;
   max-width: 400px;
   text-align: center;
-  border: 1px solid #3ABBA7; /* bordo accento */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--primary-green);
+  box-shadow: 0 4px 20px var(--color-shadow-strong);
 }
 
 /* Modal Header */
@@ -299,14 +298,14 @@
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #3ABBA7; /* colore accento */
+  color: var(--primary-green);
 }
 
 /* Slider Styling */
 .modal-content input[type="range"] {
   width: 100%;
   margin: 12px 0;
-  accent-color: #3ABBA7; /* colore della barra */
+  accent-color: var(--primary-green);
 }
 
 /* Number Input Styling */
@@ -315,9 +314,9 @@
   padding: 0.8rem;
   font-size: 1rem;
   border-radius: 8px;
-  border: 2px solid #3ABBA7;
-  background-color: #140D36;
-  color: white;
+  border: 2px solid var(--primary-green);
+  background-color: var(--color-hero-bg);
+  color: var(--white);
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -341,22 +340,22 @@
 }
 
 .modal-buttons .btn-primary {
-  background-color: #3ABBA7;
-  color: #140D36;
+  background-color: var(--primary-green);
+  color: var(--color-hero-bg);
 }
 
 .modal-buttons .btn-primary:hover {
-  background-color: #32a28f;
+  background-color: var(--color-primary-hover-alt);
 }
 
 .modal-buttons .btn-secondary {
-  background-color: #140D36;
-  border: 1px solid #3ABBA7;
-  color: #3ABBA7;
+  background-color: var(--color-hero-bg);
+  border: 1px solid var(--primary-green);
+  color: var(--primary-green);
 }
 
 .modal-buttons .btn-secondary:hover {
-  background-color: #1F1261;
+  background-color: var(--color-card-dark);
 }
 
 /* Transaction Status */
@@ -369,19 +368,19 @@
 }
 
 .transaction-status.success {
-  background-color: #d1fae5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--light-green);
 }
 
 .transaction-status.error {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 .max-available-text {
-  color: #c5cdcc; /* Colore accent della pagina */
+  color: var(--color-max-available);
   font-weight: 600;
   margin-bottom: 12px;
 }
@@ -391,18 +390,17 @@
     padding: 1rem;
   }
 
-  /* Trasforma ogni riga in card verticale centrata */
   .staking-row {
     flex-direction: column;
-    align-items: center; /* centra tutto orizzontalmente */
-    border-bottom: 1px solid #3ABBA7;
+    align-items: center;
+    border-bottom: 1px solid var(--primary-green);
     padding: 1rem 0;
     margin-bottom: 1rem;
-    text-align: center; /* centra testo */
+    text-align: center;
   }
 
   .staking-row.header {
-    display: none; /* nascondiamo header su mobile */
+    display: none;
   }
 
   .cell {
@@ -415,13 +413,12 @@
 
   .vault-cell {
     display: flex;
-    flex-direction: column; /* immagine sopra nome */
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     font-weight: 700;
     font-size: 1rem;
   }
-  
 
   .vault-token-img {
     width: 36px;
@@ -431,7 +428,7 @@
   .actions-cell {
     display: flex;
     width: 100%;
-    justify-content: center; /* centra i bottoni */
+    justify-content: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
     flex-wrap: wrap;
@@ -458,6 +455,7 @@
     font-weight: 600;
   }
 }
+
 /* ================================
    TOKEN SELECTOR (VERSIONE MIGLIORATA)
 =================================== */
@@ -467,22 +465,22 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  padding: 16px 22px !important;   /* PIÙ GRANDE */
-  border: 2px solid #0f6600;
+  padding: 16px 22px !important;
+  border: 2px solid var(--color-token-selector-border);
   border-radius: 12px;
-  background: #06A7E2 !important; /* VERDE */
+  background: var(--color-token-selector-bg) !important;
   transition: 0.2s ease;
   user-select: none;
-  font-size: 20px !important;      /* TESTO PIÙ GRANDE */
-  color: #fff;
+  font-size: 20px !important;
+  color: var(--white);
 }
 
 .token-selector:hover {
-  background: #06A7E2 !important; /* VERDE PIÙ SCURO */
+  background: var(--color-token-selector-bg) !important;
 }
 
 .token-selector img {
-  width: 36px !important;         /* IMMAGINE PIÙ GRANDE */
+  width: 36px !important;
   height: 36px !important;
   border-radius: 50%;
 }
@@ -493,15 +491,15 @@
 
 .token-dropdown {
   position: absolute;
-  top: 62px;                      /* ADEGUATO AL BOTTONE PIÙ GRANDE */
+  top: 62px;
   left: 0;
-  width: 220px;                   /* PIÙ LARGO */
-  background: #06A7E2 !important; /* VERDE */
+  width: 220px;
+  background: var(--color-token-selector-bg) !important;
   padding: 14px;
   border-radius: 14px;
-  border: 2px solid #0f6600;
+  border: 2px solid var(--color-token-selector-border);
   z-index: 50;
-  box-shadow: 0 8px 20px rgba(0, 128, 0, 0.5);
+  box-shadow: 0 8px 20px var(--color-token-dropdown-shadow);
   animation: dropdownFade 0.15s ease-out;
 }
 
@@ -514,20 +512,19 @@
   cursor: pointer;
   border-radius: 10px;
   transition: 0.15s ease;
-  font-size: 18px;                /* PIÙ GRANDI */
-  color: #fff;
+  font-size: 18px;
+  color: var(--white);
 }
 
 .token-dropdown-item:hover {
-  background: rgba(0, 0, 0, 0.18); /* HOVER SU VERDE */
+  background: var(--color-token-item-hover);
 }
 
 .token-dropdown-item img {
-  width: 32px !important;          /* ICONE PIÙ GRANDI */
+  width: 32px !important;
   height: 32px !important;
   border-radius: 50%;
 }
-
 
 /* ANIMAZIONE APERTURA */
 @keyframes dropdownFade {
@@ -540,12 +537,12 @@
     transform: translateY(0);
   }
 }
+
 /* Forza il bottone a mantenere sempre la stessa larghezza */
 .token-selector {
-  min-width: 180px;   /* larghezza minima stabile */
-  max-width: 180px;   /* garantisce dimensione fissa */
-  justify-content: flex-start; /* distribuisce icona e testo */
-
+  min-width: 180px;
+  max-width: 180px;
+  justify-content: flex-start;
 }
 
 /* Riduce lo spazio dell'input amount per lasciare più spazio al bottone */
@@ -556,12 +553,12 @@
 
 /* Campo amount leggermente più stretto */
 .amount-input {
-  flex: 1.2; /* prima era flex:1 ora prende meno spazio */
+  flex: 1.2;
 }
 
 /* Token selector più largo rispetto all’input */
 .token-selector {
-  flex: 0.8; /* prima era auto, ora prende più spazio */
+  flex: 0.8;
 }
 
 .vault-cell {
@@ -585,9 +582,9 @@
   font-size: 9px;
   padding: 0.6px 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.85);
+  background: var(--color-white-08);
+  border: 1px solid var(--color-white-10);
+  color: var(--color-white-85);
   white-space: nowrap;
 }
 
@@ -605,12 +602,12 @@
   transform: translateX(-50%);
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(20, 24, 33, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--color-tooltip-bg);
+  border: 1px solid var(--color-white-10);
+  color: var(--color-white-90);
   font-size: 12px;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 30px var(--color-shadow-tooltip);
   opacity: 0;
   pointer-events: none;
   transition: opacity 120ms ease, transform 120ms ease;
@@ -624,7 +621,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 7px solid transparent;
-  border-top-color: rgba(20, 24, 33, 0.95);
+  border-top-color: var(--color-tooltip-bg);
 }
 
 .tooltip:hover .tooltip-bubble {
