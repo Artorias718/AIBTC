@@ -25,7 +25,7 @@ const USDT_ABI = [
 
 const ICOPage = () => {
   const [tokensSold, setTokensSold] = useState(0);
-  const [totalTokens, setTotalTokens] = useState("5250000");
+  const [totalTokens, setTotalTokens] = useState("5000000");
   const { isConnected } = useContext(WalletContext);
 
   const [transactionStatus, setTransactionStatus] = useState("");
@@ -250,8 +250,14 @@ const ICOPage = () => {
                 ></div>
               </div>
               <div className="progress-text">
-                {tokensSold.toLocaleString()} /{" "}
-                {totalTokensNum.toLocaleString()} tokens
+                <span className="price-label">1 AIBTC =</span>{" "}
+                <span className="price-value">
+                  {(priceUsdc / 100).toLocaleString("it-IT", {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3,
+                  })}{" "}
+                  $
+                </span>
               </div>
             </div>
           </div>

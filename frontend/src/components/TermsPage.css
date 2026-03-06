@@ -1,0 +1,99 @@
+.terms-page {
+  min-height: 100vh;
+  background: #140d36;
+  color: white;
+  padding: 4rem 0 5rem;
+}
+
+.terms-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.terms-eyebrow {
+  color: #3abba7;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.terms-title {
+  font-size: 3rem;
+  line-height: 1.1;
+  margin: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 800;
+}
+
+.terms-updated {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.98rem;
+  margin-bottom: 2.5rem;
+}
+
+.terms-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terms-section h2 {
+  font-size: 1.45rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.terms-section p {
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.8;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.terms-section ul {
+  margin: 0 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.terms-section li {
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.8;
+  margin-bottom: 0.55rem;
+}
+
+.terms-mail {
+  color: #3abba7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.terms-mail:hover {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .terms-page {
+    padding: 3rem 0 4rem;
+  }
+
+  .terms-wrapper {
+    padding: 0 1.25rem;
+  }
+
+  .terms-title {
+    font-size: 2.2rem;
+  }
+
+  .terms-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .terms-section p,
+  .terms-section li {
+    font-size: 0.96rem;
+    line-height: 1.75;
+  }
+}

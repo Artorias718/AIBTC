@@ -19,6 +19,9 @@ import LabPage from "./components/Lab";
 import WheelOfFortune from "./components/Wheel";
 import AdminDashboard from "./components/AdminDashboard";
 import SwapWidgetCard from "./components/SwapWidgetCard";
+import Footer from "./components/Footer";
+import TermsPage from "./components/TermsPage";
+import PrivacyPage from "./components/PrivacyPage";
 
 function AppRoutes() {
   const location = useLocation();
@@ -29,18 +32,24 @@ function AppRoutes() {
       {!isAdmin && <Navbar />}
 
       {!isAdmin ? (
-        <NetworkGuard>
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/ico" element={<ICOPage />} />
-            <Route path="/staking" element={<StakingPage />} />
-            <Route path="/lab" element={<LabPage />} />
-            <Route path="/Luckydrop" element={<ComingSoonPage />} />
-            <Route path="/test" element={<WheelOfFortune />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/swap" element={<SwapWidgetCard />} />
-          </Routes>
-        </NetworkGuard>
+        <>
+          <NetworkGuard>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/ico" element={<ICOPage />} />
+              <Route path="/staking" element={<StakingPage />} />
+              <Route path="/lab" element={<LabPage />} />
+              <Route path="/Luckydrop" element={<ComingSoonPage />} />
+              <Route path="/test" element={<WheelOfFortune />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/swap" element={<SwapWidgetCard />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+            </Routes>
+          </NetworkGuard>
+
+          <Footer />
+        </>
       ) : (
         <Routes>
           <Route path="/admin" element={<AdminDashboard />} />
