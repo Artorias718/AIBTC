@@ -1,0 +1,127 @@
+:root {
+
+  /* =========================
+     BASE COLORS
+  ========================= */
+
+  --white: #ffffff;
+  --black: #000000;
+
+
+  /* =========================
+     TEXT COLORS
+  ========================= */
+
+  --text-dark: #0f172a;
+  --text-light: #94a3b8;
+  --color-text-on-dark: #ffffff;
+
+
+  /* =========================
+     PRIMARY BRAND COLORS
+  ========================= */
+
+  --primary-green: #00e5ff;
+  --dark-green: #0099ff;
+  --light-green: #67f3ff;
+
+
+  /* =========================
+     BACKGROUND COLORS
+  ========================= */
+
+  --bg-green: #f0f9ff;
+  --color-hero-bg: #0b0f2a;
+
+
+  /* =========================
+     ACCENT COLORS
+  ========================= */
+
+  --color-accent: #00e5ff;
+
+
+  /* =========================
+     SHADOWS
+  ========================= */
+
+  --shadow: rgba(0, 0, 0, 0.1);
+
+
+  /* =========================
+     SPECIAL COLORS
+  ========================= */
+
+  --color-coin-gold-light: #ffd700;
+  --color-coin-gold-dark: #d4af37;
+
+    /* ICO PAGE */
+
+  --color-card-dark: #0f1440;
+  --color-progress-fill: #00bfff;
+  --color-input-green: #1fb6ff;
+
+  /* STATUS COLORS */
+
+  --color-success-bg: #d1fae5;
+  --color-success-text: #00e5ff;
+
+  --color-error-bg: #fee2e2;
+  --color-error-text: #dc2626;
+  --color-error-border: #fecaca;
+
+    /* COMING SOON PAGE */
+
+  --color-text-muted: #64748b;
+
+  /* LINK COLORS */
+
+  --color-link: #38bdf8;
+  --color-link-hover: #0ea5e9;
+
+    /* COUNTDOWN */
+
+  --color-text-soft: #aaaaaa;
+  --color-black: #000000;
+
+    /* FOOTER */
+
+  --color-white-70: rgba(255,255,255,0.7);
+  --color-white-60: rgba(255,255,255,0.6);
+  --color-white-08: rgba(255,255,255,0.08);
+
+  --color-social-hover: #00cfff;
+
+    /* PRIVACY PAGE TEXT */
+
+  --color-white-72: rgba(255, 255, 255, 0.72);
+  --color-white-86: rgba(255, 255, 255, 0.86);
+
+ /* STAKING / MODAL */
+  --color-overlay-dark: rgba(11, 15, 42, 0.85);
+  --color-shadow-strong: rgba(0, 0, 0, 0.4);
+  --color-focus-ring: rgba(0, 229, 255, 0.35);
+  --color-max-available: #94a3b8;
+
+  /* MODAL BUTTONS */
+  --color-primary-hover-alt: #00c2ff;
+
+  /* TOKEN SELECTOR */
+  --color-token-selector-bg: #007bff;
+  --color-token-selector-border: #004cff;
+  --color-token-dropdown-shadow: rgba(0, 140, 255, 0.5);
+  --color-token-item-hover: rgba(0, 0, 0, 0.18);
+
+  /* TOOLTIP / DARK SURFACES */
+  --color-tooltip-bg: rgba(15, 20, 40, 0.96);
+  --color-white-10: rgba(255, 255, 255, 0.10);
+  --color-white-85: rgba(255, 255, 255, 0.85);
+  --color-white-90: rgba(255, 255, 255, 0.9);
+  --color-shadow-tooltip: rgba(0, 0, 0, 0.45);
+
+  /* GENERIC MUTED */
+  --color-muted-gray: #64748b;
+
+  --color-primary-hover: #0099ff;
+
+}

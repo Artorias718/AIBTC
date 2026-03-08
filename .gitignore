@@ -1,5 +1,8 @@
 desktop.ini
 smart_contracts/config.txt
 smart_contracts/node_modules
+smart_contracts/artifacts
+smart_contracts/cache
 frontend/node_modules
-
+frontend/build
+cloc-2.08.exe
