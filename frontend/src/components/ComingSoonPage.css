@@ -10,12 +10,6 @@
   padding-top: 10vh;
 }
 
-.logo {
-  width: 80px;
-  height: auto;
-  margin-bottom: 24px;
-}
-
 .title {
   font-size: 2.5rem;
   font-weight: bold;
@@ -26,12 +20,16 @@
 .subtitle {
   font-size: 1rem;
   color: var(--color-text-muted);
-  margin-bottom: 32px;
+  margin-bottom: 16px; /* ridotto per avvicinare l'animazione */
 }
 
 .illustration {
-  width: 400px;
-  height: auto;
+  width: 700px;
+  height: 700px;
+  display: block;
+  margin: 0 auto 80px auto; /* centra orizzontalmente e spazio sotto */
+  /* piccolo aggiustamento orizzontale se necessario */
+  transform: translateX(-25px) translateY(-75px); /* funziona correttamente */
 }
 
 .docs-link {

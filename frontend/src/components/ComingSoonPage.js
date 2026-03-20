@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import lottie from "lottie-web";
+import coinAnimation from "../comingsoon.json";
 import "./ComingSoonPage.css";
 
 const ComingSoonPage = () => {
+  const animationContainer = useRef(null);
+
+  useEffect(() => {
+    if (animationContainer.current) {
+      const anim = lottie.loadAnimation({
+        container: animationContainer.current,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        animationData: coinAnimation,
+      });
+
+      return () => anim.destroy();
+    }
+  }, []);
+
   return (
     <div className="coming-soon-container">
-      {/* Logo
-      <img src="/aibtc.png" alt="Logo" className="logo" /> */}
-
-      {/* Titolo */}
       <h1 className="title">Coming Soon</h1>
 
-      {/* Sottotitolo con link */}
       <p className="subtitle">
         Meanwhile, explore our{" "}
         <a
@@ -24,12 +37,8 @@ const ComingSoonPage = () => {
         .
       </p>
 
-      {/* Immagine */}
-      <img
-        src="/work.png"
-        alt="Coming Soon Illustration"
-        className="illustration"
-      />
+      {/* Animazione Lottie */}
+      <div ref={animationContainer} className="illustration" />
     </div>
   );
 };

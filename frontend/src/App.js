@@ -24,6 +24,8 @@ import SwapWidgetCard from "./components/SwapWidgetCard";
 import Footer from "./components/Footer";
 import TermsPage from "./components/TermsPage";
 import PrivacyPage from "./components/PrivacyPage";
+import CoinFlip from "./components/CoinFlip";
+import NotFoundPage from "./components/NotFoundPage";
 
 function AppRoutes() {
   const location = useLocation();
@@ -47,6 +49,8 @@ function AppRoutes() {
               <Route path="/swap" element={<SwapWidgetCard />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/flip" element={<CoinFlip />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </NetworkGuard>
 
