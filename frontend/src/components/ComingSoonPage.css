@@ -8,6 +8,7 @@
   padding: 20px;
   justify-content: flex-start;
   padding-top: 10vh;
+  position: relative; /* per z-index degli elementi interni */
 }
 
 .title {
@@ -20,21 +21,25 @@
 .subtitle {
   font-size: 1rem;
   color: var(--color-text-muted);
-  margin-bottom: 16px; /* ridotto per avvicinare l'animazione */
+  margin-bottom: 16px; /* spazio vicino all'animazione */
 }
 
 .illustration {
   width: 700px;
   height: 700px;
   display: block;
-  margin: 0 auto 80px auto; /* centra orizzontalmente e spazio sotto */
-  /* piccolo aggiustamento orizzontale se necessario */
-  transform: translateX(-25px) translateY(-75px); /* funziona correttamente */
+  margin: 0 auto 80px auto; /* centra e spazio sotto */
+  transform: translateX(-25px) translateY(-75px);
+  position: relative;
+  z-index: 1;          /* sotto il link */
+  pointer-events: none; /* permette di cliccare i link sopra */
 }
 
 .docs-link {
   color: var(--color-link);
   text-decoration: underline;
+  position: relative;
+  z-index: 10;          /* sopra l'animazione */
 }
 
 .docs-link:hover {

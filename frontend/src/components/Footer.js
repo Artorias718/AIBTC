@@ -32,7 +32,7 @@ const Footer = () => {
 
           <div className="footer-socials">
             <a
-              href="https://x.com"
+              href="https://x.com/AIBTC_finance"
               target="_blank"
               rel="noopener noreferrer"
               className="social-icon"
@@ -41,14 +41,14 @@ const Footer = () => {
             </a>
 
             <a
-              href="https://t.me"
+              href="https://t.me/+Z8ecYvC-wsg3NTQ8"
               target="_blank"
               rel="noopener noreferrer"
               className="social-icon"
             >
               <FaTelegram />
             </a>
-
+            {/* 
             <a
               href="https://discord.com"
               target="_blank"
@@ -65,7 +65,7 @@ const Footer = () => {
               className="social-icon"
             >
               <FaGithub />
-            </a>
+            </a> */}
           </div>
         </div>
 

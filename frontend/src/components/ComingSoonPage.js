@@ -27,7 +27,7 @@ const ComingSoonPage = () => {
       <p className="subtitle">
         Meanwhile, explore our{" "}
         <a
-          href="https://aibtc.finance/Whitepaper"
+          href="https://aibtc.finance/Whitepaper.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="docs-link"
